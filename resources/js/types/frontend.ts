@@ -170,6 +170,51 @@ export type ProductsPageProps = {
     catalog: ProductCatalogData;
 };
 
+export type MicroMarketsHowItWorksData = {
+    eyebrow: string;
+    title: string;
+    steps: { title: string; text: string }[];
+};
+
+export type MicroMarketsEquipmentData = {
+    eyebrow: string;
+    title: string;
+    items: { title: string; text: string }[];
+};
+
+export type MicroMarketsOfferingItem = {
+    kind: string;
+    name: string;
+};
+
+export type MicroMarketsOfferingsData = {
+    eyebrow: string;
+    title: string;
+    items: MicroMarketsOfferingItem[];
+};
+
+export type MicroMarketsCompareItem = {
+    title: string;
+    text: string;
+    art: string;
+    href: string;
+};
+
+export type MicroMarketsCompareData = {
+    title: string;
+    items: MicroMarketsCompareItem[];
+};
+
+export type MicroMarketsPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    howItWorks: MicroMarketsHowItWorksData;
+    equipment: MicroMarketsEquipmentData;
+    offerings: MicroMarketsOfferingsData;
+    compare: MicroMarketsCompareData;
+    faqs: FaqsData;
+};
+
 export type RequestFormData = {
     eyebrow: string;
     title: string;

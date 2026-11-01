@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react';
+import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { BrandButton } from '@/components/frontend/brand-button';
 import { Wrap } from '@/components/frontend/wrap';
@@ -12,6 +13,8 @@ type SiteHeaderProps = {
 export function SiteHeader({ site }: SiteHeaderProps) {
     const [open, setOpen] = useState(false);
 
+    const closeMenu = () => setOpen(false);
+
     return (
         <header className="sticky top-0 z-40 bg-petrol text-on-petrol">
             <div className="bg-petrol-2 text-sm">
@@ -24,7 +27,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                             <a
                                 key={item.label}
                                 href={item.href}
-                                className="opacity-85 no-underline hover:underline hover:decoration-brass"
+                                className="opacity-85 no-underline hover:opacity-100 hover:underline hover:decoration-brass"
                             >
                                 {item.label}
                             </a>
@@ -32,7 +35,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                     </nav>
                     <a
                         href={site.operatorCta.href}
-                        className="font-semibold text-brass no-underline"
+                        className="font-semibold text-brass no-underline opacity-100"
                     >
                         {site.operatorCta.label}
                     </a>
@@ -41,13 +44,14 @@ export function SiteHeader({ site }: SiteHeaderProps) {
 
             <Wrap
                 className={cn(
-                    'flex items-center gap-5 py-3.5',
+                    'flex items-center gap-5.5 py-3.5',
                     open && 'flex-wrap',
                 )}
             >
                 <Link
                     href="/"
-                    className="flex items-center gap-2.5 font-display text-lg font-extrabold whitespace-nowrap text-on-petrol no-underline"
+                    onClick={closeMenu}
+                    className="flex items-center gap-2.5 font-display text-xl font-extrabold whitespace-nowrap text-on-petrol no-underline"
                 >
                     <svg
                         width={34}
@@ -91,7 +95,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                     </svg>
                     <span>
                         {site.name}
-                        <small className="mt-0.5 block font-mono text-xs font-medium tracking-wide text-on-petrol/70 uppercase">
+                        <small className="mt-0.5 block font-mono text-xs leading-tight font-medium tracking-wider text-on-petrol/70 uppercase">
                             {site.tagline}
                         </small>
                     </span>
@@ -99,12 +103,17 @@ export function SiteHeader({ site }: SiteHeaderProps) {
 
                 <button
                     type="button"
-                    className="ml-auto rounded-lg border border-current px-2.5 py-1.5 text-sm font-semibold lg:hidden"
+                    className="ml-auto rounded-lg border-2 border-current p-2 lg:hidden"
                     aria-expanded={open}
                     aria-controls="site-main-nav"
+                    aria-label={open ? 'Close menu' : 'Open menu'}
                     onClick={() => setOpen((value) => !value)}
                 >
-                    Menu
+                    {open ? (
+                        <X className="size-5" aria-hidden />
+                    ) : (
+                        <Menu className="size-5" aria-hidden />
+                    )}
                 </button>
 
                 <ul
@@ -121,6 +130,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                             <a
                                 href={item.href}
                                 aria-current={item.current ? 'page' : undefined}
+                                onClick={closeMenu}
                                 className={cn(
                                     'text-sm font-semibold tracking-wide text-on-petrol/85 uppercase no-underline hover:text-on-petrol hover:underline hover:decoration-brass hover:decoration-2 hover:underline-offset-8',
                                     item.current &&
@@ -135,6 +145,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
 
                 <BrandButton
                     href={site.headerCta.href}
+                    onClick={closeMenu}
                     className={cn(
                         'px-4 py-2.5 text-sm',
                         open ? 'inline-flex' : 'hidden lg:inline-flex',

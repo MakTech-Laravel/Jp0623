@@ -52,7 +52,7 @@ class HomePageData
                 ['label' => 'Home', 'href' => '/', 'current' => true],
                 ['label' => 'Machines', 'href' => '/machines'],
                 ['label' => 'Products', 'href' => '/products'],
-                ['label' => 'Micro Markets', 'href' => '#'],
+                ['label' => 'Micro Markets', 'href' => '/micro-markets'],
                 ['label' => 'Office Coffee', 'href' => '#'],
                 ['label' => 'Contact Us', 'href' => '#'],
             ],
@@ -65,7 +65,7 @@ class HomePageData
                     'title' => 'Services',
                     'links' => [
                         ['label' => 'Vending machines', 'href' => '/machines'],
-                        ['label' => 'Micro markets', 'href' => '#'],
+                        ['label' => 'Micro markets', 'href' => '/micro-markets'],
                         ['label' => 'AI smart coolers', 'href' => '#'],
                         ['label' => 'Office coffee', 'href' => '#'],
                         ['label' => 'ATM machines', 'href' => '#'],
@@ -187,7 +187,7 @@ class HomePageData
                 [
                     'title' => 'Micro markets',
                     'text' => 'A self-checkout store for fresh food, snacks and drinks.',
-                    'href' => '#',
+                    'href' => '/micro-markets',
                     'art' => 'market',
                 ],
                 [
