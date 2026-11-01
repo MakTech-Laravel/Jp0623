@@ -35,8 +35,9 @@ RUN composer install \
     --prefer-dist
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
-RUN corepack enable \
-    && corepack prepare pnpm@12.11.2 --activate \
+# Avoid `corepack enable` here: Node is copied into the PHP image and corepack
+# fails looking for missing yarn shims under /usr/local/bin.
+RUN npm install -g pnpm@12.11.2 \
     && pnpm install --frozen-lockfile
 
 COPY . .
