@@ -35,8 +35,8 @@ RUN composer install \
     --prefer-dist
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
-RUN corepack enable pnpm \
-    && corepack install \
+RUN corepack enable \
+    && corepack prepare pnpm@12.11.2 --activate \
     && pnpm install --frozen-lockfile
 
 COPY . .
