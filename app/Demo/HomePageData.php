@@ -471,6 +471,24 @@ class HomePageData
                     'role' => 'Property Manager',
                     'org' => 'Apartment community, FL',
                 ],
+                [
+                    'stars' => '★★★★★',
+                    'quote' => 'Setup was simple and our staff actually uses the snack machine every day. Service has been reliable.',
+                    'role' => 'Office Manager',
+                    'org' => 'Accounting firm, GA',
+                ],
+                [
+                    'stars' => '★★★★★',
+                    'quote' => 'We needed healthy options for a hospital break room. They matched the mix and keep it stocked.',
+                    'role' => 'Dietary Services Lead',
+                    'org' => 'Regional hospital, NC',
+                ],
+                [
+                    'stars' => '★★★★★',
+                    'quote' => 'One request covered three campuses. Install dates were clear and the operators showed up as promised.',
+                    'role' => 'Operations Director',
+                    'org' => 'Private school network, CA',
+                ],
             ],
         ];
     }
