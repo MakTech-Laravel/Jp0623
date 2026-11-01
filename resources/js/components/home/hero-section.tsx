@@ -5,6 +5,65 @@ import {
 } from '@/components/frontend/catalog-image';
 import { Wrap } from '@/components/frontend/wrap';
 import type { HeroData } from '@/types/frontend';
+import { cn } from '@/lib/utils';
+import { useReducedMotion } from 'motion/react';
+import { useEffect, useState } from 'react';
+
+const CYCLE_MS = 4000;
+
+type HeroImage = HeroData['images'][number];
+
+function HeroImageFrame({
+    images,
+    activeIndex,
+    offset,
+    reduceMotion,
+    className,
+}: {
+    images: HeroImage[];
+    activeIndex: number;
+    offset: number;
+    reduceMotion: boolean | null;
+    className?: string;
+}) {
+    const visibleIndex =
+        images.length === 0 ? 0 : (activeIndex + offset) % images.length;
+
+    return (
+        <div
+            className={cn(
+                'group relative flex min-h-80 items-end justify-center transition duration-500 md:min-h-[28rem]',
+                !reduceMotion &&
+                    'hover:scale-[1.03] hover:shadow-[0_18px_40px_-20px_rgba(201,162,39,0.45)]',
+                className,
+            )}
+        >
+            {images.map((image, index) => {
+                const isVisible = index === visibleIndex;
+
+                return (
+                    <div
+                        key={image.src}
+                        className={cn(
+                            'absolute inset-0 flex items-end justify-center',
+                            !reduceMotion &&
+                                'transition-opacity duration-1000 ease-in-out',
+                            isVisible ? 'opacity-100' : 'opacity-0',
+                        )}
+                        aria-hidden={!isVisible}
+                    >
+                        <CatalogImage
+                            src={image.src}
+                            alt={image.alt}
+                            fallback={MACHINE_IMAGE_FALLBACK}
+                            className="max-h-80 w-full md:max-h-[28rem]"
+                        />
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
 
 export function HeroSection({
     hero,
@@ -13,6 +72,22 @@ export function HeroSection({
     hero: HeroData;
     phone: string;
 }) {
+    const reduceMotion = useReducedMotion();
+    const images = hero.images;
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    useEffect(() => {
+        if (reduceMotion || images.length < 3) {
+            return;
+        }
+
+        const timer = window.setInterval(() => {
+            setActiveIndex((current) => (current + 1) % images.length);
+        }, CYCLE_MS);
+
+        return () => window.clearInterval(timer);
+    }, [images.length, reduceMotion]);
+
     return (
         <section className="bg-petrol py-14 text-on-petrol md:py-16">
             <Wrap className="grid items-center gap-10 md:grid-cols-2">
@@ -56,16 +131,20 @@ export function HeroSection({
                         </a>
                     </p>
                 </div>
-                <div className="grid max-w-md grid-cols-2 items-end gap-4 justify-self-center md:justify-self-end">
-                    {hero.images.map((image) => (
-                        <CatalogImage
-                            key={image.src}
-                            src={image.src}
-                            alt={image.alt}
-                            fallback={MACHINE_IMAGE_FALLBACK}
-                            className="max-h-72 w-full"
-                        />
-                    ))}
+                <div className="grid w-full max-w-2xl grid-cols-2 items-end gap-5 justify-self-center md:justify-self-end">
+                    <HeroImageFrame
+                        images={images}
+                        activeIndex={activeIndex}
+                        offset={0}
+                        reduceMotion={reduceMotion}
+                    />
+                    <HeroImageFrame
+                        images={images}
+                        activeIndex={activeIndex}
+                        offset={1}
+                        reduceMotion={reduceMotion}
+                        className="mb-6 md:mb-10"
+                    />
                 </div>
             </Wrap>
         </section>
