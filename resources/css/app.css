@@ -12,10 +12,38 @@
         'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
+    --font-figtree: 'Figtree', ui-sans-serif, system-ui, sans-serif;
+    --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+    --font-mono:
+        'JetBrains Mono', ui-monospace, Consolas, monospace;
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
     --radius-sm: calc(var(--radius) - 4px);
+    --radius-brand: var(--brand-radius);
+
+    /* VMLFS brand palette (frontend marketing) — change :root values to retheme site */
+    --color-brand-bg: var(--brand-bg);
+    --color-brand-surface: var(--brand-surface);
+    --color-brand-sunk: var(--brand-sunk);
+    --color-brand-ink: var(--brand-ink);
+    --color-brand-muted: var(--brand-muted);
+    --color-brand-line: var(--brand-line);
+    --color-petrol: var(--petrol);
+    --color-petrol-2: var(--petrol-2);
+    --color-on-petrol: var(--on-petrol);
+    --color-brass: var(--brass);
+    --color-brass-ink: var(--brass-ink);
+    --color-c1: var(--c1);
+    --color-c2: var(--c2);
+    --color-c3: var(--c3);
+    --color-c4: var(--c4);
+    --color-good: var(--good);
+    --color-good-bg: var(--good-bg);
+    --color-warn: var(--warn);
+    --color-warn-bg: var(--warn-bg);
+    --color-bad: var(--bad);
+    --color-bad-bg: var(--bad-bg);
 
     --color-background: var(--background);
     --color-foreground: var(--foreground);
@@ -62,6 +90,30 @@
 }
 
 :root {
+    /* Brand tokens — edit these to change the public frontend colors site-wide */
+    --brand-bg: #f2f5f3;
+    --brand-surface: #ffffff;
+    --brand-sunk: #e6ece9;
+    --brand-ink: #0f2a2e;
+    --brand-muted: #4d6466;
+    --brand-line: #d2dcd8;
+    --petrol: #0f3d40;
+    --petrol-2: #155356;
+    --on-petrol: #eaf3f1;
+    --brass: #e9a21a;
+    --brass-ink: #4a3000;
+    --c1: #c8553d;
+    --c2: #3a7ca5;
+    --c3: #5e9b4a;
+    --c4: #8e5ba8;
+    --good: #1e7a4f;
+    --good-bg: #ddf1e6;
+    --warn: #8a5200;
+    --warn-bg: #fbebcb;
+    --bad: #a63a2b;
+    --bad-bg: #f8deda;
+    --brand-radius: 10px;
+
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
