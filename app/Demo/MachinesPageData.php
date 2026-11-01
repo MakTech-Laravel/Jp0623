@@ -48,7 +48,7 @@ class MachinesPageData
                 'label' => 'Request a free machine',
                 'href' => '/#request-sec',
             ],
-            'art' => 'snack',
+            'image' => '/images/machines/tradational-vending.png',
         ];
     }
 

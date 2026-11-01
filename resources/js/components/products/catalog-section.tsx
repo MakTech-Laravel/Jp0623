@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import { PackArt } from '@/components/frontend/machine-art';
+import {
+    CatalogImage,
+    PRODUCT_IMAGE_FALLBACK,
+    productImageSrc,
+} from '@/components/frontend/catalog-image';
 import {
     Reveal,
     brandCardHoverClass,
@@ -44,7 +48,15 @@ export function CatalogSection({ data }: { data: ProductCatalogData }) {
                             )}
                         >
                             <div className="flex items-center gap-3.5">
-                                <PackArt kind={item.kind} />
+                                <CatalogImage
+                                    src={productImageSrc(
+                                        item.kind,
+                                        item.image,
+                                    )}
+                                    alt={item.name}
+                                    fallback={PRODUCT_IMAGE_FALLBACK}
+                                    className="max-h-20"
+                                />
                                 <h3 className="font-display text-xl font-bold text-brand-ink">
                                     {item.name}
                                 </h3>

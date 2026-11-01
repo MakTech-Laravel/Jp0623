@@ -29,7 +29,7 @@ export default function MicroMarkets({
                 title={hero.title}
                 lead={hero.lead}
                 cta={hero.cta}
-                art={hero.art}
+                image={hero.image}
             />
             <MicroMarketsHowItWorksSection data={howItWorks} />
             <MicroMarketsEquipmentSection data={equipment} />

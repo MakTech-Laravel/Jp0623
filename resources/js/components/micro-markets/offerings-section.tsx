@@ -1,4 +1,8 @@
-import { PackArt } from '@/components/frontend/machine-art';
+import {
+    CatalogImage,
+    PRODUCT_IMAGE_FALLBACK,
+    productImageSrc,
+} from '@/components/frontend/catalog-image';
 import {
     Reveal,
     brandCardHoverClass,
@@ -25,7 +29,12 @@ export function MicroMarketsOfferingsSection({
                                 brandCardHoverClass,
                             )}
                         >
-                            <PackArt kind={item.kind} />
+                            <CatalogImage
+                                src={productImageSrc(item.kind, item.image)}
+                                alt={item.name}
+                                fallback={PRODUCT_IMAGE_FALLBACK}
+                                className="max-h-28"
+                            />
                             <h3 className="font-display text-base font-bold text-brand-ink">
                                 {item.name}
                             </h3>

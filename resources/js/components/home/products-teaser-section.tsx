@@ -1,4 +1,8 @@
-import { PackArt } from '@/components/frontend/machine-art';
+import {
+    CatalogImage,
+    PRODUCT_IMAGE_FALLBACK,
+    productImageSrc,
+} from '@/components/frontend/catalog-image';
 import {
     Reveal,
     brandCardHoverClass,
@@ -33,7 +37,15 @@ export function ProductsTeaserSection({ data }: { data: ProductsData }) {
                                 brandCardHoverClass,
                             )}
                         >
-                            <PackArt kind={product.kind} />
+                            <CatalogImage
+                                src={productImageSrc(
+                                    product.kind,
+                                    product.image,
+                                )}
+                                alt={product.name}
+                                fallback={PRODUCT_IMAGE_FALLBACK}
+                                className="max-h-28"
+                            />
                             <h3 className="font-display text-base font-bold text-brand-ink">
                                 {product.name}
                             </h3>

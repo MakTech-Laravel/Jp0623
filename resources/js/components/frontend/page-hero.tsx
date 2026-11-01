@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react';
 import { BrandButton } from '@/components/frontend/brand-button';
-import { MachineArt } from '@/components/frontend/machine-art';
+import {
+    CatalogImage,
+    MACHINE_IMAGE_FALLBACK,
+} from '@/components/frontend/catalog-image';
 import { Wrap } from '@/components/frontend/wrap';
 import type { NavLink } from '@/types/frontend';
 
@@ -9,7 +12,7 @@ type PageHeroProps = {
     title: string;
     lead?: string;
     cta?: NavLink;
-    art?: string;
+    image?: string;
     actions?: ReactNode;
 };
 
@@ -18,7 +21,7 @@ export function PageHero({
     title,
     lead,
     cta,
-    art,
+    image,
     actions,
 }: PageHeroProps) {
     return (
@@ -49,9 +52,14 @@ export function PageHero({
                         </div>
                     )}
                 </div>
-                {art ? (
+                {image ? (
                     <div className="w-full max-w-xs justify-self-center md:justify-self-end">
-                        <MachineArt kind={art} />
+                        <CatalogImage
+                            src={image}
+                            alt={title}
+                            fallback={MACHINE_IMAGE_FALLBACK}
+                            className="max-h-72 w-full"
+                        />
                     </div>
                 ) : null}
             </Wrap>

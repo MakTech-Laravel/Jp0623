@@ -139,7 +139,16 @@ class HomePageData
                 'reviewsLabel' => 'Read reviews',
                 'reviewsHref' => '#reviews-sec',
             ],
-            'artKinds' => ['combo', 'cooler'],
+            'images' => [
+                [
+                    'src' => '/images/hero/header2.png',
+                    'alt' => 'Snack and drink combo machine',
+                ],
+                [
+                    'src' => '/images/machines/Alpine-ST5000.jpg',
+                    'alt' => 'AI smart cooler',
+                ],
+            ],
         ];
     }
 
@@ -182,25 +191,25 @@ class HomePageData
                     'title' => 'Vending machines',
                     'text' => 'Snack, drink and combo machines with card and phone pay.',
                     'href' => '/machines',
-                    'art' => 'combo',
+                    'image' => '/images/machines/Alpine-ST5000.jpg',
                 ],
                 [
                     'title' => 'Micro markets',
                     'text' => 'A self-checkout store for fresh food, snacks and drinks.',
                     'href' => '/micro-markets',
-                    'art' => 'market',
+                    'image' => '/images/machines/micro-market.png',
                 ],
                 [
                     'title' => 'AI smart coolers',
                     'text' => 'Tap, open the door, take what you want.',
                     'href' => '#',
-                    'art' => 'cooler',
+                    'image' => '/images/machines/ai-cooler.png',
                 ],
                 [
                     'title' => 'Office coffee',
                     'text' => 'Brewers and supplies delivered on schedule.',
                     'href' => '#',
-                    'art' => 'coffee',
+                    'image' => '/images/machines/coffee.png',
                 ],
             ],
         ];
@@ -241,6 +250,7 @@ class HomePageData
                 'tags' => ['Combo', 'Card + phone'],
                 'desc' => 'One machine for snacks and cold drinks. The most common choice for a first placement.',
                 'href' => '/machines/combo',
+                'image' => '/images/machines/Alpine-ST5000.jpg',
             ],
             [
                 'id' => 'healthy',
@@ -250,6 +260,7 @@ class HomePageData
                 'tags' => ['Healthy', 'Combo'],
                 'desc' => 'Stocked with better-for-you snacks, waters and low-sugar drinks, with nutrition labels.',
                 'href' => '/machines/healthy',
+                'image' => '/images/machines/healthy-vending.png',
             ],
             [
                 'id' => 'snack',
@@ -259,6 +270,7 @@ class HomePageData
                 'tags' => ['Snack', 'High capacity'],
                 'desc' => 'A large snack selection that holds more product between service visits.',
                 'href' => '/machines/snack',
+                'image' => '/images/machines/tradational-vending.png',
             ],
             [
                 'id' => 'drink',
@@ -268,6 +280,7 @@ class HomePageData
                 'tags' => ['Drinks'],
                 'desc' => 'Water, soda, juice, tea and energy drinks kept cold all day.',
                 'href' => '/machines/drink',
+                'image' => '/images/machines/ai-cooler.png',
             ],
             [
                 'id' => 'touch',
@@ -277,6 +290,7 @@ class HomePageData
                 'tags' => ['Combo', 'Touchscreen'],
                 'desc' => 'A large screen with product photos, nutrition info and promotions.',
                 'href' => '/machines/touch',
+                'image' => '/images/machines/micro-market.png',
             ],
             [
                 'id' => 'food',
@@ -286,6 +300,7 @@ class HomePageData
                 'tags' => ['Fresh food'],
                 'desc' => 'Sandwiches, salads and meals held at safe temperatures with health controls.',
                 'href' => '/machines/food',
+                'image' => '/images/machines/coffee.png',
             ],
             [
                 'id' => 'slim',
@@ -295,6 +310,7 @@ class HomePageData
                 'tags' => ['Combo', 'Compact'],
                 'desc' => 'A slim unit that fits where a full-size machine won\'t.',
                 'href' => '/machines/slim',
+                'image' => '/images/machines/Alpine-ST5000.jpg',
             ],
             [
                 'id' => 'ai-cooler',
@@ -304,6 +320,7 @@ class HomePageData
                 'tags' => ['AI cooler', 'Tap and go'],
                 'desc' => 'Tap a card or phone, open the door and take what you want. Cameras and weight sensors charge only for what you took.',
                 'href' => '/machines/ai-cooler',
+                'image' => '/images/machines/ai-cooler.png',
             ],
             [
                 'id' => 'micro-market',
@@ -313,6 +330,7 @@ class HomePageData
                 'tags' => ['Micro market', 'Self checkout'],
                 'desc' => 'Open shelves, coolers and a self-checkout kiosk: a small store in your break room.',
                 'href' => '/machines/micro-market',
+                'image' => '/images/machines/micro-market.png',
             ],
         ];
     }
@@ -334,6 +352,7 @@ class HomePageData
                     'kind' => $item['kind'],
                     'name' => $item['name'],
                     'href' => '/products',
+                    'image' => $item['image'],
                 ],
                 array_slice(self::productCatalog(), 0, 5),
             ),
@@ -341,7 +360,7 @@ class HomePageData
     }
 
     /**
-     * @return list<array{kind: string, name: string, desc: string, tags: list<string>}>
+     * @return list<array{kind: string, name: string, desc: string, tags: list<string>, image: string}>
      */
     public static function productCatalog(): array
     {
@@ -351,60 +370,70 @@ class HomePageData
                 'name' => 'Beverages',
                 'desc' => 'Water, soda, sparkling water, juice and iced tea',
                 'tags' => ['Bottled water', 'Cola & diet cola', 'Sparkling water', 'Orange juice', 'Iced tea'],
+                'image' => '/images/products/canned-regular-cola.jpg',
             ],
             [
                 'kind' => 'chips',
                 'name' => 'Chips & salty snacks',
                 'desc' => 'Classic chips, pretzels, popcorn and crackers',
                 'tags' => ['Potato chips', 'Pretzels', 'Popcorn', 'Cheese crackers', 'Tortilla chips'],
+                'image' => '/images/products/Baked-Doritos.jpg',
             ],
             [
                 'kind' => 'sweets',
                 'name' => 'Candy & sweets',
                 'desc' => 'Chocolate, gummies, mints and cookies',
                 'tags' => ['Chocolate bars', 'Gummies', 'Cookies', 'Mints', 'Peanut butter cups'],
+                'image' => '/images/products/Kelloggs-Fruity-Snacks-Mixed-Berry.jpg',
             ],
             [
                 'kind' => 'nuts',
                 'name' => 'Nuts & fruit',
                 'desc' => 'Trail mix, almonds, dried fruit and fresh fruit',
                 'tags' => ['Trail mix', 'Almonds', 'Dried mango', 'Apples', 'Mixed nuts'],
+                'image' => '/images/products/skittles.jpg',
             ],
             [
                 'kind' => 'pastry',
                 'name' => 'Pastries',
                 'desc' => 'Muffins, donuts, honey buns and toaster pastries',
                 'tags' => ['Blueberry muffin', 'Honey bun', 'Mini donuts', 'Croissant', 'Pop-tarts'],
+                'image' => '/images/products/canned-regular-cola.jpg',
             ],
             [
                 'kind' => 'bars',
                 'name' => 'Snack bars',
                 'desc' => 'Protein bars, granola bars and breakfast bars',
                 'tags' => ['Protein bar', 'Granola bar', 'Breakfast bar', 'Rice crisp bar', 'Nut bar'],
+                'image' => '/images/products/Baked-Doritos.jpg',
             ],
             [
                 'kind' => 'healthy',
                 'name' => 'Healthy choices',
                 'desc' => 'Baked snacks, low-sugar drinks and plant-based options',
                 'tags' => ['Baked chips', 'Veggie straws', 'Kombucha', 'Seaweed snacks', 'Low-sugar tea'],
+                'image' => '/images/products/Kelloggs-Fruity-Snacks-Mixed-Berry.jpg',
             ],
             [
                 'kind' => 'energy',
                 'name' => 'Energy & sports',
                 'desc' => 'Energy drinks, electrolyte drinks and protein shakes',
                 'tags' => ['Energy drink', 'Sports drink', 'Protein shake', 'Cold brew can', 'Electrolyte water'],
+                'image' => '/images/products/skittles.jpg',
             ],
             [
                 'kind' => 'food',
                 'name' => 'Fresh food',
                 'desc' => 'Sandwiches, salads and ready meals for markets and coolers',
                 'tags' => ['Turkey sandwich', 'Chicken salad', 'Pasta bowl', 'Fruit cup', 'Yogurt parfait'],
+                'image' => '/images/products/canned-regular-cola.jpg',
             ],
             [
                 'kind' => 'coffee',
                 'name' => 'Coffee & hot drinks',
                 'desc' => 'Single-cup, bean-to-cup and tea',
                 'tags' => ['Medium roast', 'Dark roast', 'Espresso', 'Green tea', 'Hot cocoa'],
+                'image' => '/images/products/Baked-Doritos.jpg',
             ],
         ];
     }

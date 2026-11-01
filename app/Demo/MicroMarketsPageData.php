@@ -48,7 +48,7 @@ class MicroMarketsPageData
                 'label' => 'Get a micro market',
                 'href' => '/#request-sec',
             ],
-            'art' => 'market',
+            'image' => '/images/machines/micro-market.png',
         ];
     }
 
@@ -123,6 +123,7 @@ class MicroMarketsPageData
                 ->map(fn (array $item): array => [
                     'kind' => $item['kind'],
                     'name' => $item['name'],
+                    'image' => $item['image'],
                 ])
                 ->values()
                 ->all(),
@@ -140,13 +141,13 @@ class MicroMarketsPageData
                 [
                     'title' => 'Micro market',
                     'text' => 'Best for 100+ people. The widest selection, including fresh meals.',
-                    'art' => 'market',
+                    'image' => '/images/machines/micro-market.png',
                     'href' => '/micro-markets',
                 ],
                 [
                     'title' => 'AI smart cooler',
                     'text' => 'Best for 25–100 people. One cooler that charges for what you take.',
-                    'art' => 'cooler',
+                    'image' => '/images/machines/ai-cooler.png',
                     'href' => '/machines/ai-cooler',
                 ],
             ],

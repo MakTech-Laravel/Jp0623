@@ -28,7 +28,7 @@ export default function Machines({
                 title={hero.title}
                 lead={hero.lead}
                 cta={hero.cta}
-                art={hero.art}
+                image={hero.image}
             />
             <LineupSection data={lineup} />
             <TechSection data={tech} />

@@ -37,7 +37,7 @@ export type HeroData = {
         reviewsLabel: string;
         reviewsHref: string;
     };
-    artKinds: string[];
+    images: { src: string; alt: string }[];
 };
 
 export type HowItWorksData = {
@@ -51,7 +51,7 @@ export type ServiceItem = {
     title: string;
     text: string;
     href: string;
-    art: string;
+    image: string;
 };
 
 export type ServicesData = {
@@ -68,6 +68,7 @@ export type MachineItem = {
     tags: string[];
     desc: string;
     href: string;
+    image?: string | null;
 };
 
 export type PageHeroData = {
@@ -75,6 +76,7 @@ export type PageHeroData = {
     title: string;
     lead?: string;
     cta?: NavLink;
+    image?: string;
     art?: string;
 };
 
@@ -143,6 +145,7 @@ export type ProductItem = {
     kind: string;
     name: string;
     href: string;
+    image?: string | null;
 };
 
 export type ProductsData = {
@@ -157,6 +160,7 @@ export type ProductCatalogItem = {
     name: string;
     desc: string;
     tags: string[];
+    image?: string | null;
 };
 
 export type ProductCatalogData = {
@@ -185,6 +189,7 @@ export type MicroMarketsEquipmentData = {
 export type MicroMarketsOfferingItem = {
     kind: string;
     name: string;
+    image?: string | null;
 };
 
 export type MicroMarketsOfferingsData = {
@@ -196,7 +201,7 @@ export type MicroMarketsOfferingsData = {
 export type MicroMarketsCompareItem = {
     title: string;
     text: string;
-    art: string;
+    image: string;
     href: string;
 };
 

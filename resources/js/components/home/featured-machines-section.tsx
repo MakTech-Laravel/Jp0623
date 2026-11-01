@@ -1,4 +1,8 @@
-import { MachineArt } from '@/components/frontend/machine-art';
+import {
+    CatalogImage,
+    MACHINE_IMAGE_FALLBACK,
+    machineImageSrc,
+} from '@/components/frontend/catalog-image';
 import {
     Reveal,
     brandCardHoverClass,
@@ -38,9 +42,13 @@ export function FeaturedMachinesSection({
                             )}
                         >
                             <div className="grid place-items-center rounded-lg bg-brand-sunk p-3.5">
-                                <MachineArt
-                                    kind={machine.kind}
-                                    className="h-auto max-h-44 w-auto max-w-full"
+                                <CatalogImage
+                                    src={machineImageSrc(
+                                        machine.kind,
+                                        machine.image,
+                                    )}
+                                    alt={machine.name}
+                                    fallback={MACHINE_IMAGE_FALLBACK}
                                 />
                             </div>
                             <h3 className="font-display text-xl font-bold text-brand-ink">
