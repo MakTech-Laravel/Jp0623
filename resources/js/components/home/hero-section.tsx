@@ -1,5 +1,8 @@
 import { BrandButton } from '@/components/frontend/brand-button';
-import { MachineArt } from '@/components/frontend/machine-art';
+import {
+    CatalogImage,
+    MACHINE_IMAGE_FALLBACK,
+} from '@/components/frontend/catalog-image';
 import { Wrap } from '@/components/frontend/wrap';
 import type { HeroData } from '@/types/frontend';
 
@@ -54,8 +57,14 @@ export function HeroSection({
                     </p>
                 </div>
                 <div className="grid max-w-md grid-cols-2 items-end gap-4 justify-self-center md:justify-self-end">
-                    {hero.artKinds.map((kind) => (
-                        <MachineArt key={kind} kind={kind} />
+                    {hero.images.map((image) => (
+                        <CatalogImage
+                            key={image.src}
+                            src={image.src}
+                            alt={image.alt}
+                            fallback={MACHINE_IMAGE_FALLBACK}
+                            className="max-h-72 w-full"
+                        />
                     ))}
                 </div>
             </Wrap>

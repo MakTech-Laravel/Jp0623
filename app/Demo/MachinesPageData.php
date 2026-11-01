@@ -48,7 +48,7 @@ class MachinesPageData
                 'label' => 'Request a free machine',
                 'href' => '/#request-sec',
             ],
-            'art' => 'snack',
+            'image' => '/images/machines/tradational-vending.png',
         ];
     }
 
@@ -59,7 +59,7 @@ class MachinesPageData
     {
         return [
             'title' => 'Our machine lineup.',
-            'text' => 'Not sure which one fits your space? Tell us your headcount and room size and we\'ll recommend one.',
+            // 'text' => 'Not sure which one fits your space? Tell us your headcount and room size and we\'ll recommend one.',
             'filters' => [
                 'All',
                 'Combo',

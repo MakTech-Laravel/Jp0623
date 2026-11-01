@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { Menu, X } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
 import { BrandButton } from '@/components/frontend/brand-button';
 import { Wrap } from '@/components/frontend/wrap';
@@ -12,8 +13,14 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ site }: SiteHeaderProps) {
     const [open, setOpen] = useState(false);
+    const reduceMotion = useReducedMotion();
 
     const closeMenu = () => setOpen(false);
+
+    const panelTransition = {
+        duration: reduceMotion ? 0 : 0.25,
+        ease: 'easeOut' as const,
+    };
 
     return (
         <header className="sticky top-0 z-40 bg-petrol text-on-petrol">
@@ -42,117 +49,162 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                 </Wrap>
             </div>
 
-            <Wrap
-                className={cn(
-                    'flex items-center gap-5.5 py-3.5',
-                    open && 'flex-wrap',
-                )}
-            >
-                <Link
-                    href="/"
-                    onClick={closeMenu}
-                    className="flex items-center gap-2.5 font-display text-xl font-extrabold whitespace-nowrap text-on-petrol no-underline"
-                >
-                    <svg
-                        width={34}
-                        height={34}
-                        viewBox="0 0 34 34"
-                        aria-hidden
+            <Wrap>
+                <div className="flex items-center gap-5.5 py-3.5">
+                    <Link
+                        href="/"
+                        onClick={closeMenu}
+                        className="flex items-center gap-2.5 font-display text-xl font-extrabold whitespace-nowrap text-on-petrol no-underline"
                     >
-                        <rect
-                            x={3}
-                            y={2}
-                            width={28}
-                            height={30}
-                            rx={5}
-                            className="fill-brass"
-                        />
-                        <rect
-                            x={7}
-                            y={6}
-                            width={13}
-                            height={18}
-                            rx={2}
-                            className="fill-petrol"
-                        />
-                        <circle cx={25} cy={10} r={2} className="fill-petrol" />
-                        <rect
-                            x={23}
-                            y={15}
-                            width={4}
-                            height={7}
-                            rx={1}
-                            className="fill-petrol"
-                        />
-                        <rect
-                            x={7}
-                            y={26}
-                            width={20}
-                            height={3}
-                            rx={1.5}
-                            className="fill-petrol"
-                        />
-                    </svg>
-                    <span>
-                        {site.name}
-                        <small className="mt-0.5 block font-mono text-xs leading-tight font-medium tracking-wider text-on-petrol/70 uppercase">
-                            {site.tagline}
-                        </small>
-                    </span>
-                </Link>
+                        <svg
+                            width={34}
+                            height={34}
+                            viewBox="0 0 34 34"
+                            aria-hidden
+                        >
+                            <rect
+                                x={3}
+                                y={2}
+                                width={28}
+                                height={30}
+                                rx={5}
+                                className="fill-brass"
+                            />
+                            <rect
+                                x={7}
+                                y={6}
+                                width={13}
+                                height={18}
+                                rx={2}
+                                className="fill-petrol"
+                            />
+                            <circle
+                                cx={25}
+                                cy={10}
+                                r={2}
+                                className="fill-petrol"
+                            />
+                            <rect
+                                x={23}
+                                y={15}
+                                width={4}
+                                height={7}
+                                rx={1}
+                                className="fill-petrol"
+                            />
+                            <rect
+                                x={7}
+                                y={26}
+                                width={20}
+                                height={3}
+                                rx={1.5}
+                                className="fill-petrol"
+                            />
+                        </svg>
+                        <span>
+                            {site.name}
+                            <small className="mt-0.5 block font-mono text-xs leading-tight font-medium tracking-wider text-on-petrol/70 uppercase">
+                                {site.tagline}
+                            </small>
+                        </span>
+                    </Link>
 
-                <button
-                    type="button"
-                    className="ml-auto rounded-lg border-2 border-current p-2 lg:hidden"
-                    aria-expanded={open}
-                    aria-controls="site-main-nav"
-                    aria-label={open ? 'Close menu' : 'Open menu'}
-                    onClick={() => setOpen((value) => !value)}
-                >
+                    <ul
+                        className="ml-auto hidden list-none items-center gap-5 p-0 lg:flex"
+                    >
+                        {site.mainNav.map((item) => (
+                            <li key={item.label}>
+                                <a
+                                    href={item.href}
+                                    aria-current={
+                                        item.current ? 'page' : undefined
+                                    }
+                                    className={cn(
+                                        'text-sm font-semibold tracking-wide text-on-petrol/85 uppercase no-underline hover:text-on-petrol hover:underline hover:decoration-brass hover:decoration-2 hover:underline-offset-8',
+                                        item.current &&
+                                            'text-on-petrol underline decoration-brass decoration-2 underline-offset-8',
+                                    )}
+                                >
+                                    {item.label}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+
+                    <BrandButton
+                        href={site.headerCta.href}
+                        className="hidden px-4 py-2.5 text-sm lg:inline-flex"
+                    >
+                        {site.headerCta.label}
+                    </BrandButton>
+
+                    <button
+                        type="button"
+                        className="ml-auto rounded-lg border-2 border-current p-2 lg:ml-0 lg:hidden"
+                        aria-expanded={open}
+                        aria-controls="site-main-nav-mobile"
+                        aria-label={open ? 'Close menu' : 'Open menu'}
+                        onClick={() => setOpen((value) => !value)}
+                    >
+                        {open ? (
+                            <X className="size-5" aria-hidden />
+                        ) : (
+                            <Menu className="size-5" aria-hidden />
+                        )}
+                    </button>
+                </div>
+
+                <AnimatePresence initial={false}>
                     {open ? (
-                        <X className="size-5" aria-hidden />
-                    ) : (
-                        <Menu className="size-5" aria-hidden />
-                    )}
-                </button>
-
-                <ul
-                    id="site-main-nav"
-                    className={cn(
-                        'ml-auto list-none items-center gap-5 p-0',
-                        open
-                            ? 'mt-2 flex w-full flex-col items-start gap-3'
-                            : 'hidden lg:flex',
-                    )}
-                >
-                    {site.mainNav.map((item) => (
-                        <li key={item.label}>
-                            <a
-                                href={item.href}
-                                aria-current={item.current ? 'page' : undefined}
+                        <motion.div
+                            key="mobile-nav"
+                            id="site-main-nav-mobile"
+                            initial={
+                                reduceMotion
+                                    ? false
+                                    : { height: 0, opacity: 0 }
+                            }
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={
+                                reduceMotion
+                                    ? undefined
+                                    : { height: 0, opacity: 0 }
+                            }
+                            transition={panelTransition}
+                            className="overflow-hidden lg:hidden"
+                        >
+                            <ul className="flex list-none flex-col items-start gap-3 pb-4 p-0">
+                                {site.mainNav.map((item) => (
+                                    <li key={item.label}>
+                                        <a
+                                            href={item.href}
+                                            aria-current={
+                                                item.current
+                                                    ? 'page'
+                                                    : undefined
+                                            }
+                                            onClick={closeMenu}
+                                            className={cn(
+                                                'text-sm font-semibold tracking-wide text-on-petrol/85 uppercase no-underline hover:text-on-petrol hover:underline hover:decoration-brass hover:decoration-2 hover:underline-offset-8',
+                                                item.current &&
+                                                    'text-on-petrol underline decoration-brass decoration-2 underline-offset-8',
+                                            )}
+                                        >
+                                            {item.label}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                            <BrandButton
+                                href={site.headerCta.href}
                                 onClick={closeMenu}
-                                className={cn(
-                                    'text-sm font-semibold tracking-wide text-on-petrol/85 uppercase no-underline hover:text-on-petrol hover:underline hover:decoration-brass hover:decoration-2 hover:underline-offset-8',
-                                    item.current &&
-                                        'text-on-petrol underline decoration-brass decoration-2 underline-offset-8',
-                                )}
+                                className="mb-4 inline-flex px-4 py-2.5 text-sm"
                             >
-                                {item.label}
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-
-                <BrandButton
-                    href={site.headerCta.href}
-                    onClick={closeMenu}
-                    className={cn(
-                        'px-4 py-2.5 text-sm',
-                        open ? 'inline-flex' : 'hidden lg:inline-flex',
-                    )}
-                >
-                    {site.headerCta.label}
-                </BrandButton>
+                                {site.headerCta.label}
+                            </BrandButton>
+                        </motion.div>
+                    ) : null}
+                </AnimatePresence>
             </Wrap>
         </header>
     );

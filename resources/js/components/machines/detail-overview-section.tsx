@@ -1,5 +1,9 @@
 import { BrandButton } from '@/components/frontend/brand-button';
-import { MachineArt } from '@/components/frontend/machine-art';
+import {
+    CatalogImage,
+    MACHINE_IMAGE_FALLBACK,
+    machineImageSrc,
+} from '@/components/frontend/catalog-image';
 import { Wrap } from '@/components/frontend/wrap';
 import type { MachineDetailSpecItem, MachineItem, NavLink } from '@/types/frontend';
 
@@ -33,9 +37,14 @@ export function DetailOverviewSection({
 
                 <div className="grid items-start gap-10 md:grid-cols-[4fr_6fr]">
                     <div className="grid place-items-center rounded-2xl border border-brand-line bg-brand-surface p-7">
-                        <MachineArt
-                            kind={machine.kind}
-                            className="h-auto w-full max-w-xs"
+                        <CatalogImage
+                            src={machineImageSrc(
+                                machine.kind,
+                                machine.image,
+                            )}
+                            alt={machine.name}
+                            fallback={MACHINE_IMAGE_FALLBACK}
+                            className="max-h-80 w-full max-w-xs"
                         />
                     </div>
 

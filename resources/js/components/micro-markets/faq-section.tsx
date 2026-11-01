@@ -5,8 +5,12 @@ import type { FaqsData } from '@/types/frontend';
 export function MicroMarketsFaqSection({ data }: { data: FaqsData }) {
     return (
         <Band>
-            <SectionHead eyebrow={data.eyebrow} title={data.title} />
-            <div className="max-w-4xl">
+            <SectionHead
+                align="center"
+                eyebrow={data.eyebrow}
+                title={data.title}
+            />
+            <div className="mx-auto max-w-4xl">
                 {data.items.map((item, index) => (
                     <details
                         key={item.q}
