@@ -112,6 +112,26 @@ export type MachinesPageProps = {
     faqs: FaqsData;
 };
 
+export type MachineDetailSpecItem = {
+    label: string;
+    value: string;
+};
+
+export type MachineDetailRelatedData = {
+    title: string;
+    items: MachineItem[];
+};
+
+export type MachineDetailPageProps = {
+    site: SiteData;
+    machine: MachineItem;
+    status: string;
+    specs: MachineDetailSpecItem[];
+    checks: string[];
+    related: MachineDetailRelatedData;
+    cta: NavLink;
+};
+
 export type FeaturedMachinesData = {
     eyebrow: string;
     title: string;

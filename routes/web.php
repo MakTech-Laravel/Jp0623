@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/machines', [MachinesController::class, 'index'])->name('machines');
+Route::get('/machines/{machine}', [MachinesController::class, 'show'])->name('machines.show');
 Route::get('/products', [ProductsController::class, 'index'])->name('products');
 
 Route::middleware(['auth', 'verified'])->group(function () {

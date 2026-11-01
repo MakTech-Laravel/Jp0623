@@ -240,7 +240,7 @@ class HomePageData
                 'type' => 'Combo',
                 'tags' => ['Combo', 'Card + phone'],
                 'desc' => 'One machine for snacks and cold drinks. The most common choice for a first placement.',
-                'href' => '#',
+                'href' => '/machines/combo',
             ],
             [
                 'id' => 'healthy',
@@ -249,7 +249,7 @@ class HomePageData
                 'type' => 'Healthy',
                 'tags' => ['Healthy', 'Combo'],
                 'desc' => 'Stocked with better-for-you snacks, waters and low-sugar drinks, with nutrition labels.',
-                'href' => '#',
+                'href' => '/machines/healthy',
             ],
             [
                 'id' => 'snack',
@@ -258,7 +258,7 @@ class HomePageData
                 'type' => 'Snack',
                 'tags' => ['Snack', 'High capacity'],
                 'desc' => 'A large snack selection that holds more product between service visits.',
-                'href' => '#',
+                'href' => '/machines/snack',
             ],
             [
                 'id' => 'drink',
@@ -267,7 +267,7 @@ class HomePageData
                 'type' => 'Drink',
                 'tags' => ['Drinks'],
                 'desc' => 'Water, soda, juice, tea and energy drinks kept cold all day.',
-                'href' => '#',
+                'href' => '/machines/drink',
             ],
             [
                 'id' => 'touch',
@@ -276,7 +276,7 @@ class HomePageData
                 'type' => 'Combo',
                 'tags' => ['Combo', 'Touchscreen'],
                 'desc' => 'A large screen with product photos, nutrition info and promotions.',
-                'href' => '#',
+                'href' => '/machines/touch',
             ],
             [
                 'id' => 'food',
@@ -285,7 +285,7 @@ class HomePageData
                 'type' => 'Fresh food',
                 'tags' => ['Fresh food'],
                 'desc' => 'Sandwiches, salads and meals held at safe temperatures with health controls.',
-                'href' => '#',
+                'href' => '/machines/food',
             ],
             [
                 'id' => 'slim',
@@ -294,7 +294,7 @@ class HomePageData
                 'type' => 'Combo',
                 'tags' => ['Combo', 'Compact'],
                 'desc' => 'A slim unit that fits where a full-size machine won\'t.',
-                'href' => '#',
+                'href' => '/machines/slim',
             ],
             [
                 'id' => 'ai-cooler',
@@ -303,7 +303,7 @@ class HomePageData
                 'type' => 'AI cooler',
                 'tags' => ['AI cooler', 'Tap and go'],
                 'desc' => 'Tap a card or phone, open the door and take what you want. Cameras and weight sensors charge only for what you took.',
-                'href' => '#',
+                'href' => '/machines/ai-cooler',
             ],
             [
                 'id' => 'micro-market',
@@ -312,7 +312,7 @@ class HomePageData
                 'type' => 'Micro market',
                 'tags' => ['Micro market', 'Self checkout'],
                 'desc' => 'Open shelves, coolers and a self-checkout kiosk: a small store in your break room.',
-                'href' => '#',
+                'href' => '/machines/micro-market',
             ],
         ];
     }
