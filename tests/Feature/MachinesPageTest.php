@@ -11,6 +11,7 @@ test('machines page renders with demo props', function () {
             ->has('hero')
             ->has('lineup.filters')
             ->has('lineup.items', 9)
+            ->where('lineup.items.0.href', '/machines/combo')
             ->has('tech.items', 4)
             ->has('industries.items', 10)
             ->has('faqs.items', 4)
