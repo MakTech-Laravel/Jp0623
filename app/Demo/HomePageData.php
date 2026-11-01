@@ -146,7 +146,19 @@ class HomePageData
                 ],
                 [
                     'src' => '/images/machines/Alpine-ST5000.jpg',
+                    'alt' => 'Alpine snack and beverage machine',
+                ],
+                [
+                    'src' => '/images/hero/tradational-vending.png',
+                    'alt' => 'Traditional vending machine',
+                ],
+                [
+                    'src' => '/images/machines/ai-cooler.png',
                     'alt' => 'AI smart cooler',
+                ],
+                [
+                    'src' => '/images/machines/micro-market.png',
+                    'alt' => 'Micro market setup',
                 ],
             ],
         ];
