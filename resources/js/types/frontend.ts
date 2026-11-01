@@ -64,9 +64,52 @@ export type MachineItem = {
     id: string;
     name: string;
     kind: string;
+    type: string;
     tags: string[];
     desc: string;
     href: string;
+};
+
+export type PageHeroData = {
+    eyebrow?: string;
+    title: string;
+    lead?: string;
+    cta?: NavLink;
+    art?: string;
+};
+
+export type MachineLineupData = {
+    title: string;
+    text: string;
+    filters: string[];
+    items: MachineItem[];
+};
+
+export type MachineTechData = {
+    title: string;
+    items: { title: string; text: string }[];
+};
+
+export type MachineIndustryItem = {
+    slug: string;
+    label: string;
+    text: string;
+    href: string;
+};
+
+export type MachineIndustriesData = {
+    eyebrow: string;
+    title: string;
+    items: MachineIndustryItem[];
+};
+
+export type MachinesPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    lineup: MachineLineupData;
+    tech: MachineTechData;
+    industries: MachineIndustriesData;
+    faqs: FaqsData;
 };
 
 export type FeaturedMachinesData = {

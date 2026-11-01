@@ -431,6 +431,238 @@ export function MachineArt({ kind, className }: MachineArtProps) {
                     />
                 </svg>
             );
+        case 'snack':
+            return (
+                <svg
+                    {...common}
+                    viewBox="0 0 180 240"
+                    aria-label="Glass-front snack vending machine"
+                >
+                    <Base w={168} />
+                    <rect
+                        x={16}
+                        y={18}
+                        width={110}
+                        height={170}
+                        rx={4}
+                        className="fill-brand-surface"
+                    />
+                    <Rows x={20} y={20} w={102} h={166} r={6} c={5} />
+                    <Keypad x={132} y={22} />
+                    <rect
+                        x={16}
+                        y={196}
+                        width={110}
+                        height={24}
+                        rx={3}
+                        className="fill-brand-ink"
+                    />
+                </svg>
+            );
+        case 'drink':
+            return (
+                <svg
+                    {...common}
+                    viewBox="0 0 180 240"
+                    aria-label="Cold drink vending machine"
+                >
+                    <Base w={168} />
+                    <rect
+                        x={16}
+                        y={18}
+                        width={110}
+                        height={196}
+                        rx={6}
+                        className="fill-c2"
+                    />
+                    <rect
+                        x={52}
+                        y={54}
+                        width={38}
+                        height={120}
+                        rx={14}
+                        className="fill-brand-surface"
+                    />
+                    <rect
+                        x={62}
+                        y={34}
+                        width={18}
+                        height={26}
+                        rx={4}
+                        className="fill-brand-surface"
+                    />
+                    <rect
+                        x={52}
+                        y={96}
+                        width={38}
+                        height={30}
+                        className="fill-c1"
+                    />
+                    {[0, 1, 2, 3, 4, 5].map((i) => (
+                        <rect
+                            key={i}
+                            x={136}
+                            y={26 + i * 22}
+                            width={26}
+                            height={14}
+                            rx={3}
+                            className={COLS[i % 5]}
+                        />
+                    ))}
+                    <rect
+                        x={136}
+                        y={166}
+                        width={26}
+                        height={12}
+                        rx={2}
+                        className="fill-brand-ink"
+                    />
+                    <rect
+                        x={40}
+                        y={190}
+                        width={62}
+                        height={16}
+                        rx={3}
+                        className="fill-brand-ink"
+                    />
+                </svg>
+            );
+        case 'touch':
+            return (
+                <svg
+                    {...common}
+                    viewBox="0 0 180 240"
+                    aria-label="Touchscreen combo vending machine"
+                >
+                    <Base w={168} />
+                    <rect
+                        x={16}
+                        y={18}
+                        width={106}
+                        height={200}
+                        rx={4}
+                        className="fill-brand-surface"
+                    />
+                    <Rows x={20} y={20} w={98} h={140} r={4} c={4} />
+                    <rect
+                        x={130}
+                        y={22}
+                        width={34}
+                        height={56}
+                        rx={4}
+                        className="fill-brass"
+                    />
+                    <rect
+                        x={134}
+                        y={28}
+                        width={26}
+                        height={44}
+                        rx={2}
+                        className="fill-petrol-2"
+                    />
+                    <rect
+                        x={134}
+                        y={90}
+                        width={26}
+                        height={12}
+                        rx={2}
+                        className="fill-brand-ink"
+                    />
+                    <rect
+                        x={20}
+                        y={170}
+                        width={98}
+                        height={40}
+                        rx={3}
+                        className="fill-brand-ink"
+                    />
+                </svg>
+            );
+        case 'food':
+            return (
+                <svg
+                    {...common}
+                    viewBox="0 0 180 240"
+                    aria-label="Refrigerated fresh food vending machine"
+                >
+                    <Base w={168} />
+                    <rect
+                        x={16}
+                        y={18}
+                        width={110}
+                        height={170}
+                        rx={4}
+                        className="fill-brand-surface"
+                    />
+                    <Rows
+                        x={20}
+                        y={20}
+                        w={102}
+                        h={166}
+                        r={4}
+                        c={3}
+                        healthy
+                    />
+                    <Keypad x={132} y={22} />
+                    <rect
+                        x={16}
+                        y={196}
+                        width={110}
+                        height={24}
+                        rx={3}
+                        className="fill-brand-ink"
+                    />
+                </svg>
+            );
+        case 'slim':
+            return (
+                <svg
+                    {...common}
+                    viewBox="0 0 140 240"
+                    aria-label="Space-saver vending machine"
+                >
+                    <rect
+                        x={6}
+                        y={6}
+                        width={128}
+                        height={226}
+                        rx={10}
+                        className="fill-petrol"
+                    />
+                    <rect
+                        x={14}
+                        y={230}
+                        width={16}
+                        height={8}
+                        className="fill-brand-ink"
+                    />
+                    <rect
+                        x={110}
+                        y={230}
+                        width={16}
+                        height={8}
+                        className="fill-brand-ink"
+                    />
+                    <rect
+                        x={16}
+                        y={18}
+                        width={72}
+                        height={170}
+                        rx={4}
+                        className="fill-brand-surface"
+                    />
+                    <Rows x={20} y={20} w={64} h={166} r={5} c={3} />
+                    <Keypad x={96} y={22} />
+                    <rect
+                        x={16}
+                        y={196}
+                        width={72}
+                        height={24}
+                        rx={3}
+                        className="fill-brand-ink"
+                    />
+                </svg>
+            );
         case 'combo':
         default:
             return (
