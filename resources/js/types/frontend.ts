@@ -132,6 +132,24 @@ export type ProductsData = {
     items: ProductItem[];
 };
 
+export type ProductCatalogItem = {
+    kind: string;
+    name: string;
+    desc: string;
+    tags: string[];
+};
+
+export type ProductCatalogData = {
+    filters: string[];
+    items: ProductCatalogItem[];
+};
+
+export type ProductsPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    catalog: ProductCatalogData;
+};
+
 export type RequestFormData = {
     eyebrow: string;
     title: string;

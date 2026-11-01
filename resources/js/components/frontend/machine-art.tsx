@@ -755,6 +755,91 @@ export function PackArt({ kind }: { kind: string }) {
                     />
                 </svg>
             );
+        case 'bars':
+            return (
+                <svg viewBox="0 0 60 60" width={60} height={60} aria-hidden>
+                    <rect
+                        x={8}
+                        y={24}
+                        width={44}
+                        height={14}
+                        rx={3}
+                        className="fill-c3"
+                    />
+                    <rect
+                        x={14}
+                        y={27}
+                        width={20}
+                        height={8}
+                        rx={2}
+                        className="fill-brand-surface"
+                    />
+                </svg>
+            );
+        case 'healthy':
+            return (
+                <svg viewBox="0 0 60 60" width={60} height={60} aria-hidden>
+                    <circle cx={30} cy={34} r={16} className="fill-c3" />
+                    <path
+                        d="M30 18q6-10 14-8-2 10-14 8z"
+                        className="fill-c3"
+                    />
+                    <rect
+                        x={29}
+                        y={12}
+                        width={2}
+                        height={8}
+                        className="fill-brand-ink"
+                    />
+                </svg>
+            );
+        case 'energy':
+            return (
+                <svg viewBox="0 0 60 60" width={60} height={60} aria-hidden>
+                    <rect
+                        x={20}
+                        y={12}
+                        width={20}
+                        height={40}
+                        rx={4}
+                        className="fill-brand-ink"
+                    />
+                    <path
+                        d="M32 18l-8 14h6l-2 12 8-16h-6z"
+                        className="fill-brass"
+                    />
+                </svg>
+            );
+        case 'food':
+            return (
+                <svg viewBox="0 0 60 60" width={60} height={60} aria-hidden>
+                    <path d="M8 40l22-24 22 24z" className="fill-brass" />
+                    <path d="M12 40l18-18 18 18z" className="fill-c3" />
+                    <rect
+                        x={8}
+                        y={40}
+                        width={44}
+                        height={6}
+                        rx={2}
+                        className="fill-c1"
+                    />
+                </svg>
+            );
+        case 'coffee':
+            return (
+                <svg viewBox="0 0 60 60" width={60} height={60} aria-hidden>
+                    <path d="M14 22h30l-4 26H18z" className="fill-brand-surface" />
+                    <path d="M14 22h30l-1 6H15z" className="fill-c1" />
+                    <rect
+                        x={12}
+                        y={18}
+                        width={34}
+                        height={5}
+                        rx={2}
+                        className="fill-brand-ink"
+                    />
+                </svg>
+            );
         case 'drink':
         default:
             return (

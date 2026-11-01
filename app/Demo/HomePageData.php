@@ -51,7 +51,7 @@ class HomePageData
             'mainNav' => [
                 ['label' => 'Home', 'href' => '/', 'current' => true],
                 ['label' => 'Machines', 'href' => '/machines'],
-                ['label' => 'Products', 'href' => '#'],
+                ['label' => 'Products', 'href' => '/products'],
                 ['label' => 'Micro Markets', 'href' => '#'],
                 ['label' => 'Office Coffee', 'href' => '#'],
                 ['label' => 'Contact Us', 'href' => '#'],
@@ -87,7 +87,7 @@ class HomePageData
                     'title' => 'Company',
                     'links' => [
                         ['label' => 'About us', 'href' => '#'],
-                        ['label' => 'Products', 'href' => '#'],
+                        ['label' => 'Products', 'href' => '/products'],
                         ['label' => 'Resources', 'href' => '#'],
                         ['label' => 'Cities we serve', 'href' => '#'],
                         ['label' => 'Contact us', 'href' => '#'],
@@ -327,14 +327,84 @@ class HomePageData
             'title' => 'Snacks and drinks people actually buy.',
             'link' => [
                 'label' => 'Browse all products →',
-                'href' => '#',
+                'href' => '/products',
             ],
-            'items' => [
-                ['kind' => 'drink', 'name' => 'Beverages', 'href' => '#'],
-                ['kind' => 'chips', 'name' => 'Chips & salty snacks', 'href' => '#'],
-                ['kind' => 'sweets', 'name' => 'Candy & sweets', 'href' => '#'],
-                ['kind' => 'nuts', 'name' => 'Nuts & fruit', 'href' => '#'],
-                ['kind' => 'pastry', 'name' => 'Pastries', 'href' => '#'],
+            'items' => array_map(
+                fn (array $item): array => [
+                    'kind' => $item['kind'],
+                    'name' => $item['name'],
+                    'href' => '/products',
+                ],
+                array_slice(self::productCatalog(), 0, 5),
+            ),
+        ];
+    }
+
+    /**
+     * @return list<array{kind: string, name: string, desc: string, tags: list<string>}>
+     */
+    public static function productCatalog(): array
+    {
+        return [
+            [
+                'kind' => 'drink',
+                'name' => 'Beverages',
+                'desc' => 'Water, soda, sparkling water, juice and iced tea',
+                'tags' => ['Bottled water', 'Cola & diet cola', 'Sparkling water', 'Orange juice', 'Iced tea'],
+            ],
+            [
+                'kind' => 'chips',
+                'name' => 'Chips & salty snacks',
+                'desc' => 'Classic chips, pretzels, popcorn and crackers',
+                'tags' => ['Potato chips', 'Pretzels', 'Popcorn', 'Cheese crackers', 'Tortilla chips'],
+            ],
+            [
+                'kind' => 'sweets',
+                'name' => 'Candy & sweets',
+                'desc' => 'Chocolate, gummies, mints and cookies',
+                'tags' => ['Chocolate bars', 'Gummies', 'Cookies', 'Mints', 'Peanut butter cups'],
+            ],
+            [
+                'kind' => 'nuts',
+                'name' => 'Nuts & fruit',
+                'desc' => 'Trail mix, almonds, dried fruit and fresh fruit',
+                'tags' => ['Trail mix', 'Almonds', 'Dried mango', 'Apples', 'Mixed nuts'],
+            ],
+            [
+                'kind' => 'pastry',
+                'name' => 'Pastries',
+                'desc' => 'Muffins, donuts, honey buns and toaster pastries',
+                'tags' => ['Blueberry muffin', 'Honey bun', 'Mini donuts', 'Croissant', 'Pop-tarts'],
+            ],
+            [
+                'kind' => 'bars',
+                'name' => 'Snack bars',
+                'desc' => 'Protein bars, granola bars and breakfast bars',
+                'tags' => ['Protein bar', 'Granola bar', 'Breakfast bar', 'Rice crisp bar', 'Nut bar'],
+            ],
+            [
+                'kind' => 'healthy',
+                'name' => 'Healthy choices',
+                'desc' => 'Baked snacks, low-sugar drinks and plant-based options',
+                'tags' => ['Baked chips', 'Veggie straws', 'Kombucha', 'Seaweed snacks', 'Low-sugar tea'],
+            ],
+            [
+                'kind' => 'energy',
+                'name' => 'Energy & sports',
+                'desc' => 'Energy drinks, electrolyte drinks and protein shakes',
+                'tags' => ['Energy drink', 'Sports drink', 'Protein shake', 'Cold brew can', 'Electrolyte water'],
+            ],
+            [
+                'kind' => 'food',
+                'name' => 'Fresh food',
+                'desc' => 'Sandwiches, salads and ready meals for markets and coolers',
+                'tags' => ['Turkey sandwich', 'Chicken salad', 'Pasta bowl', 'Fruit cup', 'Yogurt parfait'],
+            ],
+            [
+                'kind' => 'coffee',
+                'name' => 'Coffee & hot drinks',
+                'desc' => 'Single-cup, bean-to-cup and tea',
+                'tags' => ['Medium roast', 'Dark roast', 'Espresso', 'Green tea', 'Hot cocoa'],
             ],
         ];
     }
