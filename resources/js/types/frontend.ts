@@ -292,6 +292,60 @@ export type ContactPageProps = {
     form: ContactFormData;
 };
 
+export type AboutStoryData = {
+    title: string;
+    paragraphs: string[];
+    valuesTitle: string;
+    values: string[];
+    kpis: { label: string; value: string }[];
+};
+
+export type AboutCtaData = {
+    title: string;
+    primary: NavLink;
+    secondary: NavLink;
+};
+
+export type AboutPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    story: AboutStoryData;
+    cta: AboutCtaData;
+};
+
+export type IndustriesIndexItem = {
+    title: string;
+    text: string;
+    image: string;
+    href: string;
+    slug: string;
+};
+
+export type IndustriesPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    items: IndustriesIndexItem[];
+};
+
+export type IndustryShowProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    crumb: NavLink[];
+    industry: { slug: string; label: string };
+    benefits: {
+        title: string;
+        items: { title: string; text: string }[];
+    };
+    relatedMachines: MachineDetailRelatedData;
+    requestForm: {
+        title: string;
+        text: string;
+        successMessage: string;
+        submitLabel: string;
+        subjectLabel: string;
+    };
+};
+
 export type RequestFormData = {
     eyebrow: string;
     title: string;

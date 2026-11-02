@@ -37,8 +37,8 @@ class HomePageData
             'footerBlurb' => 'Full-service vending, micro markets, office coffee and ATMs for businesses nationwide. One contact for every location.',
             'copyright' => '© 2026 vendingmachinelocationsforsale.com',
             'topNav' => [
-                ['label' => 'About', 'href' => '#'],
-                ['label' => 'Industries', 'href' => '#'],
+                ['label' => 'About', 'href' => '/about'],
+                ['label' => 'Industries', 'href' => '/industries'],
                 ['label' => 'ATM', 'href' => '#'],
                 ['label' => 'Schools', 'href' => '#'],
                 ['label' => 'Cities', 'href' => '#'],
@@ -75,18 +75,18 @@ class HomePageData
                 [
                     'title' => 'Industries',
                     'links' => [
-                        ['label' => 'Offices', 'href' => '#'],
-                        ['label' => 'Warehouses', 'href' => '#'],
-                        ['label' => 'Manufacturing', 'href' => '#'],
-                        ['label' => 'Apartments', 'href' => '#'],
-                        ['label' => 'Hospitals', 'href' => '#'],
-                        ['label' => 'All industries', 'href' => '#'],
+                        ['label' => 'Offices', 'href' => '/industries/offices'],
+                        ['label' => 'Warehouses', 'href' => '/industries/warehouses'],
+                        ['label' => 'Manufacturing', 'href' => '/industries/manufacturing'],
+                        ['label' => 'Apartments', 'href' => '/industries/apartments'],
+                        ['label' => 'Hospitals', 'href' => '/industries/hospitals'],
+                        ['label' => 'All industries', 'href' => '/industries'],
                     ],
                 ],
                 [
                     'title' => 'Company',
                     'links' => [
-                        ['label' => 'About us', 'href' => '#'],
+                        ['label' => 'About us', 'href' => '/about'],
                         ['label' => 'Products', 'href' => '/products'],
                         ['label' => 'Resources', 'href' => '#'],
                         ['label' => 'Cities we serve', 'href' => '#'],
@@ -152,7 +152,7 @@ class HomePageData
                     'alt' => 'Traditional vending machine',
                 ],
                 [
-                    'src' => '/images/machines/ai-cooler.png',
+                    'src' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
                     'alt' => 'Vendera smart cooler',
                 ],
                 [
@@ -214,7 +214,7 @@ class HomePageData
                     'title' => 'Vendera smart coolers',
                     'text' => 'Tap, open the door, take what you want.',
                     'href' => '#',
-                    'image' => '/images/machines/ai-cooler.png',
+                    'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
                 ],
                 [
                     'title' => 'Office coffee',
@@ -291,7 +291,7 @@ class HomePageData
                 'tags' => ['Drinks'],
                 'desc' => 'Water, soda, juice, tea and energy drinks kept cold all day.',
                 'href' => '/machines/drink',
-                'image' => '/images/machines/ai-cooler.png',
+                'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
             ],
             [
                 'id' => 'touch',
@@ -331,7 +331,7 @@ class HomePageData
                 'tags' => ['Vendera cooler', 'Tap and go'],
                 'desc' => 'Tap a card or phone, open the door and take what you want. Cameras and weight sensors charge only for what you took.',
                 'href' => '/machines/ai-cooler',
-                'image' => '/images/machines/ai-cooler.png',
+                'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
             ],
             [
                 'id' => 'micro-market',
@@ -543,16 +543,16 @@ class HomePageData
             'title' => 'Vending for every kind of workplace.',
             'text' => 'If people spend their day at your location, we can set up a machine that fits it.',
             'items' => [
-                ['slug' => 'offices', 'label' => 'Offices', 'href' => '#'],
-                ['slug' => 'warehouses', 'label' => 'Warehouses', 'href' => '#'],
-                ['slug' => 'manufacturing', 'label' => 'Manufacturing', 'href' => '#'],
-                ['slug' => 'schools', 'label' => 'Schools', 'href' => '#'],
-                ['slug' => 'colleges', 'label' => 'Colleges & universities', 'href' => '#'],
-                ['slug' => 'hospitals', 'label' => 'Hospitals & medical', 'href' => '#'],
-                ['slug' => 'apartments', 'label' => 'Apartments', 'href' => '#'],
-                ['slug' => 'hotels', 'label' => 'Hotels & motels', 'href' => '#'],
-                ['slug' => 'gyms', 'label' => 'Gyms & fitness', 'href' => '#'],
-                ['slug' => 'retail', 'label' => 'Retail & dealerships', 'href' => '#'],
+                ['slug' => 'offices', 'label' => 'Offices', 'href' => '/industries/offices'],
+                ['slug' => 'warehouses', 'label' => 'Warehouses', 'href' => '/industries/warehouses'],
+                ['slug' => 'manufacturing', 'label' => 'Manufacturing', 'href' => '/industries/manufacturing'],
+                ['slug' => 'schools', 'label' => 'Schools', 'href' => '/industries/schools'],
+                ['slug' => 'colleges', 'label' => 'Colleges & universities', 'href' => '/industries/colleges'],
+                ['slug' => 'hospitals', 'label' => 'Hospitals & medical', 'href' => '/industries/hospitals'],
+                ['slug' => 'apartments', 'label' => 'Apartments', 'href' => '/industries/apartments'],
+                ['slug' => 'hotels', 'label' => 'Hotels & motels', 'href' => '/industries/hotels'],
+                ['slug' => 'gyms', 'label' => 'Gyms & fitness', 'href' => '/industries/gyms'],
+                ['slug' => 'retail', 'label' => 'Retail & dealerships', 'href' => '/industries/retail'],
             ],
         ];
     }
