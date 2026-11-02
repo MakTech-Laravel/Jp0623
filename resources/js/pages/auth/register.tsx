@@ -1,13 +1,8 @@
-import { Form, Head } from '@inertiajs/react';
-import InputError from '@/components/input-error';
-import PasswordInput from '@/components/password-input';
+import { Head } from '@inertiajs/react';
+import { RegisterStepper } from '@/components/auth/register-stepper';
 import TextLink from '@/components/text-link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Spinner } from '@/components/ui/spinner';
+import { Band } from '@/components/frontend/wrap';
 import { login } from '@/routes';
-import { store } from '@/routes/register';
 
 type Props = {
     passwordRules: string;
@@ -16,105 +11,47 @@ type Props = {
 export default function Register({ passwordRules }: Props) {
     return (
         <>
-            <Head title="Register" />
-            <Form
-                {...store.form()}
-                resetOnSuccess={['password', 'password_confirmation']}
-                disableWhileProcessing
-                className="flex flex-col gap-6"
-            >
-                {({ processing, errors }) => (
-                    <>
-                        <div className="grid gap-6">
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
-                                <Input
-                                    id="name"
-                                    type="text"
-                                    required
-                                    autoFocus
-                                    tabIndex={1}
-                                    autoComplete="name"
-                                    name="name"
-                                    placeholder="Full name"
-                                />
-                                <InputError
-                                    message={errors.name}
-                                    className="mt-2"
-                                />
-                            </div>
+            <Head title="Join as an Operator" />
 
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    required
-                                    tabIndex={2}
-                                    autoComplete="email"
-                                    name="email"
-                                    placeholder="email@example.com"
-                                />
-                                <InputError message={errors.email} />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="password">Password</Label>
-                                <PasswordInput
-                                    id="password"
-                                    required
-                                    tabIndex={3}
-                                    autoComplete="new-password"
-                                    name="password"
-                                    placeholder="Password"
-                                    passwordrules={passwordRules}
-                                />
-                                <InputError message={errors.password} />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="password_confirmation">
-                                    Confirm password
-                                </Label>
-                                <PasswordInput
-                                    id="password_confirmation"
-                                    required
-                                    tabIndex={4}
-                                    autoComplete="new-password"
-                                    name="password_confirmation"
-                                    placeholder="Confirm password"
-                                    passwordrules={passwordRules}
-                                />
-                                <InputError
-                                    message={errors.password_confirmation}
-                                />
-                            </div>
-
-                            <Button
-                                type="submit"
-                                className="mt-2 w-full"
-                                tabIndex={5}
-                                data-test="register-user-button"
-                            >
-                                {processing && <Spinner />}
-                                Create account
-                            </Button>
-                        </div>
-
-                        <div className="text-center text-sm text-muted-foreground">
+            <Band>
+                <div className="grid items-start gap-10 md:grid-cols-[0.8fr_1.2fr]">
+                    <div>
+                        <p className="font-mono text-xs tracking-widest text-brass uppercase">
+                            Operator sign up
+                        </p>
+                        <h1 className="mt-2 font-display text-4xl leading-tight font-extrabold tracking-tight text-brand-ink md:text-[40px]">
+                            Join Vending Machine Locations For Sale
+                        </h1>
+                        <p className="mt-3 text-brand-muted">
+                            30 days free, then $39/month. Cancel anytime.
+                        </p>
+                        <ul className="mt-5 flex list-none flex-col gap-2 p-0 text-sm text-brand-ink">
+                            <li className="before:mr-2 before:font-bold before:text-good before:content-['✓']">
+                                Verified location leads near you
+                            </li>
+                            <li className="before:mr-2 before:font-bold before:text-good before:content-['✓']">
+                                Email alerts
+                            </li>
+                            <li className="before:mr-2 before:font-bold before:text-good before:content-['✓']">
+                                Routes for sale and referral commissions
+                            </li>
+                        </ul>
+                        <p className="mt-6 text-sm text-brand-muted">
                             Already have an account?{' '}
-                            <TextLink href={login()} tabIndex={6}>
+                            <TextLink
+                                href={login()}
+                                className="text-brand-ink underline decoration-brand-line hover:decoration-brass"
+                            >
                                 Log in
                             </TextLink>
-                        </div>
-                    </>
-                )}
-            </Form>
+                        </p>
+                    </div>
+
+                    <div className="min-w-0 rounded-2xl border border-brand-line bg-brand-surface p-6 md:p-7">
+                        <RegisterStepper passwordRules={passwordRules} />
+                    </div>
+                </div>
+            </Band>
         </>
     );
 }
-
-Register.layout = {
-    title: 'Create an account',
-    description: 'Enter your details below to create your account',
-};

@@ -46,7 +46,7 @@ class HomePageData
             ],
             'operatorCta' => [
                 'label' => 'Are you a vending operator? Click here →',
-                'href' => '#',
+                'href' => '/login',
             ],
             'mainNav' => [
                 ['label' => 'Home', 'href' => '/', 'current' => true],
@@ -97,8 +97,8 @@ class HomePageData
                     'title' => 'Operators',
                     'links' => [
                         ['label' => 'Join the network', 'href' => '#'],
-                        ['label' => 'Operator login', 'href' => '#'],
-                        ['label' => 'Create account', 'href' => '#'],
+                        ['label' => 'Operator login', 'href' => '/login'],
+                        ['label' => 'Create account', 'href' => '/register'],
                     ],
                 ],
             ],
