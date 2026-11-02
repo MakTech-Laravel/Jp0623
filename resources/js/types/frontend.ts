@@ -313,6 +313,39 @@ export type AboutPageProps = {
     cta: AboutCtaData;
 };
 
+export type IndustriesIndexItem = {
+    title: string;
+    text: string;
+    image: string;
+    href: string;
+    slug: string;
+};
+
+export type IndustriesPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    items: IndustriesIndexItem[];
+};
+
+export type IndustryShowProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    crumb: NavLink[];
+    industry: { slug: string; label: string };
+    benefits: {
+        title: string;
+        items: { title: string; text: string }[];
+    };
+    relatedMachines: MachineDetailRelatedData;
+    requestForm: {
+        title: string;
+        text: string;
+        successMessage: string;
+        submitLabel: string;
+        subjectLabel: string;
+    };
+};
+
 export type RequestFormData = {
     eyebrow: string;
     title: string;
