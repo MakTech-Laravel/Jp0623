@@ -16,7 +16,7 @@ test('home page renders the frontend homepage with demo props', function () {
             ->has('featuredMachines.items', 3)
             ->has('products.items', 5)
             ->has('requestForm')
-            ->has('reviews.items', 3)
+            ->has('reviews.items', 6)
             ->has('industries.items', 10)
             ->has('faqs.items', 12)
             ->has('articles.items', 3)
