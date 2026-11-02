@@ -1,6 +1,9 @@
 import Autoplay from 'embla-carousel-autoplay';
 import { useRef } from 'react';
-import { Reveal } from '@/components/frontend/reveal';
+import {
+    Reveal,
+    brandCardShadowHoverClass,
+} from '@/components/frontend/reveal';
 import { SectionHead } from '@/components/frontend/section-head';
 import { Band } from '@/components/frontend/wrap';
 import {
@@ -12,9 +15,6 @@ import {
 } from '@/components/ui/carousel';
 import type { ReviewsData } from '@/types/frontend';
 import { cn } from '@/lib/utils';
-
-const reviewCardHoverClass =
-    'transition duration-300 hover:border-brand-ink hover:shadow-[0_12px_28px_-16px_rgba(15,30,24,0.35)]';
 
 export function ReviewsSection({ data }: { data: ReviewsData }) {
     const autoplay = useRef(
@@ -49,7 +49,7 @@ export function ReviewsSection({ data }: { data: ReviewsData }) {
                                         <figure
                                             className={cn(
                                                 'm-0 flex h-full flex-col gap-3 rounded-brand border border-brand-line bg-brand-surface p-6',
-                                                reviewCardHoverClass,
+                                                brandCardShadowHoverClass,
                                             )}
                                         >
                                             <span className="tracking-widest text-brass">

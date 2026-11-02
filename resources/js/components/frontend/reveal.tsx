@@ -2,8 +2,14 @@ import { motion, useReducedMotion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
-export const brandCardHoverClass =
-    'transition duration-300 hover:-translate-y-2 hover:border-brand-ink hover:shadow-[0_12px_28px_-16px_rgba(15,30,24,0.35)]';
+/** Shared card hover without lift (e.g. reviews carousel). */
+export const brandCardShadowHoverClass =
+    'transition duration-300 hover:border-brand-ink hover:shadow-brand-card';
+
+export const brandCardHoverClass = cn(
+    brandCardShadowHoverClass,
+    'hover:-translate-y-2',
+);
 
 type RevealProps = {
     children: ReactNode;
