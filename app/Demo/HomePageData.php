@@ -37,7 +37,7 @@ class HomePageData
             'footerBlurb' => 'Full-service vending, micro markets, office coffee and ATMs for businesses nationwide. One contact for every location.',
             'copyright' => '© 2026 vendingmachinelocationsforsale.com',
             'topNav' => [
-                ['label' => 'About', 'href' => '#'],
+                ['label' => 'About', 'href' => '/about'],
                 ['label' => 'Industries', 'href' => '#'],
                 ['label' => 'ATM', 'href' => '#'],
                 ['label' => 'Schools', 'href' => '#'],
@@ -86,7 +86,7 @@ class HomePageData
                 [
                     'title' => 'Company',
                     'links' => [
-                        ['label' => 'About us', 'href' => '#'],
+                        ['label' => 'About us', 'href' => '/about'],
                         ['label' => 'Products', 'href' => '/products'],
                         ['label' => 'Resources', 'href' => '#'],
                         ['label' => 'Cities we serve', 'href' => '#'],
@@ -152,7 +152,7 @@ class HomePageData
                     'alt' => 'Traditional vending machine',
                 ],
                 [
-                    'src' => '/images/machines/ai-cooler.png',
+                    'src' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
                     'alt' => 'Vendera smart cooler',
                 ],
                 [
@@ -214,7 +214,7 @@ class HomePageData
                     'title' => 'Vendera smart coolers',
                     'text' => 'Tap, open the door, take what you want.',
                     'href' => '#',
-                    'image' => '/images/machines/ai-cooler.png',
+                    'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
                 ],
                 [
                     'title' => 'Office coffee',
@@ -291,7 +291,7 @@ class HomePageData
                 'tags' => ['Drinks'],
                 'desc' => 'Water, soda, juice, tea and energy drinks kept cold all day.',
                 'href' => '/machines/drink',
-                'image' => '/images/machines/ai-cooler.png',
+                'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
             ],
             [
                 'id' => 'touch',
@@ -331,7 +331,7 @@ class HomePageData
                 'tags' => ['Vendera cooler', 'Tap and go'],
                 'desc' => 'Tap a card or phone, open the door and take what you want. Cameras and weight sensors charge only for what you took.',
                 'href' => '/machines/ai-cooler',
-                'image' => '/images/machines/ai-cooler.png',
+                'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
             ],
             [
                 'id' => 'micro-market',

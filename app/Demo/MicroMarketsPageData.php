@@ -147,7 +147,7 @@ class MicroMarketsPageData
                 [
                     'title' => 'Vendera smart cooler',
                     'text' => 'Best for 25–100 people. One cooler that charges for what you take.',
-                    'image' => '/images/machines/ai-cooler.png',
+                    'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
                     'href' => '/machines/ai-cooler',
                 ],
             ],

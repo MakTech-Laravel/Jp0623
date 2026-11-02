@@ -292,6 +292,27 @@ export type ContactPageProps = {
     form: ContactFormData;
 };
 
+export type AboutStoryData = {
+    title: string;
+    paragraphs: string[];
+    valuesTitle: string;
+    values: string[];
+    kpis: { label: string; value: string }[];
+};
+
+export type AboutCtaData = {
+    title: string;
+    primary: NavLink;
+    secondary: NavLink;
+};
+
+export type AboutPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    story: AboutStoryData;
+    cta: AboutCtaData;
+};
+
 export type RequestFormData = {
     eyebrow: string;
     title: string;
