@@ -9,6 +9,7 @@ import { initializeTheme } from '@/hooks/use-appearance';
 import { useDevErrorFallback } from '@/hooks/useDevErrorFallback';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
+import AuthRegisterLayout from '@/layouts/auth/auth-register-layout';
 import FrontendLayout from '@/layouts/frontend-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
@@ -22,6 +23,8 @@ createInertiaApp({
                 return null;
             case name.startsWith('frontend/'):
                 return FrontendLayout;
+            case name === 'auth/register':
+                return AuthRegisterLayout;
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):
