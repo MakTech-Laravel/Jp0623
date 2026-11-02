@@ -220,6 +220,54 @@ export type MicroMarketsPageProps = {
     faqs: FaqsData;
 };
 
+export type OfficeCoffeeMachineItem = {
+    title: string;
+    text: string;
+    tag: string;
+    image: string;
+    href: string;
+};
+
+export type OfficeCoffeeMachinesData = {
+    eyebrow: string;
+    title: string;
+    items: OfficeCoffeeMachineItem[];
+};
+
+export type OfficeCoffeeTypeItem = {
+    label: string;
+    href: string;
+};
+
+export type OfficeCoffeeTypesData = {
+    eyebrow: string;
+    title: string;
+    items: OfficeCoffeeTypeItem[];
+};
+
+export type OfficeCoffeeServiceData = {
+    eyebrow: string;
+    title: string;
+    items: { title: string; text: string; href: string }[];
+};
+
+export type OfficeCoffeeRequestFormData = {
+    title: string;
+    text: string;
+    successMessage: string;
+    submitLabel: string;
+    subjectLabel: string;
+};
+
+export type OfficeCoffeePageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    machines: OfficeCoffeeMachinesData;
+    types: OfficeCoffeeTypesData;
+    service: OfficeCoffeeServiceData;
+    requestForm: OfficeCoffeeRequestFormData;
+};
+
 export type RequestFormData = {
     eyebrow: string;
     title: string;

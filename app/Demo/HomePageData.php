@@ -53,7 +53,7 @@ class HomePageData
                 ['label' => 'Machines', 'href' => '/machines'],
                 ['label' => 'Products', 'href' => '/products'],
                 ['label' => 'Micro Markets', 'href' => '/micro-markets'],
-                ['label' => 'Office Coffee', 'href' => '#'],
+                ['label' => 'Office Coffee', 'href' => '/office-coffee'],
                 ['label' => 'Contact Us', 'href' => '#'],
             ],
             'headerCta' => [
@@ -67,7 +67,7 @@ class HomePageData
                         ['label' => 'Vending machines', 'href' => '/machines'],
                         ['label' => 'Micro markets', 'href' => '/micro-markets'],
                         ['label' => 'Vendera smart coolers', 'href' => '#'],
-                        ['label' => 'Office coffee', 'href' => '#'],
+                        ['label' => 'Office coffee', 'href' => '/office-coffee'],
                         ['label' => 'ATM machines', 'href' => '#'],
                         ['label' => 'School vending', 'href' => '#'],
                     ],
@@ -130,7 +130,7 @@ class HomePageData
             'cta' => [
                 'label' => 'Request a free machine',
                 'href' => '#request-sec',
-            ],  
+            ],
             'phoneLabel' => 'or call',
             'trust' => [
                 'stars' => '★★★★★',
@@ -219,7 +219,7 @@ class HomePageData
                 [
                     'title' => 'Office coffee',
                     'text' => 'Brewers and supplies delivered on schedule.',
-                    'href' => '#',
+                    'href' => '/office-coffee',
                     'image' => '/images/machines/coffee.png',
                 ],
             ],
