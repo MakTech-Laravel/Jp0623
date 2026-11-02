@@ -66,7 +66,7 @@ class MachinesPageData
                 'Snack',
                 'Drink',
                 'Healthy',
-                'AI cooler',
+                'Vendera cooler',
                 'Fresh food',
                 'Micro market',
             ],

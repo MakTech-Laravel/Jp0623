@@ -34,7 +34,7 @@ function HeroImageFrame({
             className={cn(
                 'group relative flex min-h-80 items-end justify-center transition duration-500 md:min-h-[28rem]',
                 !reduceMotion &&
-                    'hover:scale-[1.03] hover:shadow-[0_18px_40px_-20px_rgba(201,162,39,0.45)]',
+                    'hover:scale-[1.03] hover:shadow-brass-glow',
                 className,
             )}
         >

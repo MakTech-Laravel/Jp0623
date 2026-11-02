@@ -31,8 +31,8 @@ class HomePageData
     public static function site(): array
     {
         return [
-            'name' => 'VMLFS',
-            'tagline' => 'Vending Machine Locations For Sale',
+            'name' => 'Vending Machine Location Services',
+            'tagline' => 'Nationwide',
             'phone' => '(800) 000-0000',
             'footerBlurb' => 'Full-service vending, micro markets, office coffee and ATMs for businesses nationwide. One contact for every location.',
             'copyright' => '© 2026 vendingmachinelocationsforsale.com',
@@ -53,8 +53,8 @@ class HomePageData
                 ['label' => 'Machines', 'href' => '/machines'],
                 ['label' => 'Products', 'href' => '/products'],
                 ['label' => 'Micro Markets', 'href' => '/micro-markets'],
-                ['label' => 'Office Coffee', 'href' => '#'],
-                ['label' => 'Contact Us', 'href' => '#'],
+                ['label' => 'Office Coffee', 'href' => '/office-coffee'],
+                ['label' => 'Contact Us', 'href' => '/contact'],
             ],
             'headerCta' => [
                 'label' => 'Get Vending Now',
@@ -66,8 +66,8 @@ class HomePageData
                     'links' => [
                         ['label' => 'Vending machines', 'href' => '/machines'],
                         ['label' => 'Micro markets', 'href' => '/micro-markets'],
-                        ['label' => 'AI smart coolers', 'href' => '#'],
-                        ['label' => 'Office coffee', 'href' => '#'],
+                        ['label' => 'Vendera smart coolers', 'href' => '#'],
+                        ['label' => 'Office coffee', 'href' => '/office-coffee'],
                         ['label' => 'ATM machines', 'href' => '#'],
                         ['label' => 'School vending', 'href' => '#'],
                     ],
@@ -90,7 +90,7 @@ class HomePageData
                         ['label' => 'Products', 'href' => '/products'],
                         ['label' => 'Resources', 'href' => '#'],
                         ['label' => 'Cities we serve', 'href' => '#'],
-                        ['label' => 'Contact us', 'href' => '#'],
+                        ['label' => 'Contact us', 'href' => '/contact'],
                     ],
                 ],
                 [
@@ -99,7 +99,6 @@ class HomePageData
                         ['label' => 'Join the network', 'href' => '#'],
                         ['label' => 'Operator login', 'href' => '#'],
                         ['label' => 'Create account', 'href' => '#'],
-                        ['label' => 'Routes for sale', 'href' => '#'],
                     ],
                 ],
             ],
@@ -120,7 +119,7 @@ class HomePageData
     {
         return [
             'eyebrow' => 'Vending management · Nationwide',
-            'titleBefore' => 'Vending service for every location, ',
+            'titleBefore' => 'Vending Machine Location Services, ',
             'titleAccent' => 'one call away.',
             'lede' => 'We find the vendor, schedule the install and keep the machines stocked and running. You deal with one contact for every site you have.',
             'bullets' => [
@@ -141,11 +140,11 @@ class HomePageData
             ],
             'images' => [
                 [
-                    'src' => '/images/hero/header2.png',
+                    'src' => '/images/hero/Vendera-Black-Glass-Display-Cooler.png',
                     'alt' => 'Snack and drink combo machine',
                 ],
                 [
-                    'src' => '/images/machines/Alpine-ST5000.jpg',
+                    'src' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
                     'alt' => 'Alpine snack and beverage machine',
                 ],
                 [
@@ -154,7 +153,7 @@ class HomePageData
                 ],
                 [
                     'src' => '/images/machines/ai-cooler.png',
-                    'alt' => 'AI smart cooler',
+                    'alt' => 'Vendera smart cooler',
                 ],
                 [
                     'src' => '/images/machines/micro-market.png',
@@ -212,7 +211,7 @@ class HomePageData
                     'image' => '/images/machines/micro-market.png',
                 ],
                 [
-                    'title' => 'AI smart coolers',
+                    'title' => 'Vendera smart coolers',
                     'text' => 'Tap, open the door, take what you want.',
                     'href' => '#',
                     'image' => '/images/machines/ai-cooler.png',
@@ -220,7 +219,7 @@ class HomePageData
                 [
                     'title' => 'Office coffee',
                     'text' => 'Brewers and supplies delivered on schedule.',
-                    'href' => '#',
+                    'href' => '/office-coffee',
                     'image' => '/images/machines/coffee.png',
                 ],
             ],
@@ -326,10 +325,10 @@ class HomePageData
             ],
             [
                 'id' => 'ai-cooler',
-                'name' => 'AI Smart Cooler',
+                'name' => 'Vendera Smart Cooler',
                 'kind' => 'cooler',
-                'type' => 'AI cooler',
-                'tags' => ['AI cooler', 'Tap and go'],
+                'type' => 'Vendera cooler',
+                'tags' => ['Vendera cooler', 'Tap and go'],
                 'desc' => 'Tap a card or phone, open the door and take what you want. Cameras and weight sensors charge only for what you took.',
                 'href' => '/machines/ai-cooler',
                 'image' => '/images/machines/ai-cooler.png',
@@ -475,7 +474,7 @@ class HomePageData
                 'Drinks',
                 'Combo',
                 'Healthy',
-                'AI cooler',
+                'Vendera cooler',
                 'Micro market',
                 'Coffee',
                 'ATM',
@@ -502,7 +501,7 @@ class HomePageData
                 ],
                 [
                     'stars' => '★★★★★',
-                    'quote' => 'The AI cooler was a hit with our night shift. Restocking has been on time every week.',
+                    'quote' => 'The Vendera cooler was a hit with our night shift. Restocking has been on time every week.',
                     'role' => 'Plant Supervisor',
                     'org' => 'Manufacturer, OH',
                 ],
@@ -585,7 +584,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'What types of machines do you offer?',
-                    'a' => 'Snack, drink and combo machines, AI smart coolers, micro markets, office coffee and ATMs.',
+                    'a' => 'Snack, drink and combo machines, Vendera smart coolers, micro markets, office coffee and ATMs.',
                 ],
                 [
                     'q' => 'Can you support multi-location businesses?',
@@ -593,7 +592,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'How long does installation take?',
-                    'a' => 'Usually two to four weeks after your request is confirmed.',
+                    'a' => 'Usually one to two weeks after your request is confirmed.',
                 ],
                 [
                     'q' => 'Can I choose the products?',
@@ -642,7 +641,7 @@ class HomePageData
                 [
                     'id' => 'ai-vs-market',
                     'cat' => 'Smart & AI vending',
-                    'title' => 'AI coolers vs. micro markets: which one fits?',
+                    'title' => 'Vendera coolers vs. micro markets: which one fits?',
                     'excerpt' => 'A simple guide based on headcount, space and food needs.',
                     'href' => '#',
                 ],
