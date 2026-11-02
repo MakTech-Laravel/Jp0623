@@ -54,7 +54,7 @@ class HomePageData
                 ['label' => 'Products', 'href' => '/products'],
                 ['label' => 'Micro Markets', 'href' => '/micro-markets'],
                 ['label' => 'Office Coffee', 'href' => '/office-coffee'],
-                ['label' => 'Contact Us', 'href' => '#'],
+                ['label' => 'Contact Us', 'href' => '/contact'],
             ],
             'headerCta' => [
                 'label' => 'Get Vending Now',
@@ -90,7 +90,7 @@ class HomePageData
                         ['label' => 'Products', 'href' => '/products'],
                         ['label' => 'Resources', 'href' => '#'],
                         ['label' => 'Cities we serve', 'href' => '#'],
-                        ['label' => 'Contact us', 'href' => '#'],
+                        ['label' => 'Contact us', 'href' => '/contact'],
                     ],
                 ],
                 [

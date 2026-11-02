@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\FileUploadDemoController;
+use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\MachinesController;
 use App\Http\Controllers\Frontend\MicroMarketsController;
@@ -20,6 +21,7 @@ Route::get('/machines/{machine}', [MachinesController::class, 'show'])->name('ma
 Route::get('/products', [ProductsController::class, 'index'])->name('products');
 Route::get('/micro-markets', [MicroMarketsController::class, 'index'])->name('micro-markets');
 Route::get('/office-coffee', [OfficeCoffeeController::class, 'index'])->name('office-coffee');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');

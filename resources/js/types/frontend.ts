@@ -268,6 +268,30 @@ export type OfficeCoffeePageProps = {
     requestForm: OfficeCoffeeRequestFormData;
 };
 
+export type ContactPanelData = {
+    title: string;
+    phone: string;
+    phoneHref: string;
+    email: string;
+    emailHref: string;
+    hours: string;
+    operatorTitle: string;
+    operatorLinks: NavLink[];
+};
+
+export type ContactFormData = {
+    successMessage: string;
+    submitLabel: string;
+    topics: string[];
+};
+
+export type ContactPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    panel: ContactPanelData;
+    form: ContactFormData;
+};
+
 export type RequestFormData = {
     eyebrow: string;
     title: string;
