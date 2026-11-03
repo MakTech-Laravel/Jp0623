@@ -325,6 +325,96 @@ export function MachineArt({ kind, className }: MachineArtProps) {
                     />
                 </svg>
             );
+        case 'atm':
+            return (
+                <svg {...common} viewBox="0 0 180 240" aria-label="ATM machine">
+                    <rect
+                        x={22}
+                        y={10}
+                        width={136}
+                        height={222}
+                        rx={10}
+                        className="fill-petrol-2"
+                    />
+                    <rect
+                        x={34}
+                        y={22}
+                        width={112}
+                        height={70}
+                        rx={6}
+                        className="fill-brand-ink"
+                    />
+                    <rect
+                        x={40}
+                        y={28}
+                        width={100}
+                        height={58}
+                        rx={3}
+                        className="fill-c2"
+                    />
+                    <rect
+                        x={50}
+                        y={40}
+                        width={60}
+                        height={6}
+                        rx={3}
+                        className="fill-brand-surface"
+                    />
+                    <rect
+                        x={50}
+                        y={54}
+                        width={40}
+                        height={6}
+                        rx={3}
+                        className="fill-brand-surface"
+                    />
+                    <rect
+                        x={50}
+                        y={68}
+                        width={80}
+                        height={10}
+                        rx={3}
+                        className="fill-brass"
+                    />
+                    <rect
+                        x={112}
+                        y={104}
+                        width={34}
+                        height={8}
+                        rx={3}
+                        className="fill-brass"
+                    />
+                    {[0, 1, 2, 3].map((i) =>
+                        [0, 1, 2].map((j) => (
+                            <rect
+                                key={`${i}-${j}`}
+                                x={40 + j * 20}
+                                y={102 + i * 16}
+                                width={14}
+                                height={10}
+                                rx={2}
+                                className="fill-brand-surface"
+                            />
+                        )),
+                    )}
+                    <rect
+                        x={40}
+                        y={176}
+                        width={100}
+                        height={10}
+                        rx={3}
+                        className="fill-brand-ink"
+                    />
+                    <rect
+                        x={34}
+                        y={200}
+                        width={112}
+                        height={22}
+                        rx={4}
+                        className="fill-petrol"
+                    />
+                </svg>
+            );
         case 'coffee':
             return (
                 <svg
@@ -410,15 +500,7 @@ export function MachineArt({ kind, className }: MachineArtProps) {
                         rx={4}
                         className="fill-brand-surface"
                     />
-                    <Rows
-                        x={20}
-                        y={20}
-                        w={98}
-                        h={166}
-                        r={5}
-                        c={4}
-                        healthy
-                    />
+                    <Rows x={20} y={20} w={98} h={166} r={5} c={4} healthy />
                     <Keypad x={130} y={22} />
                     <circle cx={147} cy={170} r={10} className="fill-c3" />
                     <rect
@@ -594,15 +676,7 @@ export function MachineArt({ kind, className }: MachineArtProps) {
                         rx={4}
                         className="fill-brand-surface"
                     />
-                    <Rows
-                        x={20}
-                        y={20}
-                        w={102}
-                        h={166}
-                        r={4}
-                        c={3}
-                        healthy
-                    />
+                    <Rows x={20} y={20} w={102} h={166} r={4} c={3} healthy />
                     <Keypad x={132} y={22} />
                     <rect
                         x={16}
@@ -718,7 +792,10 @@ export function PackArt({ kind }: { kind: string }) {
                         rx={3}
                         className="fill-c4"
                     />
-                    <path d="M10 30l-6-6v12zM50 30l6-6v12z" className="fill-c4" />
+                    <path
+                        d="M10 30l-6-6v12zM50 30l6-6v12z"
+                        className="fill-c4"
+                    />
                     <rect
                         x={18}
                         y={26}
@@ -780,10 +857,7 @@ export function PackArt({ kind }: { kind: string }) {
             return (
                 <svg viewBox="0 0 60 60" width={60} height={60} aria-hidden>
                     <circle cx={30} cy={34} r={16} className="fill-c3" />
-                    <path
-                        d="M30 18q6-10 14-8-2 10-14 8z"
-                        className="fill-c3"
-                    />
+                    <path d="M30 18q6-10 14-8-2 10-14 8z" className="fill-c3" />
                     <rect
                         x={29}
                         y={12}
@@ -828,7 +902,10 @@ export function PackArt({ kind }: { kind: string }) {
         case 'coffee':
             return (
                 <svg viewBox="0 0 60 60" width={60} height={60} aria-hidden>
-                    <path d="M14 22h30l-4 26H18z" className="fill-brand-surface" />
+                    <path
+                        d="M14 22h30l-4 26H18z"
+                        className="fill-brand-surface"
+                    />
                     <path d="M14 22h30l-1 6H15z" className="fill-c1" />
                     <rect
                         x={12}

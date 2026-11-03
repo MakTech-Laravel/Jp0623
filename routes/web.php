@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\RegisterOtpController;
 use App\Http\Controllers\FileUploadDemoController;
 use App\Http\Controllers\Frontend\AboutController;
+use App\Http\Controllers\Frontend\AtmController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\IndustriesController;
@@ -24,6 +25,7 @@ Route::get('/machines/{machine}', [MachinesController::class, 'show'])->name('ma
 Route::get('/products', [ProductsController::class, 'index'])->name('products');
 Route::get('/micro-markets', [MicroMarketsController::class, 'index'])->name('micro-markets');
 Route::get('/office-coffee', [OfficeCoffeeController::class, 'index'])->name('office-coffee');
+Route::get('/atm', [AtmController::class, 'index'])->name('atm');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/industries', [IndustriesController::class, 'index'])->name('industries');

@@ -13,6 +13,7 @@ type PageHeroProps = {
     lead?: string;
     cta?: NavLink;
     image?: string;
+    art?: ReactNode;
     actions?: ReactNode;
     crumb?: NavLink[];
 };
@@ -23,6 +24,7 @@ export function PageHero({
     lead,
     cta,
     image,
+    art,
     actions,
     crumb,
 }: PageHeroProps) {
@@ -73,7 +75,11 @@ export function PageHero({
                         </div>
                     )}
                 </div>
-                {image ? (
+                {art ? (
+                    <div className="w-full max-w-xs justify-self-center md:justify-self-end">
+                        {art}
+                    </div>
+                ) : image ? (
                     <div className="w-full max-w-xs justify-self-center md:justify-self-end">
                         <CatalogImage
                             src={image}
