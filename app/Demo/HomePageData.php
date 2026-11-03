@@ -40,7 +40,7 @@ class HomePageData
                 ['label' => 'About', 'href' => '/about'],
                 ['label' => 'Industries', 'href' => '/industries'],
                 ['label' => 'ATM', 'href' => '/atm'],
-                ['label' => 'Schools', 'href' => '#'],
+                ['label' => 'Schools', 'href' => '/schools'],
                 ['label' => 'Cities', 'href' => '#'],
                 ['label' => 'Resources', 'href' => '#'],
             ],
@@ -69,7 +69,7 @@ class HomePageData
                         ['label' => 'Vendera smart coolers', 'href' => '#'],
                         ['label' => 'Office coffee', 'href' => '/office-coffee'],
                         ['label' => 'ATM machines', 'href' => '/atm'],
-                        ['label' => 'School vending', 'href' => '#'],
+                        ['label' => 'School vending', 'href' => '/schools'],
                     ],
                 ],
                 [
