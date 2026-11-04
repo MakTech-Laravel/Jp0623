@@ -1,7 +1,8 @@
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { Menu, X } from 'lucide-react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useState } from 'react';
+import type { MouseEvent } from 'react';
 import { BrandButton } from '@/components/frontend/brand-button';
 import { Wrap } from '@/components/frontend/wrap';
 import type { SiteData } from '@/types/frontend';
@@ -16,6 +17,39 @@ export function SiteHeader({ site }: SiteHeaderProps) {
     const reduceMotion = useReducedMotion();
 
     const closeMenu = () => setOpen(false);
+
+    const goToSection = (
+        event: MouseEvent<HTMLElement>,
+        href: string,
+    ) => {
+        const [path, hash] = href.split('#');
+
+        if (!hash) {
+            closeMenu();
+
+            return;
+        }
+
+        event.preventDefault();
+
+        if (window.location.pathname !== (path || '/')) {
+            closeMenu();
+            router.visit(href);
+
+            return;
+        }
+
+        const delay = open ? 300 : 0;
+
+        closeMenu();
+
+        window.setTimeout(() => {
+            document
+                .getElementById(hash)
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            window.history.pushState(null, '', `#${hash}`);
+        }, delay);
+    };
 
     const panelTransition = {
         duration: reduceMotion ? 0 : 0.25,
@@ -133,6 +167,9 @@ export function SiteHeader({ site }: SiteHeaderProps) {
 
                     <BrandButton
                         href={site.headerCta.href}
+                        onClick={(event) =>
+                            goToSection(event, site.headerCta.href)
+                        }
                         className="hidden px-4 py-2.5 text-sm lg:inline-flex"
                     >
                         {site.headerCta.label}
@@ -197,7 +234,9 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                             </ul>
                             <BrandButton
                                 href={site.headerCta.href}
-                                onClick={closeMenu}
+                                onClick={(event) =>
+                                    goToSection(event, site.headerCta.href)
+                                }
                                 className="mb-4 inline-flex px-4 py-2.5 text-sm"
                             >
                                 {site.headerCta.label}

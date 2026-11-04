@@ -444,6 +444,29 @@ export type ArticleItem = {
     href: string;
 };
 
+export type ResourcesIndexPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    filters: string[];
+    items: ArticleItem[];
+};
+
+export type ArticleShowPageProps = {
+    site: SiteData;
+    crumb: NavLink[];
+    article: {
+        id: string;
+        cat: string;
+        title: string;
+        excerpt: string;
+        body: string[];
+        readTime: string;
+        updated: string;
+    };
+    cta: { title: string; text: string; button: NavLink };
+    related: ArticleItem[];
+};
+
 export type ArticlesData = {
     eyebrow: string;
     title: string;
