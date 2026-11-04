@@ -2,6 +2,8 @@
 
 namespace App\Demo;
 
+use Illuminate\Support\Str;
+
 class HomePageData
 {
     /**
@@ -41,8 +43,8 @@ class HomePageData
                 ['label' => 'Industries', 'href' => '/industries'],
                 ['label' => 'ATM', 'href' => '/atm'],
                 ['label' => 'Schools', 'href' => '/schools'],
-                ['label' => 'Cities', 'href' => '#'],
-                ['label' => 'Resources', 'href' => '#'],
+                ['label' => 'Cities', 'href' => '/cities'],
+                ['label' => 'Resources', 'href' => '/resources'],
             ],
             'operatorCta' => [
                 'label' => 'Are you a vending operator? Click here →',
@@ -88,8 +90,8 @@ class HomePageData
                     'links' => [
                         ['label' => 'About us', 'href' => '/about'],
                         ['label' => 'Products', 'href' => '/products'],
-                        ['label' => 'Resources', 'href' => '#'],
-                        ['label' => 'Cities we serve', 'href' => '#'],
+                        ['label' => 'Resources', 'href' => '/resources'],
+                        ['label' => 'Cities we serve', 'href' => '/cities'],
                         ['label' => 'Contact us', 'href' => '/contact'],
                     ],
                 ],
@@ -628,31 +630,9 @@ class HomePageData
             'title' => 'Expert guides and smart break room tips.',
             'link' => [
                 'label' => 'View all resources →',
-                'href' => '#',
+                'href' => '/resources',
             ],
-            'items' => [
-                [
-                    'id' => 'multi-site',
-                    'cat' => 'Vending management',
-                    'title' => 'How to choose a vending company for multiple sites',
-                    'excerpt' => 'What to ask before you sign, and why one contact beats ten vendors.',
-                    'href' => '#',
-                ],
-                [
-                    'id' => 'ai-vs-market',
-                    'cat' => 'Smart & AI vending',
-                    'title' => 'Vendera coolers vs. micro markets: which one fits?',
-                    'excerpt' => 'A simple guide based on headcount, space and food needs.',
-                    'href' => '#',
-                ],
-                [
-                    'id' => 'healthy-mix',
-                    'cat' => 'Healthy vending',
-                    'title' => 'Building a healthier snack mix your team will buy',
-                    'excerpt' => 'Swap in better options without killing sales.',
-                    'href' => '#',
-                ],
-            ],
+            'items' => array_slice(ResourcesPageData::cards(), 0, 3),
         ];
     }
 
@@ -701,7 +681,8 @@ class HomePageData
                 'city' => $city[0],
                 'state' => $city[1],
                 'label' => $city[0].' vending',
-                'href' => '#',
+                'slug' => Str::slug($city[0]),
+                'href' => '/cities/'.Str::slug($city[0]),
             ], $raw),
         ];
     }

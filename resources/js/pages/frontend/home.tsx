@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react';
+import { useEffect } from 'react';
 import { CitiesSection } from '@/components/home/cities-section';
 import { FaqSection } from '@/components/home/faq-section';
 import { FeaturedMachinesSection } from '@/components/home/featured-machines-section';
@@ -26,6 +27,22 @@ export default function Home({
     articles,
     cities,
 }: HomePageProps) {
+    useEffect(() => {
+        const id = window.location.hash.slice(1);
+
+        if (!id) {
+            return;
+        }
+
+        const timer = window.setTimeout(() => {
+            document
+                .getElementById(id)
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+
+        return () => window.clearTimeout(timer);
+    }, []);
+
     return (
         <>
             <Head title="Home">

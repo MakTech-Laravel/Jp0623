@@ -88,17 +88,12 @@ class SchoolsPageData
             'title' => 'Learn the rules.',
             'link' => [
                 'label' => 'View all resources →',
-                'href' => '#',
+                'href' => '/resources',
             ],
-            'items' => [
-                [
-                    'id' => 'school-rules',
-                    'cat' => 'Industry guides',
-                    'title' => 'School vending: what the nutrition rules mean for you',
-                    'excerpt' => 'Smart Snacks standards in plain English.',
-                    'href' => '#',
-                ],
-            ],
+            'items' => collect(ResourcesPageData::cards())
+                ->where('id', 'school-rules')
+                ->values()
+                ->all(),
         ];
     }
 }
