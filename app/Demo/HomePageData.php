@@ -39,8 +39,8 @@ class HomePageData
             'topNav' => [
                 ['label' => 'About', 'href' => '/about'],
                 ['label' => 'Industries', 'href' => '/industries'],
-                ['label' => 'ATM', 'href' => '#'],
-                ['label' => 'Schools', 'href' => '#'],
+                ['label' => 'ATM', 'href' => '/atm'],
+                ['label' => 'Schools', 'href' => '/schools'],
                 ['label' => 'Cities', 'href' => '#'],
                 ['label' => 'Resources', 'href' => '#'],
             ],
@@ -68,8 +68,8 @@ class HomePageData
                         ['label' => 'Micro markets', 'href' => '/micro-markets'],
                         ['label' => 'Vendera smart coolers', 'href' => '#'],
                         ['label' => 'Office coffee', 'href' => '/office-coffee'],
-                        ['label' => 'ATM machines', 'href' => '#'],
-                        ['label' => 'School vending', 'href' => '#'],
+                        ['label' => 'ATM machines', 'href' => '/atm'],
+                        ['label' => 'School vending', 'href' => '/schools'],
                     ],
                 ],
                 [

@@ -220,6 +220,47 @@ export type MicroMarketsPageProps = {
     faqs: FaqsData;
 };
 
+export type SchoolsAudiencesData = {
+    title: string;
+    items: { title: string; text: string }[];
+};
+
+export type SchoolsProductsData = MicroMarketsOfferingsData;
+
+export type SchoolsPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    audiences: SchoolsAudiencesData;
+    products: SchoolsProductsData;
+    guide: ArticlesData;
+};
+
+export type AtmBenefitsData = {
+    eyebrow: string;
+    title: string;
+    items: { title: string; text: string }[];
+};
+
+export type AtmGoodFitData = {
+    eyebrow: string;
+    title: string;
+    items: string[];
+};
+
+export type AtmPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    benefits: AtmBenefitsData;
+    goodFit: AtmGoodFitData;
+    request: {
+        title: string;
+        text: string;
+        successMessage: string;
+        submitLabel: string;
+        subjectLabel: string;
+    };
+};
+
 export type OfficeCoffeeMachineItem = {
     title: string;
     text: string;
