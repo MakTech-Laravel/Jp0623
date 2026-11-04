@@ -2,9 +2,11 @@ import { Link } from '@inertiajs/react';
 import {
     BookOpen,
     FolderGit2,
+    FolderTree,
     KeyRound,
     LayoutGrid,
     LockKeyhole,
+    Package,
     Settings,
     Shield,
     ShieldCheck,
@@ -27,6 +29,8 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import adminMachineCategories from '@/routes/admin/machine-categories';
+import adminMachines from '@/routes/admin/machines';
 import adminPermissions from '@/routes/admin/permissions';
 import adminRoles from '@/routes/admin/roles';
 import adminUsers from '@/routes/admin/users';
@@ -49,6 +53,28 @@ const mainNav: NavNode[] = [
         href: fileUploadDemo(),
         icon: Upload,
         permissions: [PERMISSIONS.FILE_UPLOAD.INDEX],
+    },
+    {
+        title: 'Machine Management',
+        icon: Package,
+        permissions: [
+            PERMISSIONS.MACHINE_CATEGORIES.INDEX,
+            PERMISSIONS.MACHINES.INDEX,
+        ],
+        items: [
+            {
+                title: 'Categories',
+                href: adminMachineCategories.index(),
+                icon: FolderTree,
+                permissions: [PERMISSIONS.MACHINE_CATEGORIES.INDEX],
+            },
+            {
+                title: 'Machines',
+                href: adminMachines.index(),
+                icon: Package,
+                permissions: [PERMISSIONS.MACHINES.INDEX],
+            },
+        ],
     },
     {
         title: 'Access Control',

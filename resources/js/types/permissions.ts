@@ -54,6 +54,20 @@ export const PERMISSIONS = {
         VIEW: 'reports.view',
         EXPORT: 'reports.export',
     },
+    MACHINE_CATEGORIES: {
+        INDEX: 'machine-categories.index',
+        VIEW: 'machine-categories.view',
+        CREATE: 'machine-categories.create',
+        EDIT: 'machine-categories.edit',
+        DELETE: 'machine-categories.delete',
+    },
+    MACHINES: {
+        INDEX: 'machines.index',
+        VIEW: 'machines.view',
+        CREATE: 'machines.create',
+        EDIT: 'machines.edit',
+        DELETE: 'machines.delete',
+    },
 } as const;
 
 // Auto-derived union type from the const above.
