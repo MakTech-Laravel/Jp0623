@@ -13,11 +13,12 @@ class RegisterOtpController extends Controller
 {
     public function store(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'email' => ['required', 'string', 'email', 'max:255'],
-        ]);
+        $email = $request->user()
+            ? strtolower(trim($request->user()->email))
+            : strtolower(trim($request->validate([
+                'email' => ['required', 'string', 'email', 'max:255'],
+            ])['email']));
 
-        $email = strtolower(trim($validated['email']));
         $code = RegisterOtp::generateCode();
 
         RegisterOtp::store($email, $code);

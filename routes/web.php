@@ -6,7 +6,10 @@ use App\Http\Controllers\Admin\MachineController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\RegisterAccountController;
 use App\Http\Controllers\Auth\RegisterOtpController;
+use App\Http\Controllers\Auth\RegisterOtpVerifyController;
+use App\Http\Controllers\Auth\RegisterTrialController;
 use App\Http\Controllers\FileUploadDemoController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\ContactController;
@@ -31,9 +34,23 @@ Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/industries', [IndustriesController::class, 'index'])->name('industries');
 Route::get('/industries/{industry}', [IndustriesController::class, 'show'])->name('industries.show');
 
-Route::post('/register/otp', [RegisterOtpController::class, 'store'])
-    ->middleware(['guest', 'throttle:5,1'])
-    ->name('register.otp');
+Route::post('/register/account', [RegisterAccountController::class, 'store'])
+    ->middleware(['guest', 'throttle:10,1'])
+    ->name('register.account');
+
+Route::middleware(['auth', 'throttle:5,1'])->group(function () {
+    Route::post('/register/otp', [RegisterOtpController::class, 'store'])
+        ->name('register.otp');
+    Route::post('/register/otp/verify', [RegisterOtpVerifyController::class, 'store'])
+        ->name('register.otp.verify');
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::inertia('/register/payment', 'auth/register-payment')
+        ->name('register.payment');
+    Route::post('/register/trial', [RegisterTrialController::class, 'store'])
+        ->name('register.trial');
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
