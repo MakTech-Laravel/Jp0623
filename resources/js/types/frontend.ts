@@ -455,7 +455,25 @@ export type CityItem = {
     city: string;
     state: string;
     label: string;
+    slug: string;
     href: string;
+};
+
+export type CitiesIndexPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    items: CityItem[];
+};
+
+export type CityShowPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    crumb: NavLink[];
+    city: { slug: string; city: string; state: string };
+    benefits: { title: string; items: { title: string; text: string }[] };
+    requestForm: RequestFormData;
+    faqs: FaqsData;
+    nearby: NavLink[];
 };
 
 export type CitiesData = {

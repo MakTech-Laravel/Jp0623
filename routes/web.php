@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\RegisterOtpController;
 use App\Http\Controllers\FileUploadDemoController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\AtmController;
+use App\Http\Controllers\Frontend\CitiesController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\IndustriesController;
@@ -28,6 +29,8 @@ Route::get('/micro-markets', [MicroMarketsController::class, 'index'])->name('mi
 Route::get('/office-coffee', [OfficeCoffeeController::class, 'index'])->name('office-coffee');
 Route::get('/atm', [AtmController::class, 'index'])->name('atm');
 Route::get('/schools', [SchoolsController::class, 'index'])->name('schools');
+Route::get('/cities', [CitiesController::class, 'index'])->name('cities');
+Route::get('/cities/{city}', [CitiesController::class, 'show'])->name('cities.show');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/industries', [IndustriesController::class, 'index'])->name('industries');

@@ -2,6 +2,8 @@
 
 namespace App\Demo;
 
+use Illuminate\Support\Str;
+
 class HomePageData
 {
     /**
@@ -41,7 +43,7 @@ class HomePageData
                 ['label' => 'Industries', 'href' => '/industries'],
                 ['label' => 'ATM', 'href' => '/atm'],
                 ['label' => 'Schools', 'href' => '/schools'],
-                ['label' => 'Cities', 'href' => '#'],
+                ['label' => 'Cities', 'href' => '/cities'],
                 ['label' => 'Resources', 'href' => '#'],
             ],
             'operatorCta' => [
@@ -89,7 +91,7 @@ class HomePageData
                         ['label' => 'About us', 'href' => '/about'],
                         ['label' => 'Products', 'href' => '/products'],
                         ['label' => 'Resources', 'href' => '#'],
-                        ['label' => 'Cities we serve', 'href' => '#'],
+                        ['label' => 'Cities we serve', 'href' => '/cities'],
                         ['label' => 'Contact us', 'href' => '/contact'],
                     ],
                 ],
@@ -701,7 +703,8 @@ class HomePageData
                 'city' => $city[0],
                 'state' => $city[1],
                 'label' => $city[0].' vending',
-                'href' => '#',
+                'slug' => Str::slug($city[0]),
+                'href' => '/cities/'.Str::slug($city[0]),
             ], $raw),
         ];
     }
