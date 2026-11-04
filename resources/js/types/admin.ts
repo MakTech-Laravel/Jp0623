@@ -77,6 +77,45 @@ export interface PermissionListItem {
     roles_count: number;
 }
 
+export interface MachineCategoryOption {
+    id: number;
+    name: string;
+}
+
+export interface AdminMachineCategory {
+    id: number;
+    name: string;
+    slug: string;
+    description: string | null;
+    sort_order: number;
+    is_active: boolean;
+    machines_count?: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AdminMachine {
+    id: number;
+    machine_category_id: number;
+    name: string;
+    slug: string;
+    kind: string;
+    tags: string[] | null;
+    description: string | null;
+    image: string | null;
+    image_url: string | null;
+    capacity: string | null;
+    dimensions: string | null;
+    best_for: string | null;
+    status: string;
+    is_featured: boolean;
+    is_active: boolean;
+    sort_order: number;
+    created_at: string;
+    updated_at: string;
+    category?: MachineCategoryOption & { slug?: string };
+}
+
 /** Build the public URL for a stored avatar path, or null. */
 export function avatarUrl(path: string | null): string | null {
     if (!path) {

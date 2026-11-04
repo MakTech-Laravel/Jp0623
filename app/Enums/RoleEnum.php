@@ -66,6 +66,18 @@ enum RoleEnum: string
                 PermissionEnum::SETTINGS_VIEW,
                 PermissionEnum::SETTINGS_EDIT,
                 PermissionEnum::SETTINGS_EXPORT,
+
+                PermissionEnum::MACHINE_CATEGORIES_INDEX,
+                PermissionEnum::MACHINE_CATEGORIES_VIEW,
+                PermissionEnum::MACHINE_CATEGORIES_CREATE,
+                PermissionEnum::MACHINE_CATEGORIES_EDIT,
+                PermissionEnum::MACHINE_CATEGORIES_DELETE,
+
+                PermissionEnum::MACHINES_INDEX,
+                PermissionEnum::MACHINES_VIEW,
+                PermissionEnum::MACHINES_CREATE,
+                PermissionEnum::MACHINES_EDIT,
+                PermissionEnum::MACHINES_DELETE,
             ],
 
             self::EDITOR => [

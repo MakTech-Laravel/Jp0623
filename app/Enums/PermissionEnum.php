@@ -49,6 +49,20 @@ enum PermissionEnum: string
     case SETTINGS_EXPORT = 'settings.export';
     case SETTINGS_PRINT = 'settings.print';
 
+    // MACHINE CATEGORIES
+    case MACHINE_CATEGORIES_INDEX = 'machine-categories.index';
+    case MACHINE_CATEGORIES_VIEW = 'machine-categories.view';
+    case MACHINE_CATEGORIES_CREATE = 'machine-categories.create';
+    case MACHINE_CATEGORIES_EDIT = 'machine-categories.edit';
+    case MACHINE_CATEGORIES_DELETE = 'machine-categories.delete';
+
+    // MACHINES
+    case MACHINES_INDEX = 'machines.index';
+    case MACHINES_VIEW = 'machines.view';
+    case MACHINES_CREATE = 'machines.create';
+    case MACHINES_EDIT = 'machines.edit';
+    case MACHINES_DELETE = 'machines.delete';
+
     // -------------------------------------------------------------------------
     // group() — returns the display group for the `group` DB column.
     // Used by PermissionSeeder and the role management UI (grouped checkboxes).
@@ -93,6 +107,18 @@ enum PermissionEnum: string
             self::SETTINGS_IMPORT,
             self::SETTINGS_EXPORT,
             self::SETTINGS_PRINT => 'Settings',
+
+            self::MACHINE_CATEGORIES_INDEX,
+            self::MACHINE_CATEGORIES_VIEW,
+            self::MACHINE_CATEGORIES_CREATE,
+            self::MACHINE_CATEGORIES_EDIT,
+            self::MACHINE_CATEGORIES_DELETE => 'Machine Categories',
+
+            self::MACHINES_INDEX,
+            self::MACHINES_VIEW,
+            self::MACHINES_CREATE,
+            self::MACHINES_EDIT,
+            self::MACHINES_DELETE => 'Machines',
         };
     }
 

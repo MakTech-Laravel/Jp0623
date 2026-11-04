@@ -1,6 +1,8 @@
 <?php
 
 use App\Enums\PermissionEnum;
+use App\Http\Controllers\Admin\MachineCategoryController;
+use App\Http\Controllers\Admin\MachineController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
@@ -90,6 +92,40 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('permission:'.PermissionEnum::PERMISSIONS_INDEX->value);
             Route::get('permissions/export', 'export')->name('permissions.export')
                 ->middleware('permission:'.PermissionEnum::PERMISSIONS_EXPORT->value);
+        });
+
+        // Machine categories — required before creating machines.
+        Route::controller(MachineCategoryController::class)->group(function () {
+            Route::get('machine-categories', 'index')->name('machine-categories.index')
+                ->middleware('permission:'.PermissionEnum::MACHINE_CATEGORIES_INDEX->value);
+            Route::get('machine-categories/create', 'create')->name('machine-categories.create')
+                ->middleware('permission:'.PermissionEnum::MACHINE_CATEGORIES_CREATE->value);
+            Route::post('machine-categories', 'store')->name('machine-categories.store')
+                ->middleware(['permission:'.PermissionEnum::MACHINE_CATEGORIES_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('machine-categories/{machine_category}/edit', 'edit')->name('machine-categories.edit')
+                ->middleware('permission:'.PermissionEnum::MACHINE_CATEGORIES_EDIT->value);
+            Route::put('machine-categories/{machine_category}', 'update')->name('machine-categories.update')
+                ->middleware(['permission:'.PermissionEnum::MACHINE_CATEGORIES_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('machine-categories/{machine_category}', 'destroy')->name('machine-categories.destroy')
+                ->middleware('permission:'.PermissionEnum::MACHINE_CATEGORIES_DELETE->value);
+        });
+
+        // Machines — full CRUD with category assignment.
+        Route::controller(MachineController::class)->group(function () {
+            Route::get('machines', 'index')->name('machines.index')
+                ->middleware('permission:'.PermissionEnum::MACHINES_INDEX->value);
+            Route::get('machines/create', 'create')->name('machines.create')
+                ->middleware('permission:'.PermissionEnum::MACHINES_CREATE->value);
+            Route::post('machines', 'store')->name('machines.store')
+                ->middleware(['permission:'.PermissionEnum::MACHINES_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('machines/{machine}', 'show')->name('machines.show')
+                ->middleware('permission:'.PermissionEnum::MACHINES_VIEW->value);
+            Route::get('machines/{machine}/edit', 'edit')->name('machines.edit')
+                ->middleware('permission:'.PermissionEnum::MACHINES_EDIT->value);
+            Route::put('machines/{machine}', 'update')->name('machines.update')
+                ->middleware(['permission:'.PermissionEnum::MACHINES_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('machines/{machine}', 'destroy')->name('machines.destroy')
+                ->middleware('permission:'.PermissionEnum::MACHINES_DELETE->value);
         });
     });
 });
