@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\RegisterAccountController;
 use App\Http\Controllers\Auth\RegisterOtpController;
 use App\Http\Controllers\Auth\RegisterOtpVerifyController;
 use App\Http\Controllers\Auth\RegisterTrialController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileUploadDemoController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\ContactController;
@@ -19,6 +20,8 @@ use App\Http\Controllers\Frontend\MachinesController;
 use App\Http\Controllers\Frontend\MicroMarketsController;
 use App\Http\Controllers\Frontend\OfficeCoffeeController;
 use App\Http\Controllers\Frontend\ProductsController;
+use App\Http\Controllers\Operator\LeadController;
+use App\Http\Controllers\Operator\SubscriptionController;
 use App\Http\Controllers\PostAttachmentController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Support\Facades\Route;
@@ -53,7 +56,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('leads', [LeadController::class, 'index'])->name('leads.index');
+    Route::get('leads/purchased', [LeadController::class, 'purchased'])->name('leads.purchased');
+    Route::get('subscription', [SubscriptionController::class, 'index'])->name('subscription.index');
 
     // ── Demo landing page ─────────────────────────────────────────────────────
     Route::get('/file-upload-demo', [FileUploadDemoController::class, 'index'])
