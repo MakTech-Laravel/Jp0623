@@ -50,13 +50,15 @@ export function SiteHeader({ site }: SiteHeaderProps) {
             </div>
 
             <Wrap>
-                <div className="flex items-center gap-5.5 py-3.5">
+                <div className="flex items-center gap-5.5">
                     <Link
                         href="/"
                         onClick={closeMenu}
                         className="flex max-w-[14rem] items-center gap-2.5 font-display text-base font-extrabold leading-tight text-on-petrol no-underline sm:max-w-xs sm:text-lg lg:max-w-sm lg:text-xl"
                     >
-                        <svg
+
+                        <img src="/images/logo.png" alt="Logo" className="w-full h-24" />
+                        {/* <svg
                             width={34}
                             height={34}
                             viewBox="0 0 34 34"
@@ -100,13 +102,13 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                                 rx={1.5}
                                 className="fill-petrol"
                             />
-                        </svg>
-                        <span>
+                        </svg> */}
+                        {/* <span>
                             {site.name}
                             <small className="mt-0.5 block font-mono text-xs leading-tight font-medium tracking-wider text-on-petrol/70 uppercase">
                                 {site.tagline}
                             </small>
-                        </span>
+                        </span> */}
                     </Link>
 
                     <ul

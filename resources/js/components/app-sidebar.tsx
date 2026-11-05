@@ -291,8 +291,16 @@ export function AppSidebar() {
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
+                        <SidebarMenuButton
+                            size="lg"
+                            asChild
+                            className="h-auto! py-1.5 group-data-[collapsible=icon]:size-8!"
+                        >
+                            <Link
+                                href={dashboard()}
+                                prefetch
+                                className="w-full"
+                            >
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
