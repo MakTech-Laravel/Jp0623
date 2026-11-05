@@ -1,0 +1,21 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "authentication",
+    "frontend",
+    "main",
+    "production"
+  ],
+  "parent": {
+    "authentication": "main",
+    "frontend": "main",
+    "main": null,
+    "production": "main"
+  },
+  "order": [
+    "main",
+    "authentication",
+    "frontend",
+    "production"
+  ]
+}

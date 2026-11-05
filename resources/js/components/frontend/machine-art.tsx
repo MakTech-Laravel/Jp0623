@@ -220,7 +220,7 @@ export function MachineArt({ kind, className }: MachineArtProps) {
                 <svg
                     {...common}
                     viewBox="0 0 180 240"
-                    aria-label="AI smart cooler"
+                    aria-label="Vendera smart cooler"
                 >
                     <Base w={168} />
                     <rect

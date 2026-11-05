@@ -13,7 +13,6 @@ import { ServicesSection } from '@/components/home/services-section';
 import type { HomePageProps } from '@/types/frontend';
 
 export default function Home({
-    site,
     hero,
     howItWorks,
     services,
@@ -32,11 +31,11 @@ export default function Home({
                 <meta
                     head-key="description"
                     name="description"
-                    content="Nationwide vending services with free machine installation, stocking and service. Vending machines, micro markets, AI coolers, office coffee and ATMs for businesses in all 50 states."
+                    content="Nationwide vending services with free machine installation, stocking and service. Vending machines, micro markets, Vendera smart coolers, office coffee and ATMs for businesses in all 50 states."
                 />
             </Head>
 
-            <HeroSection hero={hero} phone={site.phone} />
+            <HeroSection hero={hero} />
             <HowItWorksSection data={howItWorks} />
             <ServicesSection data={services} />
             <FeaturedMachinesSection data={featuredMachines} />

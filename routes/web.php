@@ -1,14 +1,30 @@
 <?php
 
 use App\Enums\PermissionEnum;
+use App\Http\Controllers\Admin\MachineCategoryController;
+use App\Http\Controllers\Admin\MachineController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\RegisterAccountController;
+use App\Http\Controllers\Auth\RegisterOtpController;
+use App\Http\Controllers\Auth\RegisterOtpVerifyController;
+use App\Http\Controllers\Auth\RegisterTrialController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileUploadDemoController;
+use App\Http\Controllers\Frontend\AboutController;
+use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\IndustriesController;
 use App\Http\Controllers\Frontend\MachinesController;
 use App\Http\Controllers\Frontend\MicroMarketsController;
+use App\Http\Controllers\Frontend\OfficeCoffeeController;
 use App\Http\Controllers\Frontend\ProductsController;
+use App\Http\Controllers\Operator\AccountController;
+use App\Http\Controllers\Operator\BillingController;
+use App\Http\Controllers\Operator\LeadController;
+use App\Http\Controllers\Operator\RouteController;
+use App\Http\Controllers\Operator\SubscriptionController;
 use App\Http\Controllers\PostAttachmentController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Support\Facades\Route;
@@ -18,9 +34,44 @@ Route::get('/machines', [MachinesController::class, 'index'])->name('machines');
 Route::get('/machines/{machine}', [MachinesController::class, 'show'])->name('machines.show');
 Route::get('/products', [ProductsController::class, 'index'])->name('products');
 Route::get('/micro-markets', [MicroMarketsController::class, 'index'])->name('micro-markets');
+Route::get('/office-coffee', [OfficeCoffeeController::class, 'index'])->name('office-coffee');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::get('/about', [AboutController::class, 'index'])->name('about');
+Route::get('/industries', [IndustriesController::class, 'index'])->name('industries');
+Route::get('/industries/{industry}', [IndustriesController::class, 'show'])->name('industries.show');
+
+Route::post('/register/account', [RegisterAccountController::class, 'store'])
+    ->middleware(['guest', 'throttle:10,1'])
+    ->name('register.account');
+
+Route::middleware(['auth', 'throttle:5,1'])->group(function () {
+    Route::post('/register/otp', [RegisterOtpController::class, 'store'])
+        ->name('register.otp');
+    Route::post('/register/otp/verify', [RegisterOtpVerifyController::class, 'store'])
+        ->name('register.otp.verify');
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::inertia('/register/payment', 'auth/register-payment')
+        ->name('register.payment');
+    Route::post('/register/trial', [RegisterTrialController::class, 'store'])
+        ->name('register.trial');
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('leads', [LeadController::class, 'index'])->name('leads.index');
+    Route::get('leads/purchased', [LeadController::class, 'purchased'])->name('leads.purchased');
+    Route::get('leads/tickets', [LeadController::class, 'tickets'])->name('leads.tickets');
+    Route::get('leads/submit', [LeadController::class, 'submit'])->name('leads.submit');
+    Route::get('leads/commission', [LeadController::class, 'commission'])->name('leads.commission');
+    Route::get('leads/faq', [LeadController::class, 'faq'])->name('leads.faq');
+    Route::get('routes', [RouteController::class, 'index'])->name('routes.index');
+    Route::get('routes/sell', [RouteController::class, 'sell'])->name('routes.sell');
+    Route::get('account', [AccountController::class, 'index'])->name('account.index');
+    Route::get('account/location', [AccountController::class, 'location'])->name('account.location');
+    Route::get('subscription', [SubscriptionController::class, 'index'])->name('subscription.index');
+    Route::get('billing', [BillingController::class, 'index'])->name('billing.index');
 
     // ── Demo landing page ─────────────────────────────────────────────────────
     Route::get('/file-upload-demo', [FileUploadDemoController::class, 'index'])
@@ -76,6 +127,40 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('permission:'.PermissionEnum::PERMISSIONS_INDEX->value);
             Route::get('permissions/export', 'export')->name('permissions.export')
                 ->middleware('permission:'.PermissionEnum::PERMISSIONS_EXPORT->value);
+        });
+
+        // Machine categories — required before creating machines.
+        Route::controller(MachineCategoryController::class)->group(function () {
+            Route::get('machine-categories', 'index')->name('machine-categories.index')
+                ->middleware('permission:'.PermissionEnum::MACHINE_CATEGORIES_INDEX->value);
+            Route::get('machine-categories/create', 'create')->name('machine-categories.create')
+                ->middleware('permission:'.PermissionEnum::MACHINE_CATEGORIES_CREATE->value);
+            Route::post('machine-categories', 'store')->name('machine-categories.store')
+                ->middleware(['permission:'.PermissionEnum::MACHINE_CATEGORIES_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('machine-categories/{machine_category}/edit', 'edit')->name('machine-categories.edit')
+                ->middleware('permission:'.PermissionEnum::MACHINE_CATEGORIES_EDIT->value);
+            Route::put('machine-categories/{machine_category}', 'update')->name('machine-categories.update')
+                ->middleware(['permission:'.PermissionEnum::MACHINE_CATEGORIES_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('machine-categories/{machine_category}', 'destroy')->name('machine-categories.destroy')
+                ->middleware('permission:'.PermissionEnum::MACHINE_CATEGORIES_DELETE->value);
+        });
+
+        // Machines — full CRUD with category assignment.
+        Route::controller(MachineController::class)->group(function () {
+            Route::get('machines', 'index')->name('machines.index')
+                ->middleware('permission:'.PermissionEnum::MACHINES_INDEX->value);
+            Route::get('machines/create', 'create')->name('machines.create')
+                ->middleware('permission:'.PermissionEnum::MACHINES_CREATE->value);
+            Route::post('machines', 'store')->name('machines.store')
+                ->middleware(['permission:'.PermissionEnum::MACHINES_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('machines/{machine}', 'show')->name('machines.show')
+                ->middleware('permission:'.PermissionEnum::MACHINES_VIEW->value);
+            Route::get('machines/{machine}/edit', 'edit')->name('machines.edit')
+                ->middleware('permission:'.PermissionEnum::MACHINES_EDIT->value);
+            Route::put('machines/{machine}', 'update')->name('machines.update')
+                ->middleware(['permission:'.PermissionEnum::MACHINES_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('machines/{machine}', 'destroy')->name('machines.destroy')
+                ->middleware('permission:'.PermissionEnum::MACHINES_DELETE->value);
         });
     });
 });

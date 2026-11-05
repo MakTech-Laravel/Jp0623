@@ -10,7 +10,11 @@ test('machines page renders with demo props', function () {
             ->has('site')
             ->has('hero')
             ->has('lineup.filters')
-            ->has('lineup.items', 9)
+            ->where(
+                'lineup.text',
+                'Availability of machines and or micro markets may vary by region. Multiple machines can be placed at locations with more visitors/employees.',
+            )
+            ->has('lineup.items', 7)
             ->where('lineup.items.0.href', '/machines/combo')
             ->has('tech.items', 4)
             ->has('industries.items', 10)

@@ -12,7 +12,6 @@ export type FooterColumn = {
 export type SiteData = {
     name: string;
     tagline: string;
-    phone: string;
     footerBlurb: string;
     copyright: string;
     topNav: NavLink[];
@@ -30,7 +29,6 @@ export type HeroData = {
     lede: string;
     bullets: string[];
     cta: NavLink;
-    phoneLabel: string;
     trust: {
         stars: string;
         text: string;
@@ -164,6 +162,7 @@ export type ProductCatalogItem = {
 };
 
 export type ProductCatalogData = {
+    disclaimer: string;
     filters: string[];
     items: ProductCatalogItem[];
 };
@@ -220,6 +219,130 @@ export type MicroMarketsPageProps = {
     faqs: FaqsData;
 };
 
+export type OfficeCoffeeMachineItem = {
+    title: string;
+    text: string;
+    tag: string;
+    image: string;
+    href: string;
+};
+
+export type OfficeCoffeeMachinesData = {
+    eyebrow: string;
+    title: string;
+    items: OfficeCoffeeMachineItem[];
+};
+
+export type OfficeCoffeeTypeItem = {
+    label: string;
+    href: string;
+};
+
+export type OfficeCoffeeTypesData = {
+    eyebrow: string;
+    title: string;
+    items: OfficeCoffeeTypeItem[];
+};
+
+export type OfficeCoffeeServiceData = {
+    eyebrow: string;
+    title: string;
+    items: { title: string; text: string; href: string }[];
+};
+
+export type OfficeCoffeeRequestFormData = {
+    title: string;
+    text: string;
+    successMessage: string;
+    submitLabel: string;
+    subjectLabel: string;
+};
+
+export type OfficeCoffeePageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    machines: OfficeCoffeeMachinesData;
+    types: OfficeCoffeeTypesData;
+    service: OfficeCoffeeServiceData;
+    requestForm: OfficeCoffeeRequestFormData;
+};
+
+export type ContactPanelData = {
+    title: string;
+    email: string;
+    emailHref: string;
+    hours: string;
+    operatorTitle: string;
+    operatorLinks: NavLink[];
+};
+
+export type ContactFormData = {
+    successMessage: string;
+    submitLabel: string;
+    topics: string[];
+};
+
+export type ContactPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    panel: ContactPanelData;
+    form: ContactFormData;
+};
+
+export type AboutStoryData = {
+    title: string;
+    paragraphs: string[];
+    valuesTitle: string;
+    values: string[];
+    kpis: { label: string; value: string }[];
+};
+
+export type AboutCtaData = {
+    title: string;
+    primary: NavLink;
+    secondary: NavLink;
+};
+
+export type AboutPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    story: AboutStoryData;
+    cta: AboutCtaData;
+};
+
+export type IndustriesIndexItem = {
+    title: string;
+    text: string;
+    image: string;
+    href: string;
+    slug: string;
+};
+
+export type IndustriesPageProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    items: IndustriesIndexItem[];
+};
+
+export type IndustryShowProps = {
+    site: SiteData;
+    hero: PageHeroData;
+    crumb: NavLink[];
+    industry: { slug: string; label: string };
+    benefits: {
+        title: string;
+        items: { title: string; text: string }[];
+    };
+    relatedMachines: MachineDetailRelatedData;
+    requestForm: {
+        title: string;
+        text: string;
+        successMessage: string;
+        submitLabel: string;
+        subjectLabel: string;
+    };
+};
+
 export type RequestFormData = {
     eyebrow: string;
     title: string;
@@ -230,6 +353,7 @@ export type RequestFormData = {
     machineInterests: string[];
     machineCounts: string[];
     existingVending: string[];
+    yesNoOptions: string[];
 };
 
 export type ReviewItem = {

@@ -21,6 +21,9 @@ export function CatalogSection({ data }: { data: ProductCatalogData }) {
 
     return (
         <Band>
+            {data.disclaimer ? (
+                <p className="mb-5 text-sm text-brand-muted">{data.disclaimer}</p>
+            ) : null}
             <div className="mb-5 flex flex-wrap gap-2">
                 {data.filters.map((chip) => (
                     <button
