@@ -33,4 +33,31 @@ class LeadController extends Controller
             'primaryCity' => $user->operatorProfile?->primary_city ?: 'Houston, TX',
         ]);
     }
+
+    public function tickets(): Response
+    {
+        return Inertia::render('operator/leads/tickets', [
+            'tickets' => OperatorDashboardData::tickets(),
+        ]);
+    }
+
+    public function submit(): Response
+    {
+        return Inertia::render('operator/leads/submit');
+    }
+
+    public function commission(): Response
+    {
+        return Inertia::render(
+            'operator/leads/commission',
+            OperatorDashboardData::commission(),
+        );
+    }
+
+    public function faq(): Response
+    {
+        return Inertia::render('operator/leads/faq', [
+            'faqs' => OperatorDashboardData::faq(),
+        ]);
+    }
 }

@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/table';
 import { dashboard } from '@/routes';
 import { index as leadsIndex } from '@/routes/leads';
-import { index as subscriptionIndex } from '@/routes/subscription';
 import type {
     OperatorDashboardProps,
     OperatorLead,
@@ -30,7 +29,6 @@ export default function OperatorDashboard({
     kpis,
     newestLeads,
     activity,
-    trialBanner,
 }: OperatorDashboardProps) {
     const [selectedLead, setSelectedLead] = useState<OperatorLead | null>(null);
     const [tutorialOpen, setTutorialOpen] = useState(false);
@@ -49,21 +47,6 @@ export default function OperatorDashboard({
                         routes and account.
                     </p>
                 </div>
-
-                {trialBanner && (
-                    <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm font-semibold text-amber-800 dark:text-amber-200">
-                        <span>{trialBanner.message}</span>
-                        <Button
-                            asChild
-                            size="sm"
-                            className="bg-brass text-brass-ink hover:bg-brass/90"
-                        >
-                            <Link href={subscriptionIndex()}>
-                                {trialBanner.ctaLabel}
-                            </Link>
-                        </Button>
-                    </div>
-                )}
 
                 <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                     {kpis.map((kpi) => (

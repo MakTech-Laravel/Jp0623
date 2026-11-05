@@ -8,7 +8,7 @@ import { useCurrentUrl } from '@/hooks/use-current-url';
 import { usePermission } from '@/hooks/use-permissions';
 import { cn } from '@/lib/utils';
 import { NavNodeItem } from './nav-node';
-import { filterNavNodes } from './nav-utils';
+import { collectLeafPaths, filterNavNodes } from './nav-utils';
 import type { NavNode, NavNodeClassNames } from './types';
 
 interface SidebarNavProps {
@@ -44,6 +44,11 @@ export function SidebarNav({
         [items],
     );
 
+    const allLeafPaths = useMemo(
+        () => collectLeafPaths(visible),
+        [visible],
+    );
+
     if (visible.length === 0) {
         return null;
     }
@@ -58,6 +63,7 @@ export function SidebarNav({
                         node={node}
                         depth={0}
                         currentPath={currentUrl}
+                        allLeafPaths={allLeafPaths}
                         defaults={classNames}
                     />
                 ))}

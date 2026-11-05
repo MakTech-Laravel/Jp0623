@@ -31,7 +31,6 @@ test('operators see the operator dashboard overview', function () {
                 ->has('kpis')
                 ->has('newestLeads')
                 ->has('activity')
-                ->has('trialBanner')
         );
 });
 
@@ -105,3 +104,43 @@ test('operators can open the purchased location leads page', function () {
 test('guests are redirected from purchased location leads', function () {
     $this->get(route('leads.purchased'))->assertRedirect(route('login'));
 });
+
+test('operators can open remaining portal pages', function (string $route, string $component, array $props = []) {
+    $user = User::factory()->create();
+    $user->assignRole(RoleEnum::USER->value);
+
+    $this->actingAs($user)
+        ->get(route($route))
+        ->assertOk()
+        ->assertInertia(function (Assert $page) use ($component, $props) {
+            $page->component($component);
+
+            foreach ($props as $prop) {
+                $page->has($prop);
+            }
+        });
+})->with([
+    'tickets' => ['leads.tickets', 'operator/leads/tickets', ['tickets']],
+    'submit' => ['leads.submit', 'operator/leads/submit', []],
+    'commission' => ['leads.commission', 'operator/leads/commission', ['kpis', 'paypalEmail', 'submittedLeads', 'commissions', 'payouts']],
+    'faq' => ['leads.faq', 'operator/leads/faq', ['faqs']],
+    'routes' => ['routes.index', 'operator/routes/index', ['routes']],
+    'sell route' => ['routes.sell', 'operator/routes/sell', []],
+    'account' => ['account.index', 'operator/account/index', ['account']],
+    'location' => ['account.location', 'operator/account/location', ['primaryCity', 'changesRemaining', 'changesTotal']],
+    'billing' => ['billing.index', 'operator/billing/index', ['paymentMethod', 'invoices']],
+]);
+
+test('guests are redirected from remaining portal pages', function (string $route) {
+    $this->get(route($route))->assertRedirect(route('login'));
+})->with([
+    'leads.tickets',
+    'leads.submit',
+    'leads.commission',
+    'leads.faq',
+    'routes.index',
+    'routes.sell',
+    'account.index',
+    'account.location',
+    'billing.index',
+]);

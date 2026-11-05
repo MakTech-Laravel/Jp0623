@@ -14,13 +14,15 @@ import {
 import { cn, toUrl } from '@/lib/utils';
 import { NavBadge } from './nav-badge';
 import { NavFlyout } from './nav-flyout';
-import { isNodeActive, isPathActive } from './nav-utils';
+import { isLeafActive, isNodeActive } from './nav-utils';
 import type { NavNode, NavNodeClassNames } from './types';
 
 interface NavNodeItemProps {
     node: NavNode;
     depth: number;
     currentPath: string;
+    /** All leaf paths in the visible nav tree (for longest-match active state). */
+    allLeafPaths: string[];
     /** Default slot classes applied to every node (from `SidebarNav`). */
     defaults?: NavNodeClassNames;
 }
@@ -46,6 +48,7 @@ export function NavNodeItem({
     node,
     depth,
     currentPath,
+    allLeafPaths,
     defaults,
 }: NavNodeItemProps) {
     const { state, isMobile } = useSidebar();
@@ -58,6 +61,7 @@ export function NavNodeItem({
                 <NavFlyout
                     node={node}
                     currentPath={currentPath}
+                    allLeafPaths={allLeafPaths}
                     defaults={defaults}
                 />
             );
@@ -68,6 +72,7 @@ export function NavNodeItem({
                 node={node}
                 depth={depth}
                 currentPath={currentPath}
+                allLeafPaths={allLeafPaths}
                 defaults={defaults}
             />
         );
@@ -78,6 +83,7 @@ export function NavNodeItem({
             node={node}
             depth={depth}
             currentPath={currentPath}
+            allLeafPaths={allLeafPaths}
             defaults={defaults}
         />
     );
@@ -107,9 +113,15 @@ function NavRow({
     );
 }
 
-function NavLeaf({ node, depth, currentPath, defaults }: NavNodeItemProps) {
+function NavLeaf({
+    node,
+    depth,
+    currentPath,
+    allLeafPaths,
+    defaults,
+}: NavNodeItemProps) {
     const { isMobile, setOpenMobile } = useSidebar();
-    const active = isPathActive(node.href, currentPath);
+    const active = isLeafActive(node.href, currentPath, allLeafPaths);
 
     const handleNavigate = () => {
         if (isMobile) {
@@ -165,17 +177,23 @@ function NavLeaf({ node, depth, currentPath, defaults }: NavNodeItemProps) {
     );
 }
 
-function NavGroup({ node, depth, currentPath, defaults }: NavNodeItemProps) {
-    const active = isNodeActive(node, currentPath);
-    const [open, setOpen] = useState(active);
-    const [wasActive, setWasActive] = useState(active);
+function NavGroup({
+    node,
+    depth,
+    currentPath,
+    allLeafPaths,
+    defaults,
+}: NavNodeItemProps) {
+    const branchActive = isNodeActive(node, currentPath, allLeafPaths);
+    const [open, setOpen] = useState(branchActive);
+    const [wasActive, setWasActive] = useState(branchActive);
 
     // Auto-open the branch when it becomes the active one. Render-time sync is
     // React's recommended alternative to a setState-in-effect.
-    if (active !== wasActive) {
-        setWasActive(active);
+    if (branchActive !== wasActive) {
+        setWasActive(branchActive);
 
-        if (active) {
+        if (branchActive) {
             setOpen(true);
         }
     }
@@ -210,6 +228,7 @@ function NavGroup({ node, depth, currentPath, defaults }: NavNodeItemProps) {
                                 node={child}
                                 depth={depth + 1}
                                 currentPath={currentPath}
+                                allLeafPaths={allLeafPaths}
                                 defaults={defaults}
                             />
                         ))}
@@ -223,7 +242,6 @@ function NavGroup({ node, depth, currentPath, defaults }: NavNodeItemProps) {
         return (
             <SidebarMenuItem className={slot('item', defaults, node)}>
                 <SidebarMenuButton
-                    isActive={active}
                     tooltip={node.title}
                     aria-expanded={open}
                     onClick={() => setOpen((value) => !value)}
@@ -240,7 +258,6 @@ function NavGroup({ node, depth, currentPath, defaults }: NavNodeItemProps) {
         <SidebarMenuSubItem className={slot('item', defaults, node)}>
             <SidebarMenuSubButton
                 asChild
-                isActive={active}
                 className={slot('row', defaults, node)}
             >
                 <button

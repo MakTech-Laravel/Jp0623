@@ -33,6 +33,12 @@ export function toPath(href?: Href): string | null {
     return path.length > 1 ? path.replace(/\/+$/, '') : path;
 }
 
+function normaliseCurrentPath(currentPath: string): string {
+    return currentPath.length > 1
+        ? currentPath.replace(/\/+$/, '')
+        : currentPath;
+}
+
 /**
  * Whether `href` matches the current path. Matches the exact path or a
  * sub-path (`/admin/users` is active on `/admin/users/5`), but never a sibling
@@ -48,16 +54,75 @@ export function isPathActive(
         return false;
     }
 
-    const current =
-        currentPath.length > 1 ? currentPath.replace(/\/+$/, '') : currentPath;
+    const current = normaliseCurrentPath(currentPath);
 
     return current === target || current.startsWith(`${target}/`);
 }
 
+/**
+ * Leaf is active only when it matches the current path and no longer leaf href
+ * in the nav tree is a better (more specific) match.
+ *
+ * `/leads/purchased` → Purchased wins over All leads (`/leads`).
+ * `/admin/machines/create` → Machines (`/admin/machines`) still wins when that
+ * is the longest matching leaf in the tree.
+ */
+export function isLeafActive(
+    href: Href | undefined,
+    currentPath: string,
+    allLeafPaths: string[],
+): boolean {
+    const target = toPath(href);
+
+    if (!target || !isPathActive(href, currentPath)) {
+        return false;
+    }
+
+    const current = normaliseCurrentPath(currentPath);
+
+    return !allLeafPaths.some((other) => {
+        if (other === target || other.length <= target.length) {
+            return false;
+        }
+
+        return current === other || current.startsWith(`${other}/`);
+    });
+}
+
+/** Collect normalised leaf paths from a nav tree (for longest-match active state). */
+export function collectLeafPaths(nodes: NavNode[]): string[] {
+    const paths: string[] = [];
+
+    for (const node of nodes) {
+        if (node.items?.length) {
+            paths.push(...collectLeafPaths(node.items));
+            continue;
+        }
+
+        const path = toPath(node.href);
+
+        if (path) {
+            paths.push(path);
+        }
+    }
+
+    return paths;
+}
+
 /** A node is active when it (a leaf) matches, or any descendant leaf matches. */
-export function isNodeActive(node: NavNode, currentPath: string): boolean {
+export function isNodeActive(
+    node: NavNode,
+    currentPath: string,
+    allLeafPaths: string[] = [],
+): boolean {
     if (node.items?.length) {
-        return node.items.some((child) => isNodeActive(child, currentPath));
+        return node.items.some((child) =>
+            isNodeActive(child, currentPath, allLeafPaths),
+        );
+    }
+
+    if (allLeafPaths.length > 0) {
+        return isLeafActive(node.href, currentPath, allLeafPaths);
     }
 
     return isPathActive(node.href, currentPath);
