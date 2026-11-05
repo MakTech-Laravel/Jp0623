@@ -1,20 +1,27 @@
 import { Link } from '@inertiajs/react';
 import {
     BookOpen,
+    CircleHelp,
     CreditCard,
     FolderGit2,
     FolderTree,
     KeyRound,
     LayoutGrid,
     LockKeyhole,
+    MapPinned,
     MapPin,
     Package,
+    Receipt,
+    Route,
+    Send,
     Settings,
     Shield,
     ShieldCheck,
+    Ticket,
     Upload,
     User,
     Users,
+    Wallet,
 } from 'lucide-react';
 import { useMemo } from 'react';
 import AppLogo from '@/components/app-logo';
@@ -33,28 +40,44 @@ import {
 } from '@/components/ui/sidebar';
 import { usePermission } from '@/hooks/use-permissions';
 import { dashboard } from '@/routes';
+import {
+    index as accountIndex,
+    location as accountLocation,
+} from '@/routes/account';
 import adminMachineCategories from '@/routes/admin/machine-categories';
 import adminMachines from '@/routes/admin/machines';
 import adminPermissions from '@/routes/admin/permissions';
 import adminRoles from '@/routes/admin/roles';
 import adminUsers from '@/routes/admin/users';
+import { index as billingIndex } from '@/routes/billing';
 import { index as fileUploadDemo } from '@/routes/file-upload-demo';
-import { index as leadsIndex, purchased as leadsPurchased } from '@/routes/leads';
+import {
+    commission as leadsCommission,
+    faq as leadsFaq,
+    index as leadsIndex,
+    purchased as leadsPurchased,
+    submit as leadsSubmit,
+    tickets as leadsTickets,
+} from '@/routes/leads';
+import {
+    index as routesIndex,
+    sell as routesSell,
+} from '@/routes/routes';
 import { index as subscriptionIndex } from '@/routes/subscription';
 import type { NavItem } from '@/types';
 import { PERMISSIONS } from '@/types/permissions';
 
 const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
+    // {
+    //     title: 'Repository',
+    //     href: 'https://github.com/laravel/react-starter-kit',
+    //     icon: FolderGit2,
+    // },
+    // {
+    //     title: 'Documentation',
+    //     href: 'https://laravel.com/docs/starter-kits#react',
+    //     icon: BookOpen,
+    // },
 ];
 
 export function AppSidebar() {
@@ -90,13 +113,81 @@ export function AppSidebar() {
                             icon: MapPin,
                             permissions: [PERMISSIONS.DASHBOARD.VIEW],
                         },
+                        {
+                            title: 'Lead issues & tickets',
+                            href: leadsTickets(),
+                            icon: Ticket,
+                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                        },
+                        {
+                            title: 'Submit lead for sale',
+                            href: leadsSubmit(),
+                            icon: Send,
+                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                        },
+                        {
+                            title: 'Commission earned',
+                            href: leadsCommission(),
+                            icon: Wallet,
+                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                        },
+                        {
+                            title: 'FAQ',
+                            href: leadsFaq(),
+                            icon: CircleHelp,
+                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                        },
                     ],
                 },
                 {
-                    title: 'Subscription',
-                    href: subscriptionIndex(),
-                    icon: CreditCard,
+                    title: 'Routes for sale',
+                    icon: Route,
                     permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                    items: [
+                        {
+                            title: 'Routes for sale',
+                            href: routesIndex(),
+                            icon: Route,
+                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                        },
+                        {
+                            title: 'Submit route for sale',
+                            href: routesSell(),
+                            icon: Send,
+                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                        },
+                    ],
+                },
+                {
+                    title: 'Account',
+                    icon: User,
+                    permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                    items: [
+                        {
+                            title: 'Account info',
+                            href: accountIndex(),
+                            icon: User,
+                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                        },
+                        {
+                            title: 'Location settings',
+                            href: accountLocation(),
+                            icon: MapPinned,
+                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                        },
+                        {
+                            title: 'Subscription',
+                            href: subscriptionIndex(),
+                            icon: CreditCard,
+                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                        },
+                        {
+                            title: 'Billing & invoices',
+                            href: billingIndex(),
+                            icon: Receipt,
+                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                        },
+                    ],
                 },
             );
         }

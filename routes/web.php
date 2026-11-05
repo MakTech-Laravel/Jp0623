@@ -20,7 +20,10 @@ use App\Http\Controllers\Frontend\MachinesController;
 use App\Http\Controllers\Frontend\MicroMarketsController;
 use App\Http\Controllers\Frontend\OfficeCoffeeController;
 use App\Http\Controllers\Frontend\ProductsController;
+use App\Http\Controllers\Operator\AccountController;
+use App\Http\Controllers\Operator\BillingController;
 use App\Http\Controllers\Operator\LeadController;
+use App\Http\Controllers\Operator\RouteController;
 use App\Http\Controllers\Operator\SubscriptionController;
 use App\Http\Controllers\PostAttachmentController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
@@ -59,7 +62,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('leads', [LeadController::class, 'index'])->name('leads.index');
     Route::get('leads/purchased', [LeadController::class, 'purchased'])->name('leads.purchased');
+    Route::get('leads/tickets', [LeadController::class, 'tickets'])->name('leads.tickets');
+    Route::get('leads/submit', [LeadController::class, 'submit'])->name('leads.submit');
+    Route::get('leads/commission', [LeadController::class, 'commission'])->name('leads.commission');
+    Route::get('leads/faq', [LeadController::class, 'faq'])->name('leads.faq');
+    Route::get('routes', [RouteController::class, 'index'])->name('routes.index');
+    Route::get('routes/sell', [RouteController::class, 'sell'])->name('routes.sell');
+    Route::get('account', [AccountController::class, 'index'])->name('account.index');
+    Route::get('account/location', [AccountController::class, 'location'])->name('account.location');
     Route::get('subscription', [SubscriptionController::class, 'index'])->name('subscription.index');
+    Route::get('billing', [BillingController::class, 'index'])->name('billing.index');
 
     // ── Demo landing page ─────────────────────────────────────────────────────
     Route::get('/file-upload-demo', [FileUploadDemoController::class, 'index'])

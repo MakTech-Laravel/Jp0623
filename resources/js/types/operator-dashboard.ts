@@ -56,8 +56,4 @@ export interface OperatorDashboardProps {
     leads: OperatorLead[];
     newestLeads: OperatorLead[];
     activity: OperatorActivityItem[];
-    trialBanner: {
-        message: string;
-        ctaLabel: string;
-    };
 }
