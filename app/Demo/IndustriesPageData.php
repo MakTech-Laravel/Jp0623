@@ -143,7 +143,7 @@ class IndustriesPageData
                 'label' => 'Offices',
                 'text' => 'Quiet machines, healthy options and coffee for daytime teams.',
                 'kind' => 'combo',
-                'image' => '/images/machines/Alpine-ST5000.jpg',
+                'image' => '/images/machines/Alpine-ST5000.png',
             ],
             [
                 'slug' => 'warehouses',
@@ -157,7 +157,7 @@ class IndustriesPageData
                 'label' => 'Manufacturing',
                 'text' => 'Around-the-clock vending that covers every shift on the floor.',
                 'kind' => 'food',
-                'image' => '/images/machines/Alpine-ST5000.jpg',
+                'image' => '/images/machines/Alpine-ST5000.png',
             ],
             [
                 'slug' => 'schools',
@@ -178,7 +178,7 @@ class IndustriesPageData
                 'label' => 'Hospitals & medical',
                 'text' => '24/7 food and drinks for staff, patients and visitors.',
                 'kind' => 'food',
-                'image' => '/images/machines/coffee.png',
+                'image' => '/images/machines/coffee1.png',
             ],
             [
                 'slug' => 'apartments',
@@ -206,7 +206,7 @@ class IndustriesPageData
                 'label' => 'Retail & dealerships',
                 'text' => 'Snacks and drinks for customers while they wait.',
                 'kind' => 'slim',
-                'image' => '/images/machines/Alpine-ST5000.jpg',
+                'image' => '/images/machines/Alpine-ST5000.png',
             ],
         ];
 

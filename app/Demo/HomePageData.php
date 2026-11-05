@@ -200,7 +200,7 @@ class HomePageData
                     'title' => 'Vending machines',
                     'text' => 'Snack, drink and combo machines with card and phone pay.',
                     'href' => '/machines',
-                    'image' => '/images/machines/Alpine-ST5000.jpg',
+                    'image' => '/images/machines/Alpine-ST5000.png',
                 ],
                 [
                     'title' => 'Micro markets',
@@ -218,7 +218,7 @@ class HomePageData
                     'title' => 'Office coffee',
                     'text' => 'Brewers and supplies delivered on schedule.',
                     'href' => '/office-coffee',
-                    'image' => '/images/machines/coffee.png',
+                    'image' => '/images/machines/coffee1.png',
                 ],
             ],
         ];

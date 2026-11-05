@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
-export const MACHINE_IMAGE_FALLBACK = '/images/machines/Alpine-ST5000.jpg';
+export const MACHINE_IMAGE_FALLBACK = '/images/machines/Alpine-ST5000.png';
 export const PRODUCT_IMAGE_FALLBACK = '/images/products/canned-regular-cola.jpg';
 
 export function machineImageSrc(
