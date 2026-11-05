@@ -33,7 +33,6 @@ class HomePageData
         return [
             'name' => 'Vending Machine Location Services',
             'tagline' => 'Nationwide',
-            'phone' => '(800) 000-0000',
             'footerBlurb' => 'Full-service vending, micro markets, office coffee and ATMs for businesses nationwide. One contact for every location.',
             'copyright' => '© 2026 vendingmachinelocationsforsale.com',
             'topNav' => [
@@ -120,7 +119,7 @@ class HomePageData
         return [
             'eyebrow' => 'Vending management · Nationwide',
             'titleBefore' => 'Vending Machine Location Services, ',
-            'titleAccent' => 'one call away.',
+            'titleAccent' => 'for every location.',
             'lede' => 'We find the vendor, schedule the install and keep the machines stocked and running. You deal with one contact for every site you have.',
             'bullets' => [
                 'No equipment fees, install charges or service costs',
@@ -131,7 +130,6 @@ class HomePageData
                 'label' => 'Request a free machine',
                 'href' => '#request-sec',
             ],
-            'phoneLabel' => 'or call',
             'trust' => [
                 'stars' => '★★★★★',
                 'text' => 'Used by thousands of businesses across the U.S.',
@@ -237,7 +235,7 @@ class HomePageData
             'eyebrow' => 'Featured machines',
             'title' => 'Popular machines for new placements.',
             'link' => [
-                'label' => 'See all 9 machines →',
+                'label' => 'See all 7 machines →',
                 'href' => '/machines',
             ],
             'items' => array_values(array_filter(
@@ -292,26 +290,6 @@ class HomePageData
                 'desc' => 'Water, soda, juice, tea and energy drinks kept cold all day.',
                 'href' => '/machines/drink',
                 'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
-            ],
-            [
-                'id' => 'touch',
-                'name' => 'Touchscreen Combo',
-                'kind' => 'touch',
-                'type' => 'Combo',
-                'tags' => ['Combo', 'Touchscreen'],
-                'desc' => 'A large screen with product photos, nutrition info and promotions.',
-                'href' => '/machines/touch',
-                'image' => '/images/machines/micro-market.png',
-            ],
-            [
-                'id' => 'food',
-                'name' => 'Refrigerated Fresh Food',
-                'kind' => 'food',
-                'type' => 'Fresh food',
-                'tags' => ['Fresh food'],
-                'desc' => 'Sandwiches, salads and meals held at safe temperatures with health controls.',
-                'href' => '/machines/food',
-                'image' => '/images/machines/coffee.png',
             ],
             [
                 'id' => 'slim',
@@ -399,9 +377,9 @@ class HomePageData
             ],
             [
                 'kind' => 'nuts',
-                'name' => 'Nuts & fruit',
-                'desc' => 'Trail mix, almonds, dried fruit and fresh fruit',
-                'tags' => ['Trail mix', 'Almonds', 'Dried mango', 'Apples', 'Mixed nuts'],
+                'name' => 'Nuts & snack bars',
+                'desc' => 'Trail mix, almonds, protein bars, granola bars and breakfast bars',
+                'tags' => ['Trail mix', 'Almonds', 'Protein bar', 'Granola bar', 'Mixed nuts'],
                 'image' => '/images/products/skittles.jpg',
             ],
             [
@@ -410,13 +388,6 @@ class HomePageData
                 'desc' => 'Muffins, donuts, honey buns and toaster pastries',
                 'tags' => ['Blueberry muffin', 'Honey bun', 'Mini donuts', 'Croissant', 'Pop-tarts'],
                 'image' => '/images/products/canned-regular-cola.jpg',
-            ],
-            [
-                'kind' => 'bars',
-                'name' => 'Snack bars',
-                'desc' => 'Protein bars, granola bars and breakfast bars',
-                'tags' => ['Protein bar', 'Granola bar', 'Breakfast bar', 'Rice crisp bar', 'Nut bar'],
-                'image' => '/images/products/Baked-Doritos.jpg',
             ],
             [
                 'kind' => 'healthy',
@@ -457,8 +428,8 @@ class HomePageData
         return [
             'eyebrow' => 'Free request',
             'title' => 'Start your free vending request.',
-            'text' => 'Takes about a minute. Our team calls you to confirm the details, then a local operator gets in touch.',
-            'successMessage' => 'Thanks! Our team will call you within one business day to confirm your request.',
+            'text' => 'Takes about a minute. Our team will email you to confirm the details, then a local operator gets in touch.',
+            'successMessage' => 'Thanks! Our team will email you within one business day to confirm your request.',
             'submitLabel' => 'Get vending now',
             'locationTypes' => [
                 'Business / office',
@@ -481,6 +452,7 @@ class HomePageData
             ],
             'machineCounts' => ['1', '2', '3', '4+'],
             'existingVending' => ['No', 'Yes, want to switch'],
+            'yesNoOptions' => ['Yes', 'No'],
         ];
     }
 
@@ -495,7 +467,7 @@ class HomePageData
             'items' => [
                 [
                     'stars' => '★★★★★',
-                    'quote' => 'We have four warehouses and now one person to call for all of them. Machines were in within two weeks.',
+                    'quote' => 'We have four warehouses and now one person to contact for all of them. Machines were in within two weeks.',
                     'role' => 'Facilities Manager',
                     'org' => 'Logistics company, TX',
                 ],
@@ -572,7 +544,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'How does it work?',
-                    'a' => 'You send a request, we confirm the details by phone, and a vetted operator near you installs and runs the machine.',
+                    'a' => 'You send a request, we confirm the details by email, and a vetted operator near you installs and runs the machine.',
                 ],
                 [
                     'q' => 'Do you offer service nationwide?',
@@ -600,7 +572,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'What if a machine breaks or runs empty?',
-                    'a' => 'Contact us and we get the operator out to fix or refill it.',
+                    'a' => 'Contact your provider and they will arrange service, repairs and refills',
                 ],
                 [
                     'q' => 'Can I switch providers if I\'m unhappy?',
@@ -612,7 +584,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'How do I get started?',
-                    'a' => 'Fill out the free request form or call us.',
+                    'a' => 'Fill out the free request form or use the contact page.',
                 ],
             ],
         ];

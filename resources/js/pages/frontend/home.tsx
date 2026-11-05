@@ -13,7 +13,6 @@ import { ServicesSection } from '@/components/home/services-section';
 import type { HomePageProps } from '@/types/frontend';
 
 export default function Home({
-    site,
     hero,
     howItWorks,
     services,
@@ -36,7 +35,7 @@ export default function Home({
                 />
             </Head>
 
-            <HeroSection hero={hero} phone={site.phone} />
+            <HeroSection hero={hero} />
             <HowItWorksSection data={howItWorks} />
             <ServicesSection data={services} />
             <FeaturedMachinesSection data={featuredMachines} />

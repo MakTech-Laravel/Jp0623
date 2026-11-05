@@ -65,13 +65,7 @@ function HeroImageFrame({
     );
 }
 
-export function HeroSection({
-    hero,
-    phone,
-}: {
-    hero: HeroData;
-    phone: string;
-}) {
+export function HeroSection({ hero }: { hero: HeroData }) {
     const reduceMotion = useReducedMotion();
     const images = hero.images;
     const [activeIndex, setActiveIndex] = useState(0);
@@ -116,9 +110,6 @@ export function HeroSection({
                         <BrandButton href={hero.cta.href}>
                             {hero.cta.label}
                         </BrandButton>
-                        <span className="font-mono text-sm font-semibold">
-                            {hero.phoneLabel} {phone}
-                        </span>
                     </div>
                     <p className="mt-4 text-sm text-on-petrol/90">
                         <b className="text-brass">{hero.trust.stars}</b>{' '}

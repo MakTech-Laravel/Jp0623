@@ -81,7 +81,7 @@ class IndustriesPageData
                     ],
                     [
                         'title' => 'One point of contact',
-                        'text' => 'Call us for service at any of your sites.',
+                        'text' => 'Email us or use the contact page for service at any of your sites.',
                     ],
                 ],
             ],

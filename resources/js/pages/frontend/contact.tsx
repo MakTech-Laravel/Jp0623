@@ -10,7 +10,7 @@ export default function Contact({ hero, panel, form }: ContactPageProps) {
                 <meta
                     head-key="description"
                     name="description"
-                    content="Contact Vending Machine Location Services. Complete the form or call our team."
+                    content="Contact Vending Machine Location Services. Complete the form or email our team."
                 />
             </Head>
 

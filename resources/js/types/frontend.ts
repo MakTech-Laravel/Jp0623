@@ -12,7 +12,6 @@ export type FooterColumn = {
 export type SiteData = {
     name: string;
     tagline: string;
-    phone: string;
     footerBlurb: string;
     copyright: string;
     topNav: NavLink[];
@@ -30,7 +29,6 @@ export type HeroData = {
     lede: string;
     bullets: string[];
     cta: NavLink;
-    phoneLabel: string;
     trust: {
         stars: string;
         text: string;
@@ -164,6 +162,7 @@ export type ProductCatalogItem = {
 };
 
 export type ProductCatalogData = {
+    disclaimer: string;
     filters: string[];
     items: ProductCatalogItem[];
 };
@@ -270,8 +269,6 @@ export type OfficeCoffeePageProps = {
 
 export type ContactPanelData = {
     title: string;
-    phone: string;
-    phoneHref: string;
     email: string;
     emailHref: string;
     hours: string;
@@ -356,6 +353,7 @@ export type RequestFormData = {
     machineInterests: string[];
     machineCounts: string[];
     existingVending: string[];
+    yesNoOptions: string[];
 };
 
 export type ReviewItem = {

@@ -38,11 +38,9 @@ class ContactPageData
      */
     public static function hero(): array
     {
-        $phone = HomePageData::site()['phone'];
-
         return [
             'title' => 'Contact us',
-            'lead' => "Complete the form below or call {$phone}.",
+            'lead' => 'Complete the form below or email our team.',
         ];
     }
 
@@ -51,12 +49,8 @@ class ContactPageData
      */
     public static function panel(): array
     {
-        $phone = HomePageData::site()['phone'];
-
         return [
             'title' => 'Talk to our team',
-            'phone' => $phone,
-            'phoneHref' => 'tel:+18000000000',
             'email' => 'hello@vendingmachinelocationsforsale.com',
             'emailHref' => 'mailto:hello@vendingmachinelocationsforsale.com',
             'hours' => 'Mon–Fri, 8am–6pm ET',
