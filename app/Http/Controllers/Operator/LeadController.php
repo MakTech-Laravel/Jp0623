@@ -17,7 +17,7 @@ class LeadController extends Controller
 
         $data = OperatorDashboardData::for($user);
 
-        return Inertia::render('leads/index', [
+        return Inertia::render('operator/leads/index', [
             'leads' => $data['leads'],
             'primaryCity' => $data['primaryCity'],
         ]);
@@ -28,7 +28,7 @@ class LeadController extends Controller
         $user = $request->user();
         $user->loadMissing('operatorProfile');
 
-        return Inertia::render('leads/purchased', [
+        return Inertia::render('operator/leads/purchased', [
             'purchasedLeads' => OperatorDashboardData::purchasedLeads(),
             'primaryCity' => $user->operatorProfile?->primary_city ?: 'Houston, TX',
         ]);

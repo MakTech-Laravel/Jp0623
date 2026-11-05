@@ -11,7 +11,7 @@ class SubscriptionController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('subscription/index', [
+        return Inertia::render('operator/subscription/index', [
             'subscription' => OperatorDashboardData::subscription(),
         ]);
     }

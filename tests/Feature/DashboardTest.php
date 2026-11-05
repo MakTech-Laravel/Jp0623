@@ -68,7 +68,7 @@ test('operators can open the leads stub page', function () {
         ->assertOk()
         ->assertInertia(
             fn (Assert $page) => $page
-                ->component('leads/index')
+                ->component('operator/leads/index')
                 ->has('leads')
         );
 });
@@ -82,7 +82,7 @@ test('operators can open the subscription stub page', function () {
         ->assertOk()
         ->assertInertia(
             fn (Assert $page) => $page
-                ->component('subscription/index')
+                ->component('operator/subscription/index')
                 ->has('subscription')
         );
 });
@@ -96,7 +96,7 @@ test('operators can open the purchased location leads page', function () {
         ->assertOk()
         ->assertInertia(
             fn (Assert $page) => $page
-                ->component('leads/purchased')
+                ->component('operator/leads/purchased')
                 ->has('purchasedLeads')
                 ->has('primaryCity')
         );
