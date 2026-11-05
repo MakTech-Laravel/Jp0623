@@ -65,7 +65,7 @@ class AboutPageData
             'valuesTitle' => 'What we stand for',
             'values' => [
                 'No cost to the location',
-                'Local operators who answer the phone',
+                'Local operators who respond quickly',
                 'Clear rules for operators: verified leads, one buyer per lead',
             ],
             'kpis' => [

@@ -33,7 +33,6 @@ class HomePageData
         return [
             'name' => 'Vending Machine Location Services',
             'tagline' => 'Nationwide',
-            'phone' => '(800) 000-0000',
             'footerBlurb' => 'Full-service vending, micro markets, office coffee and ATMs for businesses nationwide. One contact for every location.',
             'copyright' => '© 2026 vendingmachinelocationsforsale.com',
             'topNav' => [
@@ -120,7 +119,7 @@ class HomePageData
         return [
             'eyebrow' => 'Vending management · Nationwide',
             'titleBefore' => 'Vending Machine Location Services, ',
-            'titleAccent' => 'one call away.',
+            'titleAccent' => 'for every location.',
             'lede' => 'We find the vendor, schedule the install and keep the machines stocked and running. You deal with one contact for every site you have.',
             'bullets' => [
                 'No equipment fees, install charges or service costs',
@@ -131,7 +130,6 @@ class HomePageData
                 'label' => 'Request a free machine',
                 'href' => '#request-sec',
             ],
-            'phoneLabel' => 'or call',
             'trust' => [
                 'stars' => '★★★★★',
                 'text' => 'Used by thousands of businesses across the U.S.',
@@ -237,7 +235,7 @@ class HomePageData
             'eyebrow' => 'Featured machines',
             'title' => 'Popular machines for new placements.',
             'link' => [
-                'label' => 'See all 9 machines →',
+                'label' => 'See all 7 machines →',
                 'href' => '/machines',
             ],
             'items' => array_values(array_filter(
@@ -261,7 +259,7 @@ class HomePageData
                 'tags' => ['Combo', 'Card + phone'],
                 'desc' => 'One machine for snacks and cold drinks. The most common choice for a first placement.',
                 'href' => '/machines/combo',
-                'image' => '/images/machines/Alpine-ST5000.jpg',
+                'image' => '/images/machines/space-saver-combo.jpg',
             ],
             [
                 'id' => 'healthy',
@@ -291,37 +289,17 @@ class HomePageData
                 'tags' => ['Drinks'],
                 'desc' => 'Water, soda, juice, tea and energy drinks kept cold all day.',
                 'href' => '/machines/drink',
-                'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
-            ],
-            [
-                'id' => 'touch',
-                'name' => 'Touchscreen Combo',
-                'kind' => 'touch',
-                'type' => 'Combo',
-                'tags' => ['Combo', 'Touchscreen'],
-                'desc' => 'A large screen with product photos, nutrition info and promotions.',
-                'href' => '/machines/touch',
-                'image' => '/images/machines/micro-market.png',
-            ],
-            [
-                'id' => 'food',
-                'name' => 'Refrigerated Fresh Food',
-                'kind' => 'food',
-                'type' => 'Fresh food',
-                'tags' => ['Fresh food'],
-                'desc' => 'Sandwiches, salads and meals held at safe temperatures with health controls.',
-                'href' => '/machines/food',
-                'image' => '/images/machines/coffee.png',
+                'image' => '/images/machines/Cold-Drink-Machine.jpg',
             ],
             [
                 'id' => 'slim',
-                'name' => 'Space-Saver Combo',
+                'name' => 'Space Saver Combo',
                 'kind' => 'slim',
                 'type' => 'Combo',
                 'tags' => ['Combo', 'Compact'],
                 'desc' => 'A slim unit that fits where a full-size machine won\'t.',
                 'href' => '/machines/slim',
-                'image' => '/images/machines/Alpine-ST5000.jpg',
+                'image' => '/images/machines/space-saver-combo.jpg',
             ],
             [
                 'id' => 'ai-cooler',
@@ -381,63 +359,56 @@ class HomePageData
                 'name' => 'Beverages',
                 'desc' => 'Water, soda, sparkling water, juice and iced tea',
                 'tags' => ['Bottled water', 'Cola & diet cola', 'Sparkling water', 'Orange juice', 'Iced tea'],
-                'image' => '/images/products/canned-regular-cola.jpg',
+                'image' => '/images/products/drinks.jpg',
             ],
             [
                 'kind' => 'chips',
                 'name' => 'Chips & salty snacks',
                 'desc' => 'Classic chips, pretzels, popcorn and crackers',
                 'tags' => ['Potato chips', 'Pretzels', 'Popcorn', 'Cheese crackers', 'Tortilla chips'],
-                'image' => '/images/products/Baked-Doritos.jpg',
+                'image' => '/images/products/chips.jpg',
             ],
             [
                 'kind' => 'sweets',
                 'name' => 'Candy & sweets',
                 'desc' => 'Chocolate, gummies, mints and cookies',
                 'tags' => ['Chocolate bars', 'Gummies', 'Cookies', 'Mints', 'Peanut butter cups'],
-                'image' => '/images/products/Kelloggs-Fruity-Snacks-Mixed-Berry.jpg',
+                'image' => '/images/products/candy.jpg',
             ],
             [
                 'kind' => 'nuts',
-                'name' => 'Nuts & fruit',
-                'desc' => 'Trail mix, almonds, dried fruit and fresh fruit',
-                'tags' => ['Trail mix', 'Almonds', 'Dried mango', 'Apples', 'Mixed nuts'],
-                'image' => '/images/products/skittles.jpg',
+                'name' => 'Nuts & snack bars',
+                'desc' => 'Trail mix, almonds, protein bars, granola bars and breakfast bars',
+                'tags' => ['Trail mix', 'Almonds', 'Protein bar', 'Granola bar', 'Mixed nuts'],
+                'image' => '/images/products/nuts-and-snack-bars.jpg',
             ],
             [
                 'kind' => 'pastry',
                 'name' => 'Pastries',
                 'desc' => 'Muffins, donuts, honey buns and toaster pastries',
                 'tags' => ['Blueberry muffin', 'Honey bun', 'Mini donuts', 'Croissant', 'Pop-tarts'],
-                'image' => '/images/products/canned-regular-cola.jpg',
-            ],
-            [
-                'kind' => 'bars',
-                'name' => 'Snack bars',
-                'desc' => 'Protein bars, granola bars and breakfast bars',
-                'tags' => ['Protein bar', 'Granola bar', 'Breakfast bar', 'Rice crisp bar', 'Nut bar'],
-                'image' => '/images/products/Baked-Doritos.jpg',
+                'image' => '/images/products/pastries.jpg',
             ],
             [
                 'kind' => 'healthy',
                 'name' => 'Healthy choices',
                 'desc' => 'Baked snacks, low-sugar drinks and plant-based options',
                 'tags' => ['Baked chips', 'Veggie straws', 'Kombucha', 'Seaweed snacks', 'Low-sugar tea'],
-                'image' => '/images/products/Kelloggs-Fruity-Snacks-Mixed-Berry.jpg',
+                'image' => '/images/products/Healthy-choices.jpg',
             ],
             [
                 'kind' => 'energy',
-                'name' => 'Energy & sports',
+                'name' => 'Energy and sports drinks',
                 'desc' => 'Energy drinks, electrolyte drinks and protein shakes',
                 'tags' => ['Energy drink', 'Sports drink', 'Protein shake', 'Cold brew can', 'Electrolyte water'],
-                'image' => '/images/products/skittles.jpg',
+                'image' => '/images/products/energy-and-sports-drinks.jpg',
             ],
             [
                 'kind' => 'food',
                 'name' => 'Fresh food',
                 'desc' => 'Sandwiches, salads and ready meals for markets and coolers',
                 'tags' => ['Turkey sandwich', 'Chicken salad', 'Pasta bowl', 'Fruit cup', 'Yogurt parfait'],
-                'image' => '/images/products/canned-regular-cola.jpg',
+                'image' => '/images/products/fresh-food.jpg',
             ],
             [
                 'kind' => 'coffee',
@@ -457,8 +428,8 @@ class HomePageData
         return [
             'eyebrow' => 'Free request',
             'title' => 'Start your free vending request.',
-            'text' => 'Takes about a minute. Our team calls you to confirm the details, then a local operator gets in touch.',
-            'successMessage' => 'Thanks! Our team will call you within one business day to confirm your request.',
+            'text' => 'Takes about a minute. Our team will email you to confirm the details, then a local operator gets in touch.',
+            'successMessage' => 'Thanks! Our team will email you within one business day to confirm your request.',
             'submitLabel' => 'Get vending now',
             'locationTypes' => [
                 'Business / office',
@@ -481,6 +452,7 @@ class HomePageData
             ],
             'machineCounts' => ['1', '2', '3', '4+'],
             'existingVending' => ['No', 'Yes, want to switch'],
+            'yesNoOptions' => ['Yes', 'No'],
         ];
     }
 
@@ -495,7 +467,7 @@ class HomePageData
             'items' => [
                 [
                     'stars' => '★★★★★',
-                    'quote' => 'We have four warehouses and now one person to call for all of them. Machines were in within two weeks.',
+                    'quote' => 'We have four warehouses and now one person to contact for all of them. Machines were in within two weeks.',
                     'role' => 'Facilities Manager',
                     'org' => 'Logistics company, TX',
                 ],
@@ -572,7 +544,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'How does it work?',
-                    'a' => 'You send a request, we confirm the details by phone, and a vetted operator near you installs and runs the machine.',
+                    'a' => 'You send a request, we confirm the details by email, and a vetted operator near you installs and runs the machine.',
                 ],
                 [
                     'q' => 'Do you offer service nationwide?',
@@ -600,7 +572,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'What if a machine breaks or runs empty?',
-                    'a' => 'Contact us and we get the operator out to fix or refill it.',
+                    'a' => 'Contact your provider and they will arrange service, repairs and refills',
                 ],
                 [
                     'q' => 'Can I switch providers if I\'m unhappy?',
@@ -612,7 +584,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'How do I get started?',
-                    'a' => 'Fill out the free request form or call us.',
+                    'a' => 'Fill out the free request form or use the contact page.',
                 ],
             ],
         ];

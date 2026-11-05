@@ -59,7 +59,7 @@ class MachinesPageData
     {
         return [
             'title' => 'Our machine lineup.',
-            // 'text' => 'Not sure which one fits your space? Tell us your headcount and room size and we\'ll recommend one.',
+            'text' => 'Availability of machines and or micro markets may vary by region. Multiple machines can be placed at locations with more visitors/employees.',
             'filters' => [
                 'All',
                 'Combo',
@@ -67,7 +67,6 @@ class MachinesPageData
                 'Drink',
                 'Healthy',
                 'Vendera cooler',
-                'Fresh food',
                 'Micro market',
             ],
             'items' => HomePageData::machines(),

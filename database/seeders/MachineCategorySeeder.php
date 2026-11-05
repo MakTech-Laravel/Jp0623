@@ -19,7 +19,6 @@ class MachineCategorySeeder extends Seeder
             'Drink',
             'Healthy',
             'Vendera cooler',
-            'Fresh food',
             'Micro market',
         ];
 

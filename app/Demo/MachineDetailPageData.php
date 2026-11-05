@@ -27,7 +27,6 @@ class MachineDetailPageData
             'status' => 'Available nationwide',
             'specs' => [
                 ['label' => 'Capacity', 'value' => $extra['capacity']],
-                ['label' => 'Dimensions', 'value' => $extra['dimensions']],
                 ['label' => 'Payments', 'value' => 'Card, tap, Apple Pay, Google Pay, cash (optional)'],
                 ['label' => 'Power', 'value' => '115V dedicated outlet'],
                 ['label' => 'Best for', 'value' => $extra['bestFor']],
@@ -37,6 +36,7 @@ class MachineDetailPageData
                 'Remote stock monitoring',
                 'Product mix chosen for your location',
                 'Local operator handles repairs',
+                'Multiple machines can be placed at locations with more visitors/employees',
             ],
             'related' => self::related($id),
             'cta' => [
@@ -62,56 +62,39 @@ class MachineDetailPageData
     }
 
     /**
-     * Prototype MACHINES cap / dim / best fields.
+     * Prototype MACHINES cap / best fields.
      *
-     * @return array<string, array{capacity: string, dimensions: string, bestFor: string}>
+     * @return array<string, array{capacity: string, bestFor: string}>
      */
     private static function extras(): array
     {
         return [
             'combo' => [
-                'capacity' => '35 snack + 40 drink selections',
-                'dimensions' => '72" H × 39" W × 35" D',
+                'capacity' => 'Up to 35 snack + 40 drink selections',
                 'bestFor' => 'Offices and break rooms with 25–150 people',
             ],
             'healthy' => [
-                'capacity' => '30 snack + 30 drink selections',
-                'dimensions' => '72" H × 39" W × 35" D',
+                'capacity' => 'Up to 30 snack + 30 drink selections',
                 'bestFor' => 'Gyms, hospitals, schools and wellness programs',
             ],
             'snack' => [
-                'capacity' => '45 selections, 600+ items',
-                'dimensions' => '72" H × 41" W × 35" D',
+                'capacity' => 'Up to 45 selections, 600+ items',
                 'bestFor' => 'Warehouses and plants with multiple shifts',
             ],
             'drink' => [
-                'capacity' => '10 selections, 400+ bottles and cans',
-                'dimensions' => '72" H × 38" W × 33" D',
+                'capacity' => 'Up to 10 selections, 400+ bottles and cans',
                 'bestFor' => 'Lobbies, gyms and outdoor-covered areas',
             ],
-            'touch' => [
-                'capacity' => '40 snack + 20 drink selections',
-                'dimensions' => '76" H × 40" W × 36" D',
-                'bestFor' => 'Corporate offices and showrooms',
-            ],
-            'food' => [
-                'capacity' => '30 selections',
-                'dimensions' => '72" H × 40" W × 35" D',
-                'bestFor' => 'Hospitals, night shifts and sites without a cafeteria',
-            ],
             'slim' => [
-                'capacity' => '20 snack + 12 drink selections',
-                'dimensions' => '72" H × 30" W × 33" D',
+                'capacity' => 'Up to 20 snack + 12 drink selections',
                 'bestFor' => 'Small offices, dealerships and lobbies',
             ],
             'ai-cooler' => [
                 'capacity' => 'Up to 250 items',
-                'dimensions' => '80" H × 31" W × 32" D',
                 'bestFor' => 'Teams of 25–100 who want fresh food and drinks',
             ],
             'micro-market' => [
-                'capacity' => '500+ items',
-                'dimensions' => 'Fits rooms from 8 × 10 ft',
+                'capacity' => 'Up to 500+ items',
                 'bestFor' => 'Sites with 100+ people',
             ],
         ];

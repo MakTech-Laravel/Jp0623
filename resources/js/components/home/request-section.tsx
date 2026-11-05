@@ -17,6 +17,15 @@ export function RequestSection({ data }: { data: RequestFormData }) {
         data.machineInterests.slice(0, 2),
     );
     const [placement, setPlacement] = useState('Inside');
+    const [foodOnSite, setFoodOnSite] = useState(data.yesNoOptions[1] ?? 'No');
+    const [comparingQuotes, setComparingQuotes] = useState(
+        data.yesNoOptions[1] ?? 'No',
+    );
+    const [existingVending, setExistingVending] = useState(
+        data.existingVending[0] ?? 'No',
+    );
+
+    const isSwitchingProvider = existingVending !== 'No';
 
     function toggleInterest(value: string) {
         setInterests((current) =>
@@ -183,6 +192,40 @@ export function RequestSection({ data }: { data: RequestFormData }) {
                                             className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink"
                                         />
                                     </label>
+                                    <label className="flex flex-col gap-1 text-sm font-semibold">
+                                        Are there food options on site?
+                                        <select
+                                            value={foodOnSite}
+                                            onChange={(event) =>
+                                                setFoodOnSite(event.target.value)
+                                            }
+                                            className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink"
+                                        >
+                                            {data.yesNoOptions.map((option) => (
+                                                <option key={option}>
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </label>
+                                    <label className="flex flex-col gap-1 text-sm font-semibold">
+                                        Are you comparing quotes?
+                                        <select
+                                            value={comparingQuotes}
+                                            onChange={(event) =>
+                                                setComparingQuotes(
+                                                    event.target.value,
+                                                )
+                                            }
+                                            className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink"
+                                        >
+                                            {data.yesNoOptions.map((option) => (
+                                                <option key={option}>
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </label>
                                 </div>
                             ) : null}
 
@@ -235,7 +278,15 @@ export function RequestSection({ data }: { data: RequestFormData }) {
                                     </label>
                                     <label className="flex flex-col gap-1 text-sm font-semibold">
                                         Do you have vending now?
-                                        <select className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink">
+                                        <select
+                                            value={existingVending}
+                                            onChange={(event) =>
+                                                setExistingVending(
+                                                    event.target.value,
+                                                )
+                                            }
+                                            className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink"
+                                        >
                                             {data.existingVending.map(
                                                 (option) => (
                                                     <option key={option}>
@@ -245,6 +296,18 @@ export function RequestSection({ data }: { data: RequestFormData }) {
                                             )}
                                         </select>
                                     </label>
+                                    {isSwitchingProvider ? (
+                                        <label className="col-span-full flex flex-col gap-1 text-sm font-semibold">
+                                            Why are you changing vending
+                                            providers?
+                                            <textarea
+                                                rows={2}
+                                                required
+                                                placeholder="Tell us briefly why you are switching"
+                                                className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink"
+                                            />
+                                        </label>
+                                    ) : null}
                                 </div>
                             ) : null}
 

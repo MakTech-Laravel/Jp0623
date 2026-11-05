@@ -30,14 +30,6 @@ export function ContactSection({
                             {panel.title}
                         </h3>
                         <p className="mt-3 text-sm leading-relaxed text-brand-muted">
-                            Phone:{' '}
-                            <a
-                                href={panel.phoneHref}
-                                className="font-mono font-semibold text-brand-ink no-underline hover:underline"
-                            >
-                                {panel.phone}
-                            </a>
-                            <br />
                             Email:{' '}
                             <a
                                 href={panel.emailHref}

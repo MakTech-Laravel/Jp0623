@@ -24,8 +24,13 @@ export function SiteFooter({ site }: SiteFooterProps) {
                         <p className="mt-3 max-w-lg text-sm text-on-petrol/80">
                             {site.footerBlurb}
                         </p>
-                        <p className="mt-3 font-mono font-semibold">
-                            {site.phone}
+                        <p className="mt-3">
+                            <Link
+                                href="/contact"
+                                className="font-mono text-sm font-semibold text-on-petrol no-underline hover:underline hover:decoration-brass"
+                            >
+                                Contact us
+                            </Link>
                         </p>
                     </div>
 
