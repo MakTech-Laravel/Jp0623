@@ -55,6 +55,7 @@ class ProductsPageData
         $items = HomePageData::productCatalog();
 
         return [
+            'disclaimer' => 'Availability of products may vary by location',
             'filters' => array_merge(
                 ['All'],
                 array_column($items, 'name'),

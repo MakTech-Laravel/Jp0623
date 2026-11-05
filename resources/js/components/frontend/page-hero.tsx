@@ -14,6 +14,7 @@ type PageHeroProps = {
     cta?: NavLink;
     image?: string;
     actions?: ReactNode;
+    crumb?: NavLink[];
 };
 
 export function PageHero({
@@ -23,11 +24,31 @@ export function PageHero({
     cta,
     image,
     actions,
+    crumb,
 }: PageHeroProps) {
     return (
         <section className="bg-petrol py-12 text-on-petrol md:py-14">
             <Wrap className="grid items-center gap-10 md:grid-cols-[1.3fr_0.7fr]">
                 <div>
+                    {crumb && crumb.length > 0 ? (
+                        <p className="mb-3 font-mono text-xs tracking-wide text-on-petrol/70">
+                            {crumb.map((item, index) => (
+                                <span key={item.label}>
+                                    {index > 0 ? ' / ' : null}
+                                    {index < crumb.length - 1 ? (
+                                        <a
+                                            href={item.href}
+                                            className="text-on-petrol/85 no-underline hover:underline hover:decoration-brass"
+                                        >
+                                            {item.label}
+                                        </a>
+                                    ) : (
+                                        <span>{item.label}</span>
+                                    )}
+                                </span>
+                            ))}
+                        </p>
+                    ) : null}
                     {eyebrow ? (
                         <p className="font-mono text-xs tracking-widest text-brass uppercase">
                             {eyebrow}

@@ -10,6 +10,7 @@ test('products page renders with demo props', function () {
             ->has('site')
             ->has('hero')
             ->has('catalog.filters')
-            ->has('catalog.items', 10)
+            ->has('catalog.items', 9)
+            ->where('catalog.disclaimer', 'Availability of products may vary by location')
         );
 });

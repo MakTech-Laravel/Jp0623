@@ -31,14 +31,13 @@ class HomePageData
     public static function site(): array
     {
         return [
-            'name' => 'VMLFS',
-            'tagline' => 'Vending Machine Locations For Sale',
-            'phone' => '(800) 000-0000',
+            'name' => 'Vending Machine Location Services',
+            'tagline' => 'Nationwide',
             'footerBlurb' => 'Full-service vending, micro markets, office coffee and ATMs for businesses nationwide. One contact for every location.',
             'copyright' => '© 2026 vendingmachinelocationsforsale.com',
             'topNav' => [
-                ['label' => 'About', 'href' => '#'],
-                ['label' => 'Industries', 'href' => '#'],
+                ['label' => 'About', 'href' => '/about'],
+                ['label' => 'Industries', 'href' => '/industries'],
                 ['label' => 'ATM', 'href' => '#'],
                 ['label' => 'Schools', 'href' => '#'],
                 ['label' => 'Cities', 'href' => '#'],
@@ -46,15 +45,15 @@ class HomePageData
             ],
             'operatorCta' => [
                 'label' => 'Are you a vending operator? Click here →',
-                'href' => '#',
+                'href' => '/login',
             ],
             'mainNav' => [
                 ['label' => 'Home', 'href' => '/', 'current' => true],
                 ['label' => 'Machines', 'href' => '/machines'],
                 ['label' => 'Products', 'href' => '/products'],
                 ['label' => 'Micro Markets', 'href' => '/micro-markets'],
-                ['label' => 'Office Coffee', 'href' => '#'],
-                ['label' => 'Contact Us', 'href' => '#'],
+                ['label' => 'Office Coffee', 'href' => '/office-coffee'],
+                ['label' => 'Contact Us', 'href' => '/contact'],
             ],
             'headerCta' => [
                 'label' => 'Get Vending Now',
@@ -66,8 +65,8 @@ class HomePageData
                     'links' => [
                         ['label' => 'Vending machines', 'href' => '/machines'],
                         ['label' => 'Micro markets', 'href' => '/micro-markets'],
-                        ['label' => 'AI smart coolers', 'href' => '#'],
-                        ['label' => 'Office coffee', 'href' => '#'],
+                        ['label' => 'Vendera smart coolers', 'href' => '#'],
+                        ['label' => 'Office coffee', 'href' => '/office-coffee'],
                         ['label' => 'ATM machines', 'href' => '#'],
                         ['label' => 'School vending', 'href' => '#'],
                     ],
@@ -75,31 +74,30 @@ class HomePageData
                 [
                     'title' => 'Industries',
                     'links' => [
-                        ['label' => 'Offices', 'href' => '#'],
-                        ['label' => 'Warehouses', 'href' => '#'],
-                        ['label' => 'Manufacturing', 'href' => '#'],
-                        ['label' => 'Apartments', 'href' => '#'],
-                        ['label' => 'Hospitals', 'href' => '#'],
-                        ['label' => 'All industries', 'href' => '#'],
+                        ['label' => 'Offices', 'href' => '/industries/offices'],
+                        ['label' => 'Warehouses', 'href' => '/industries/warehouses'],
+                        ['label' => 'Manufacturing', 'href' => '/industries/manufacturing'],
+                        ['label' => 'Apartments', 'href' => '/industries/apartments'],
+                        ['label' => 'Hospitals', 'href' => '/industries/hospitals'],
+                        ['label' => 'All industries', 'href' => '/industries'],
                     ],
                 ],
                 [
                     'title' => 'Company',
                     'links' => [
-                        ['label' => 'About us', 'href' => '#'],
+                        ['label' => 'About us', 'href' => '/about'],
                         ['label' => 'Products', 'href' => '/products'],
                         ['label' => 'Resources', 'href' => '#'],
                         ['label' => 'Cities we serve', 'href' => '#'],
-                        ['label' => 'Contact us', 'href' => '#'],
+                        ['label' => 'Contact us', 'href' => '/contact'],
                     ],
                 ],
                 [
                     'title' => 'Operators',
                     'links' => [
                         ['label' => 'Join the network', 'href' => '#'],
-                        ['label' => 'Operator login', 'href' => '#'],
-                        ['label' => 'Create account', 'href' => '#'],
-                        ['label' => 'Routes for sale', 'href' => '#'],
+                        ['label' => 'Operator login', 'href' => '/login'],
+                        ['label' => 'Create account', 'href' => '/register'],
                     ],
                 ],
             ],
@@ -120,8 +118,8 @@ class HomePageData
     {
         return [
             'eyebrow' => 'Vending management · Nationwide',
-            'titleBefore' => 'Vending service for every location, ',
-            'titleAccent' => 'one call away.',
+            'titleBefore' => 'Vending Machine Location Services, ',
+            'titleAccent' => 'for every location.',
             'lede' => 'We find the vendor, schedule the install and keep the machines stocked and running. You deal with one contact for every site you have.',
             'bullets' => [
                 'No equipment fees, install charges or service costs',
@@ -132,7 +130,6 @@ class HomePageData
                 'label' => 'Request a free machine',
                 'href' => '#request-sec',
             ],
-            'phoneLabel' => 'or call',
             'trust' => [
                 'stars' => '★★★★★',
                 'text' => 'Used by thousands of businesses across the U.S.',
@@ -141,11 +138,11 @@ class HomePageData
             ],
             'images' => [
                 [
-                    'src' => '/images/hero/header2.png',
+                    'src' => '/images/hero/Vendera-Black-Glass-Display-Cooler.png',
                     'alt' => 'Snack and drink combo machine',
                 ],
                 [
-                    'src' => '/images/machines/Alpine-ST5000.jpg',
+                    'src' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
                     'alt' => 'Alpine snack and beverage machine',
                 ],
                 [
@@ -153,8 +150,12 @@ class HomePageData
                     'alt' => 'Traditional vending machine',
                 ],
                 [
-                    'src' => '/images/machines/ai-cooler.png',
-                    'alt' => 'AI smart cooler',
+                    'src' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
+                    'alt' => 'Vendera smart cooler',
+                ],
+                [
+                    'src' => '/images/machines/micro-market.png',
+                    'alt' => 'Micro market setup',
                 ],
                 [
                     'src' => '/images/machines/micro-market.png',
@@ -212,15 +213,15 @@ class HomePageData
                     'image' => '/images/machines/micro-market.png',
                 ],
                 [
-                    'title' => 'AI smart coolers',
+                    'title' => 'Vendera smart coolers',
                     'text' => 'Tap, open the door, take what you want.',
                     'href' => '#',
-                    'image' => '/images/machines/ai-cooler.png',
+                    'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
                 ],
                 [
                     'title' => 'Office coffee',
                     'text' => 'Brewers and supplies delivered on schedule.',
-                    'href' => '#',
+                    'href' => '/office-coffee',
                     'image' => '/images/machines/coffee.png',
                 ],
             ],
@@ -238,7 +239,7 @@ class HomePageData
             'eyebrow' => 'Featured machines',
             'title' => 'Popular machines for new placements.',
             'link' => [
-                'label' => 'See all 9 machines →',
+                'label' => 'See all 7 machines →',
                 'href' => '/machines',
             ],
             'items' => array_values(array_filter(
@@ -262,7 +263,7 @@ class HomePageData
                 'tags' => ['Combo', 'Card + phone'],
                 'desc' => 'One machine for snacks and cold drinks. The most common choice for a first placement.',
                 'href' => '/machines/combo',
-                'image' => '/images/machines/Alpine-ST5000.jpg',
+                'image' => '/images/machines/space-saver-combo.jpg',
             ],
             [
                 'id' => 'healthy',
@@ -292,47 +293,27 @@ class HomePageData
                 'tags' => ['Drinks'],
                 'desc' => 'Water, soda, juice, tea and energy drinks kept cold all day.',
                 'href' => '/machines/drink',
-                'image' => '/images/machines/ai-cooler.png',
-            ],
-            [
-                'id' => 'touch',
-                'name' => 'Touchscreen Combo',
-                'kind' => 'touch',
-                'type' => 'Combo',
-                'tags' => ['Combo', 'Touchscreen'],
-                'desc' => 'A large screen with product photos, nutrition info and promotions.',
-                'href' => '/machines/touch',
-                'image' => '/images/machines/micro-market.png',
-            ],
-            [
-                'id' => 'food',
-                'name' => 'Refrigerated Fresh Food',
-                'kind' => 'food',
-                'type' => 'Fresh food',
-                'tags' => ['Fresh food'],
-                'desc' => 'Sandwiches, salads and meals held at safe temperatures with health controls.',
-                'href' => '/machines/food',
-                'image' => '/images/machines/coffee.png',
+                'image' => '/images/machines/Cold-Drink-Machine.jpg',
             ],
             [
                 'id' => 'slim',
-                'name' => 'Space-Saver Combo',
+                'name' => 'Space Saver Combo',
                 'kind' => 'slim',
                 'type' => 'Combo',
                 'tags' => ['Combo', 'Compact'],
                 'desc' => 'A slim unit that fits where a full-size machine won\'t.',
                 'href' => '/machines/slim',
-                'image' => '/images/machines/Alpine-ST5000.jpg',
+                'image' => '/images/machines/space-saver-combo.jpg',
             ],
             [
                 'id' => 'ai-cooler',
-                'name' => 'AI Smart Cooler',
+                'name' => 'Vendera Smart Cooler',
                 'kind' => 'cooler',
-                'type' => 'AI cooler',
-                'tags' => ['AI cooler', 'Tap and go'],
+                'type' => 'Vendera cooler',
+                'tags' => ['Vendera cooler', 'Tap and go'],
                 'desc' => 'Tap a card or phone, open the door and take what you want. Cameras and weight sensors charge only for what you took.',
                 'href' => '/machines/ai-cooler',
-                'image' => '/images/machines/ai-cooler.png',
+                'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
             ],
             [
                 'id' => 'micro-market',
@@ -382,63 +363,56 @@ class HomePageData
                 'name' => 'Beverages',
                 'desc' => 'Water, soda, sparkling water, juice and iced tea',
                 'tags' => ['Bottled water', 'Cola & diet cola', 'Sparkling water', 'Orange juice', 'Iced tea'],
-                'image' => '/images/products/canned-regular-cola.jpg',
+                'image' => '/images/products/drinks.jpg',
             ],
             [
                 'kind' => 'chips',
                 'name' => 'Chips & salty snacks',
                 'desc' => 'Classic chips, pretzels, popcorn and crackers',
                 'tags' => ['Potato chips', 'Pretzels', 'Popcorn', 'Cheese crackers', 'Tortilla chips'],
-                'image' => '/images/products/Baked-Doritos.jpg',
+                'image' => '/images/products/chips.jpg',
             ],
             [
                 'kind' => 'sweets',
                 'name' => 'Candy & sweets',
                 'desc' => 'Chocolate, gummies, mints and cookies',
                 'tags' => ['Chocolate bars', 'Gummies', 'Cookies', 'Mints', 'Peanut butter cups'],
-                'image' => '/images/products/Kelloggs-Fruity-Snacks-Mixed-Berry.jpg',
+                'image' => '/images/products/candy.jpg',
             ],
             [
                 'kind' => 'nuts',
-                'name' => 'Nuts & fruit',
-                'desc' => 'Trail mix, almonds, dried fruit and fresh fruit',
-                'tags' => ['Trail mix', 'Almonds', 'Dried mango', 'Apples', 'Mixed nuts'],
-                'image' => '/images/products/skittles.jpg',
+                'name' => 'Nuts & snack bars',
+                'desc' => 'Trail mix, almonds, protein bars, granola bars and breakfast bars',
+                'tags' => ['Trail mix', 'Almonds', 'Protein bar', 'Granola bar', 'Mixed nuts'],
+                'image' => '/images/products/nuts-and-snack-bars.jpg',
             ],
             [
                 'kind' => 'pastry',
                 'name' => 'Pastries',
                 'desc' => 'Muffins, donuts, honey buns and toaster pastries',
                 'tags' => ['Blueberry muffin', 'Honey bun', 'Mini donuts', 'Croissant', 'Pop-tarts'],
-                'image' => '/images/products/canned-regular-cola.jpg',
-            ],
-            [
-                'kind' => 'bars',
-                'name' => 'Snack bars',
-                'desc' => 'Protein bars, granola bars and breakfast bars',
-                'tags' => ['Protein bar', 'Granola bar', 'Breakfast bar', 'Rice crisp bar', 'Nut bar'],
-                'image' => '/images/products/Baked-Doritos.jpg',
+                'image' => '/images/products/pastries.jpg',
             ],
             [
                 'kind' => 'healthy',
                 'name' => 'Healthy choices',
                 'desc' => 'Baked snacks, low-sugar drinks and plant-based options',
                 'tags' => ['Baked chips', 'Veggie straws', 'Kombucha', 'Seaweed snacks', 'Low-sugar tea'],
-                'image' => '/images/products/Kelloggs-Fruity-Snacks-Mixed-Berry.jpg',
+                'image' => '/images/products/Healthy-choices.jpg',
             ],
             [
                 'kind' => 'energy',
-                'name' => 'Energy & sports',
+                'name' => 'Energy and sports drinks',
                 'desc' => 'Energy drinks, electrolyte drinks and protein shakes',
                 'tags' => ['Energy drink', 'Sports drink', 'Protein shake', 'Cold brew can', 'Electrolyte water'],
-                'image' => '/images/products/skittles.jpg',
+                'image' => '/images/products/energy-and-sports-drinks.jpg',
             ],
             [
                 'kind' => 'food',
                 'name' => 'Fresh food',
                 'desc' => 'Sandwiches, salads and ready meals for markets and coolers',
                 'tags' => ['Turkey sandwich', 'Chicken salad', 'Pasta bowl', 'Fruit cup', 'Yogurt parfait'],
-                'image' => '/images/products/canned-regular-cola.jpg',
+                'image' => '/images/products/fresh-food.jpg',
             ],
             [
                 'kind' => 'coffee',
@@ -458,8 +432,8 @@ class HomePageData
         return [
             'eyebrow' => 'Free request',
             'title' => 'Start your free vending request.',
-            'text' => 'Takes about a minute. Our team calls you to confirm the details, then a local operator gets in touch.',
-            'successMessage' => 'Thanks! Our team will call you within one business day to confirm your request.',
+            'text' => 'Takes about a minute. Our team will email you to confirm the details, then a local operator gets in touch.',
+            'successMessage' => 'Thanks! Our team will email you within one business day to confirm your request.',
             'submitLabel' => 'Get vending now',
             'locationTypes' => [
                 'Business / office',
@@ -475,13 +449,14 @@ class HomePageData
                 'Drinks',
                 'Combo',
                 'Healthy',
-                'AI cooler',
+                'Vendera cooler',
                 'Micro market',
                 'Coffee',
                 'ATM',
             ],
             'machineCounts' => ['1', '2', '3', '4+'],
             'existingVending' => ['No', 'Yes, want to switch'],
+            'yesNoOptions' => ['Yes', 'No'],
         ];
     }
 
@@ -496,13 +471,13 @@ class HomePageData
             'items' => [
                 [
                     'stars' => '★★★★★',
-                    'quote' => 'We have four warehouses and now one person to call for all of them. Machines were in within two weeks.',
+                    'quote' => 'We have four warehouses and now one person to contact for all of them. Machines were in within two weeks.',
                     'role' => 'Facilities Manager',
                     'org' => 'Logistics company, TX',
                 ],
                 [
                     'stars' => '★★★★★',
-                    'quote' => 'The AI cooler was a hit with our night shift. Restocking has been on time every week.',
+                    'quote' => 'The Vendera cooler was a hit with our night shift. Restocking has been on time every week.',
                     'role' => 'Plant Supervisor',
                     'org' => 'Manufacturer, OH',
                 ],
@@ -544,16 +519,16 @@ class HomePageData
             'title' => 'Vending for every kind of workplace.',
             'text' => 'If people spend their day at your location, we can set up a machine that fits it.',
             'items' => [
-                ['slug' => 'offices', 'label' => 'Offices', 'href' => '#'],
-                ['slug' => 'warehouses', 'label' => 'Warehouses', 'href' => '#'],
-                ['slug' => 'manufacturing', 'label' => 'Manufacturing', 'href' => '#'],
-                ['slug' => 'schools', 'label' => 'Schools', 'href' => '#'],
-                ['slug' => 'colleges', 'label' => 'Colleges & universities', 'href' => '#'],
-                ['slug' => 'hospitals', 'label' => 'Hospitals & medical', 'href' => '#'],
-                ['slug' => 'apartments', 'label' => 'Apartments', 'href' => '#'],
-                ['slug' => 'hotels', 'label' => 'Hotels & motels', 'href' => '#'],
-                ['slug' => 'gyms', 'label' => 'Gyms & fitness', 'href' => '#'],
-                ['slug' => 'retail', 'label' => 'Retail & dealerships', 'href' => '#'],
+                ['slug' => 'offices', 'label' => 'Offices', 'href' => '/industries/offices'],
+                ['slug' => 'warehouses', 'label' => 'Warehouses', 'href' => '/industries/warehouses'],
+                ['slug' => 'manufacturing', 'label' => 'Manufacturing', 'href' => '/industries/manufacturing'],
+                ['slug' => 'schools', 'label' => 'Schools', 'href' => '/industries/schools'],
+                ['slug' => 'colleges', 'label' => 'Colleges & universities', 'href' => '/industries/colleges'],
+                ['slug' => 'hospitals', 'label' => 'Hospitals & medical', 'href' => '/industries/hospitals'],
+                ['slug' => 'apartments', 'label' => 'Apartments', 'href' => '/industries/apartments'],
+                ['slug' => 'hotels', 'label' => 'Hotels & motels', 'href' => '/industries/hotels'],
+                ['slug' => 'gyms', 'label' => 'Gyms & fitness', 'href' => '/industries/gyms'],
+                ['slug' => 'retail', 'label' => 'Retail & dealerships', 'href' => '/industries/retail'],
             ],
         ];
     }
@@ -573,7 +548,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'How does it work?',
-                    'a' => 'You send a request, we confirm the details by phone, and a vetted operator near you installs and runs the machine.',
+                    'a' => 'You send a request, we confirm the details by email, and a vetted operator near you installs and runs the machine.',
                 ],
                 [
                     'q' => 'Do you offer service nationwide?',
@@ -585,7 +560,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'What types of machines do you offer?',
-                    'a' => 'Snack, drink and combo machines, AI smart coolers, micro markets, office coffee and ATMs.',
+                    'a' => 'Snack, drink and combo machines, Vendera smart coolers, micro markets, office coffee and ATMs.',
                 ],
                 [
                     'q' => 'Can you support multi-location businesses?',
@@ -593,7 +568,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'How long does installation take?',
-                    'a' => 'Usually two to four weeks after your request is confirmed.',
+                    'a' => 'Usually one to two weeks after your request is confirmed.',
                 ],
                 [
                     'q' => 'Can I choose the products?',
@@ -601,7 +576,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'What if a machine breaks or runs empty?',
-                    'a' => 'Contact us and we get the operator out to fix or refill it.',
+                    'a' => 'Contact your provider and they will arrange service, repairs and refills',
                 ],
                 [
                     'q' => 'Can I switch providers if I\'m unhappy?',
@@ -613,7 +588,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'How do I get started?',
-                    'a' => 'Fill out the free request form or call us.',
+                    'a' => 'Fill out the free request form or use the contact page.',
                 ],
             ],
         ];
@@ -642,7 +617,7 @@ class HomePageData
                 [
                     'id' => 'ai-vs-market',
                     'cat' => 'Smart & AI vending',
-                    'title' => 'AI coolers vs. micro markets: which one fits?',
+                    'title' => 'Vendera coolers vs. micro markets: which one fits?',
                     'excerpt' => 'A simple guide based on headcount, space and food needs.',
                     'href' => '#',
                 ],

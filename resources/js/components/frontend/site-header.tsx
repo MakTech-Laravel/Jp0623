@@ -54,7 +54,7 @@ export function SiteHeader({ site }: SiteHeaderProps) {
                     <Link
                         href="/"
                         onClick={closeMenu}
-                        className="flex items-center gap-2.5 font-display text-xl font-extrabold whitespace-nowrap text-on-petrol no-underline"
+                        className="flex max-w-[14rem] items-center gap-2.5 font-display text-base font-extrabold leading-tight text-on-petrol no-underline sm:max-w-xs sm:text-lg lg:max-w-sm lg:text-xl"
                     >
                         <svg
                             width={34}

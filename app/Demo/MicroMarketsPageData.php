@@ -136,7 +136,7 @@ class MicroMarketsPageData
     public static function compare(): array
     {
         return [
-            'title' => 'Micro markets & AI coolers: we offer both.',
+            'title' => 'Micro markets & Vendera coolers: we offer both.',
             'items' => [
                 [
                     'title' => 'Micro market',
@@ -145,9 +145,9 @@ class MicroMarketsPageData
                     'href' => '/micro-markets',
                 ],
                 [
-                    'title' => 'AI smart cooler',
+                    'title' => 'Vendera smart cooler',
                     'text' => 'Best for 25–100 people. One cooler that charges for what you take.',
-                    'image' => '/images/machines/ai-cooler.png',
+                    'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
                     'href' => '/machines/ai-cooler',
                 ],
             ],

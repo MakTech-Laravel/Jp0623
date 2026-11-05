@@ -14,7 +14,7 @@ import {
 import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { cn, toUrl } from '@/lib/utils';
 import { NavBadge } from './nav-badge';
-import { isNodeActive, isPathActive } from './nav-utils';
+import { isLeafActive, isNodeActive } from './nav-utils';
 import type { NavNode, NavNodeClassNames } from './types';
 
 /** Merge a slot's default + per-node override onto an optional base. */
@@ -30,6 +30,7 @@ function slot(
 interface NavFlyoutProps {
     node: NavNode;
     currentPath: string;
+    allLeafPaths: string[];
     defaults?: NavNodeClassNames;
 }
 
@@ -40,8 +41,14 @@ interface NavFlyoutProps {
  * children are surfaced through a portalled dropdown flyout instead. Nested
  * groups become nested sub-menus, so any depth is reachable without overlap.
  */
-export function NavFlyout({ node, currentPath, defaults }: NavFlyoutProps) {
-    const active = isNodeActive(node, currentPath);
+export function NavFlyout({
+    node,
+    currentPath,
+    allLeafPaths,
+    defaults,
+}: NavFlyoutProps) {
+    // Branch has an active child — open indicator only, not selected styling.
+    const branchActive = isNodeActive(node, currentPath, allLeafPaths);
     const Icon = node.icon;
 
     return (
@@ -49,9 +56,12 @@ export function NavFlyout({ node, currentPath, defaults }: NavFlyoutProps) {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <SidebarMenuButton
-                        isActive={active}
                         tooltip={node.title}
-                        className={slot('row', defaults, node)}
+                        aria-current={branchActive ? 'true' : undefined}
+                        className={cn(
+                            branchActive && 'text-sidebar-accent-foreground',
+                            slot('row', defaults, node),
+                        )}
                     >
                         {Icon && (
                             <Icon className={slot('icon', defaults, node)} />
@@ -81,6 +91,7 @@ export function NavFlyout({ node, currentPath, defaults }: NavFlyoutProps) {
                             key={child.title}
                             node={child}
                             currentPath={currentPath}
+                            allLeafPaths={allLeafPaths}
                             defaults={defaults}
                         />
                     ))}
@@ -90,7 +101,12 @@ export function NavFlyout({ node, currentPath, defaults }: NavFlyoutProps) {
     );
 }
 
-function FlyoutNode({ node, currentPath, defaults }: NavFlyoutProps) {
+function FlyoutNode({
+    node,
+    currentPath,
+    allLeafPaths,
+    defaults,
+}: NavFlyoutProps) {
     const Icon = node.icon;
 
     if (node.items?.length) {
@@ -98,7 +114,7 @@ function FlyoutNode({ node, currentPath, defaults }: NavFlyoutProps) {
             <DropdownMenuSub>
                 <DropdownMenuSubTrigger
                     className={cn(
-                        isNodeActive(node, currentPath) &&
+                        isNodeActive(node, currentPath, allLeafPaths) &&
                             'text-primary data-[state=open]:text-primary',
                         slot('row', defaults, node),
                     )}
@@ -124,6 +140,7 @@ function FlyoutNode({ node, currentPath, defaults }: NavFlyoutProps) {
                                 key={child.title}
                                 node={child}
                                 currentPath={currentPath}
+                                allLeafPaths={allLeafPaths}
                                 defaults={defaults}
                             />
                         ))}
@@ -160,13 +177,14 @@ function FlyoutNode({ node, currentPath, defaults }: NavFlyoutProps) {
         return <DropdownMenuItem disabled>{label}</DropdownMenuItem>;
     }
 
-    const active = isPathActive(node.href, currentPath);
+    const active = isLeafActive(node.href, currentPath, allLeafPaths);
 
     return (
         <DropdownMenuItem
             asChild
             className={cn(
-                active && 'bg-accent text-accent-foreground',
+                active &&
+                    'bg-petrol/10 font-medium text-petrol dark:bg-brass/15 dark:text-brass',
                 slot('row', defaults, node),
             )}
         >
