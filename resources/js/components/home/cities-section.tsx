@@ -4,7 +4,7 @@ import type { CitiesData } from '@/types/frontend';
 
 export function CitiesSection({ data }: { data: CitiesData }) {
     return (
-        <Band alt>
+        <Band alt id="cities">
             <SectionHead eyebrow={data.eyebrow} title={data.title} />
             <ul className="m-0 grid list-none grid-cols-2 gap-x-4 gap-y-2 p-0 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                 {data.items.map((city) => (

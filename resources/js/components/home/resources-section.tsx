@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 export function ResourcesSection({ data }: { data: ArticlesData }) {
     return (
-        <Band>
+        <Band id="resources">
             <SectionHead
                 eyebrow={data.eyebrow}
                 title={data.title}
