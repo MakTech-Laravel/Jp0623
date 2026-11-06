@@ -13,13 +13,19 @@ use App\Http\Controllers\Auth\RegisterTrialController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileUploadDemoController;
 use App\Http\Controllers\Frontend\AboutController;
+use App\Http\Controllers\Frontend\AtmController;
+use App\Http\Controllers\Frontend\CitiesController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\IndustriesController;
+use App\Http\Controllers\Frontend\LegalController;
 use App\Http\Controllers\Frontend\MachinesController;
 use App\Http\Controllers\Frontend\MicroMarketsController;
 use App\Http\Controllers\Frontend\OfficeCoffeeController;
+use App\Http\Controllers\Frontend\OperatorsController;
 use App\Http\Controllers\Frontend\ProductsController;
+use App\Http\Controllers\Frontend\ResourcesController;
+use App\Http\Controllers\Frontend\SchoolsController;
 use App\Http\Controllers\Operator\AccountController;
 use App\Http\Controllers\Operator\BillingController;
 use App\Http\Controllers\Operator\LeadController;
@@ -37,6 +43,14 @@ Route::get('/micro-markets', [MicroMarketsController::class, 'index'])->name('mi
 Route::get('/office-coffee', [OfficeCoffeeController::class, 'index'])->name('office-coffee');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
+Route::get('/atm', [AtmController::class, 'index'])->name('atm');
+Route::get('/schools', [SchoolsController::class, 'index'])->name('schools');
+Route::get('/resources', [ResourcesController::class, 'index'])->name('resources');
+Route::get('/cities', [CitiesController::class, 'index'])->name('cities');
+Route::get('/operators', [OperatorsController::class, 'index'])->name('operators');
+Route::get('/legal/{page}', [LegalController::class, 'show'])
+    ->whereIn('page', ['privacy', 'terms', 'operator-terms', 'cookies'])
+    ->name('legal.show');
 Route::get('/industries', [IndustriesController::class, 'index'])->name('industries');
 Route::get('/industries/{industry}', [IndustriesController::class, 'show'])->name('industries.show');
 

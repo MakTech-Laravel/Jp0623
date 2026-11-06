@@ -58,11 +58,11 @@ class ContactPageData
             'operatorLinks' => [
                 [
                     'label' => 'operator page',
-                    'href' => '#',
+                    'href' => '/operators',
                 ],
                 [
                     'label' => 'log in',
-                    'href' => '#',
+                    'href' => '/login',
                 ],
             ],
         ];

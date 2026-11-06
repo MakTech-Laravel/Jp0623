@@ -1,10 +1,37 @@
 import { Link } from '@inertiajs/react';
+import type { ReactNode } from 'react';
 import { Wrap } from '@/components/frontend/wrap';
 import type { SiteData } from '@/types/frontend';
 
 type SiteFooterProps = {
     site: SiteData;
 };
+
+function FooterLink({
+    href,
+    children,
+    className,
+}: {
+    href: string;
+    children: ReactNode;
+    className: string;
+}) {
+    const isExternal = href.startsWith('http') || href.startsWith('mailto:');
+
+    if (isExternal) {
+        return (
+            <a href={href} className={className}>
+                {children}
+            </a>
+        );
+    }
+
+    return (
+        <Link href={href} className={className}>
+            {children}
+        </Link>
+    );
+}
 
 export function SiteFooter({ site }: SiteFooterProps) {
     return (
@@ -42,12 +69,12 @@ export function SiteFooter({ site }: SiteFooterProps) {
                             <ul className="m-0 flex list-none flex-col gap-2 p-0">
                                 {column.links.map((link) => (
                                     <li key={link.label}>
-                                        <a
+                                        <FooterLink
                                             href={link.href}
                                             className="text-sm text-on-petrol/80 no-underline hover:text-on-petrol hover:underline hover:decoration-brass"
                                         >
                                             {link.label}
-                                        </a>
+                                        </FooterLink>
                                     </li>
                                 ))}
                             </ul>
@@ -62,13 +89,13 @@ export function SiteFooter({ site }: SiteFooterProps) {
                         className="flex flex-wrap gap-x-4 gap-y-2"
                     >
                         {site.legalLinks.map((link) => (
-                            <a
+                            <FooterLink
                                 key={link.label}
                                 href={link.href}
                                 className="no-underline hover:text-on-petrol hover:underline hover:decoration-brass"
                             >
                                 {link.label}
-                            </a>
+                            </FooterLink>
                         ))}
                     </nav>
                 </div>

@@ -38,14 +38,14 @@ class HomePageData
             'topNav' => [
                 ['label' => 'About', 'href' => '/about'],
                 ['label' => 'Industries', 'href' => '/industries'],
-                ['label' => 'ATM', 'href' => '#'],
-                ['label' => 'Schools', 'href' => '#'],
-                ['label' => 'Cities', 'href' => '#'],
-                ['label' => 'Resources', 'href' => '#'],
+                ['label' => 'ATM', 'href' => '/atm'],
+                ['label' => 'Schools', 'href' => '/schools'],
+                ['label' => 'Cities', 'href' => '/cities'],
+                ['label' => 'Resources', 'href' => '/resources'],
             ],
             'operatorCta' => [
                 'label' => 'Are you a vending operator? Click here →',
-                'href' => '/login',
+                'href' => '/operators',
             ],
             'mainNav' => [
                 ['label' => 'Home', 'href' => '/', 'current' => true],
@@ -65,10 +65,10 @@ class HomePageData
                     'links' => [
                         ['label' => 'Vending machines', 'href' => '/machines'],
                         ['label' => 'Micro markets', 'href' => '/micro-markets'],
-                        ['label' => 'Vendera smart coolers', 'href' => '#'],
+                        ['label' => 'Vendera smart coolers', 'href' => '/machines/ai-cooler'],
                         ['label' => 'Office coffee', 'href' => '/office-coffee'],
-                        ['label' => 'ATM machines', 'href' => '#'],
-                        ['label' => 'School vending', 'href' => '#'],
+                        ['label' => 'ATM machines', 'href' => '/atm'],
+                        ['label' => 'School vending', 'href' => '/schools'],
                     ],
                 ],
                 [
@@ -87,26 +87,27 @@ class HomePageData
                     'links' => [
                         ['label' => 'About us', 'href' => '/about'],
                         ['label' => 'Products', 'href' => '/products'],
-                        ['label' => 'Resources', 'href' => '#'],
-                        ['label' => 'Cities we serve', 'href' => '#'],
+                        ['label' => 'Resources', 'href' => '/resources'],
+                        ['label' => 'Cities we serve', 'href' => '/cities'],
                         ['label' => 'Contact us', 'href' => '/contact'],
                     ],
                 ],
                 [
                     'title' => 'Operators',
                     'links' => [
-                        ['label' => 'Join the network', 'href' => '#'],
+                        ['label' => 'Join the network', 'href' => '/operators'],
                         ['label' => 'Operator login', 'href' => '/login'],
                         ['label' => 'Create account', 'href' => '/register'],
+                        ['label' => 'Routes for sale', 'href' => '/login'],
                     ],
                 ],
             ],
             'legalLinks' => [
-                ['label' => 'Privacy policy', 'href' => '#'],
-                ['label' => 'Terms & conditions', 'href' => '#'],
-                ['label' => 'Operator terms', 'href' => '#'],
-                ['label' => 'Cookie policy', 'href' => '#'],
-                ['label' => 'Do not sell my info', 'href' => '#'],
+                ['label' => 'Privacy policy', 'href' => '/legal/privacy'],
+                ['label' => 'Terms & conditions', 'href' => '/legal/terms'],
+                ['label' => 'Operator terms', 'href' => '/legal/operator-terms'],
+                ['label' => 'Cookie policy', 'href' => '/legal/cookies'],
+                ['label' => 'Do not sell my info', 'href' => '/legal/cookies'],
             ],
         ];
     }
@@ -211,7 +212,7 @@ class HomePageData
                 [
                     'title' => 'Vendera smart coolers',
                     'text' => 'Tap, open the door, take what you want.',
-                    'href' => '#',
+                    'href' => '/machines/ai-cooler',
                     'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
                 ],
                 [
@@ -600,7 +601,7 @@ class HomePageData
             'title' => 'Expert guides and smart break room tips.',
             'link' => [
                 'label' => 'View all resources →',
-                'href' => '#',
+                'href' => '/resources',
             ],
             'items' => [
                 [
@@ -608,21 +609,21 @@ class HomePageData
                     'cat' => 'Vending management',
                     'title' => 'How to choose a vending company for multiple sites',
                     'excerpt' => 'What to ask before you sign, and why one contact beats ten vendors.',
-                    'href' => '#',
+                    'href' => '/resources',
                 ],
                 [
                     'id' => 'ai-vs-market',
                     'cat' => 'Smart & AI vending',
                     'title' => 'Vendera coolers vs. micro markets: which one fits?',
                     'excerpt' => 'A simple guide based on headcount, space and food needs.',
-                    'href' => '#',
+                    'href' => '/resources',
                 ],
                 [
                     'id' => 'healthy-mix',
                     'cat' => 'Healthy vending',
                     'title' => 'Building a healthier snack mix your team will buy',
                     'excerpt' => 'Swap in better options without killing sales.',
-                    'href' => '#',
+                    'href' => '/resources',
                 ],
             ],
         ];
@@ -673,7 +674,7 @@ class HomePageData
                 'city' => $city[0],
                 'state' => $city[1],
                 'label' => $city[0].' vending',
-                'href' => '#',
+                'href' => '/cities',
             ], $raw),
         ];
     }
