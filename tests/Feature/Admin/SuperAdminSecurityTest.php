@@ -11,7 +11,6 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed([PermissionSeeder::class, RoleSeeder::class]);
 
-    // A privileged but non-super-admin actor (the `admin` role has full user CRUD).
     $this->admin = User::factory()->create();
     $this->admin->assignRole(RoleEnum::ADMIN->value);
 
@@ -19,113 +18,83 @@ beforeEach(function () {
     $this->superAdmin->assignRole(RoleEnum::SUPER_ADMIN->value);
 });
 
-function makeSuperAdmin(): User
-{
-    $user = User::factory()->create();
-    $user->assignRole(RoleEnum::SUPER_ADMIN->value);
-
-    return $user;
-}
-
-// ── Assigning the super-admin role ──────────────────────────────────────────
-
-test('a non super-admin cannot assign the super-admin role when creating a user', function () {
+test('an admin can create admins via admin management', function () {
     $this->actingAs($this->admin)
-        ->post(route('admin.users.store'), [
-            'name' => 'Sneaky',
+        ->post(route('admin.admin-management.store'), [
+            'name' => 'New Admin',
+            'email' => 'new-admin@example.com',
+            'password' => 'password123',
+        ])
+        ->assertRedirect(route('admin.admin-management.index'));
+
+    $created = User::where('email', 'new-admin@example.com')->sole();
+
+    expect($created->hasRole(RoleEnum::ADMIN->value))->toBeTrue()
+        ->and($created->isSuperAdmin())->toBeFalse();
+});
+
+test('client-supplied roles are ignored when creating through user management', function () {
+    $this->actingAs($this->admin)
+        ->post(route('admin.user-management.store'), [
+            'first_name' => 'Sneaky',
+            'last_name' => 'User',
             'email' => 'sneaky@example.com',
             'password' => 'password123',
+            'company_name' => 'Sneaky Co',
+            'owns_machines' => false,
+            'machine_types' => ['Snack'],
+            'machines_needed' => '1',
+            'primary_city' => 'Dallas, TX',
             'roles' => [RoleEnum::SUPER_ADMIN->value],
         ])
-        ->assertSessionHasErrors('roles');
+        ->assertRedirect(route('admin.user-management.index'));
 
-    expect(User::role(RoleEnum::SUPER_ADMIN->value)->count())->toBe(1);
+    $created = User::where('email', 'sneaky@example.com')->sole();
+
+    expect($created->isSuperAdmin())->toBeFalse()
+        ->and($created->hasRole(RoleEnum::USER->value))->toBeTrue()
+        ->and($created->operatorProfile?->company_name)->toBe('Sneaky Co');
 });
 
-test('a super-admin can assign the super-admin role', function () {
-    $this->actingAs($this->superAdmin)
-        ->post(route('admin.users.store'), [
-            'name' => 'New Super',
-            'email' => 'newsuper@example.com',
-            'password' => 'password123',
-            'roles' => [RoleEnum::SUPER_ADMIN->value],
-        ])
-        ->assertRedirect(route('admin.users.index'));
-
-    expect(User::where('email', 'newsuper@example.com')->sole()->isSuperAdmin())
-        ->toBeTrue();
-});
-
-// ── Acting on super-admin accounts ──────────────────────────────────────────
-
-test('a non super-admin cannot open the edit page of a super-admin', function () {
+test('a non super-admin cannot open a super-admin via user management', function () {
     $this->actingAs($this->admin)
-        ->get(route('admin.users.edit', $this->superAdmin))
-        ->assertForbidden();
+        ->get(route('admin.user-management.edit', $this->superAdmin))
+        ->assertNotFound();
 });
 
-test('a non super-admin cannot update a super-admin', function () {
+test('a non super-admin cannot update a super-admin via user management', function () {
     $this->actingAs($this->admin)
-        ->put(route('admin.users.update', $this->superAdmin), [
+        ->put(route('admin.user-management.update', $this->superAdmin), [
             'name' => 'Hijacked',
             'email' => $this->superAdmin->email,
         ])
-        ->assertForbidden();
+        ->assertNotFound();
 
     expect($this->superAdmin->fresh()->name)->not->toBe('Hijacked');
 });
 
-test('a non super-admin cannot delete a super-admin', function () {
+test('a non super-admin cannot delete a super-admin via user management', function () {
     $this->actingAs($this->admin)
-        ->delete(route('admin.users.destroy', $this->superAdmin))
-        ->assertForbidden();
+        ->delete(route('admin.user-management.destroy', $this->superAdmin))
+        ->assertNotFound();
 
     expect(User::find($this->superAdmin->id))->not->toBeNull();
 });
 
-test('a super-admin can delete another super-admin', function () {
-    $other = makeSuperAdmin();
+test('an admin can edit another admin via admin management', function () {
+    $otherAdmin = User::factory()->create();
+    $otherAdmin->assignRole(RoleEnum::ADMIN->value);
 
-    $this->actingAs($this->superAdmin)
-        ->delete(route('admin.users.destroy', $other))
-        ->assertRedirect();
-
-    expect(User::find($other->id))->toBeNull();
+    $this->actingAs($this->admin)
+        ->get(route('admin.admin-management.edit', $otherAdmin))
+        ->assertOk();
 });
 
-// ── Last super-admin invariant ──────────────────────────────────────────────
-
-test('the last super-admin cannot remove their own super-admin role', function () {
-    // Only $this->superAdmin holds the role.
-    $this->actingAs($this->superAdmin)
-        ->put(route('admin.users.update', $this->superAdmin), [
-            'name' => $this->superAdmin->name,
-            'email' => $this->superAdmin->email,
-            'roles' => [RoleEnum::ADMIN->value],
-        ])
-        ->assertSessionHasErrors('roles');
-
-    expect($this->superAdmin->fresh()->isSuperAdmin())->toBeTrue();
-});
-
-test('a super-admin role can be removed once another super-admin exists', function () {
-    makeSuperAdmin(); // now there are two
+test('admin management cannot open a user-role account', function () {
+    $user = User::factory()->create();
+    $user->assignRole(RoleEnum::USER->value);
 
     $this->actingAs($this->superAdmin)
-        ->put(route('admin.users.update', $this->superAdmin), [
-            'name' => $this->superAdmin->name,
-            'email' => $this->superAdmin->email,
-            'roles' => [RoleEnum::ADMIN->value],
-        ])
-        ->assertRedirect(route('admin.users.index'));
-
-    expect($this->superAdmin->fresh()->isSuperAdmin())->toBeFalse();
-});
-
-test('the last super-admin cannot be deleted', function () {
-    $this->actingAs($this->superAdmin)
-        ->delete(route('admin.users.destroy', $this->superAdmin))
-        ->assertRedirect();
-
-    expect(User::find($this->superAdmin->id))->not->toBeNull();
+        ->get(route('admin.admin-management.edit', $user))
+        ->assertNotFound();
 });

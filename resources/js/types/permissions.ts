@@ -81,6 +81,12 @@ export const PERMISSIONS = {
         EDIT: 'vending-requests.edit',
         DELETE: 'vending-requests.delete',
     },
+    COFFEE_SERVICE_REQUESTS: {
+        INDEX: 'coffee-service-requests.index',
+        VIEW: 'coffee-service-requests.view',
+        EDIT: 'coffee-service-requests.edit',
+        DELETE: 'coffee-service-requests.delete',
+    },
 } as const;
 
 // Auto-derived union type from the const above.

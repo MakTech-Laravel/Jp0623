@@ -32,64 +32,9 @@ enum RoleEnum: string
     public function permissions(): array
     {
         return match ($this) {
-            self::SUPER_ADMIN => [],    // Gate::before handles this
-
-            self::ADMIN => [
-                PermissionEnum::DASHBOARD_VIEW,
-                PermissionEnum::REPOSITORY_VIEW,
-                PermissionEnum::DOCUMENTATION_VIEW,
-
-                PermissionEnum::FILE_UPLOAD_INDEX,
-                PermissionEnum::FILE_UPLOAD_STORE,
-
-                PermissionEnum::POSTS_VIEW,
-                PermissionEnum::POSTS_CREATE,
-                PermissionEnum::POSTS_EDIT,
-                PermissionEnum::POSTS_DELETE,
-                PermissionEnum::POSTS_PUBLISH,
-
-                PermissionEnum::USERS_INDEX,
-                PermissionEnum::USERS_VIEW,
-                PermissionEnum::USERS_CREATE,
-                PermissionEnum::USERS_EDIT,
-                PermissionEnum::USERS_DELETE,
-
-                PermissionEnum::ROLES_INDEX,
-                PermissionEnum::ROLES_VIEW,
-                PermissionEnum::ROLES_CREATE,
-                PermissionEnum::ROLES_EDIT,
-                PermissionEnum::ROLES_DELETE,
-
-                PermissionEnum::PERMISSIONS_INDEX,
-                PermissionEnum::PERMISSIONS_EXPORT,
-
-                PermissionEnum::SETTINGS_VIEW,
-                PermissionEnum::SETTINGS_EDIT,
-                PermissionEnum::SETTINGS_EXPORT,
-
-                PermissionEnum::MACHINE_CATEGORIES_INDEX,
-                PermissionEnum::MACHINE_CATEGORIES_VIEW,
-                PermissionEnum::MACHINE_CATEGORIES_CREATE,
-                PermissionEnum::MACHINE_CATEGORIES_EDIT,
-                PermissionEnum::MACHINE_CATEGORIES_DELETE,
-
-                PermissionEnum::MACHINES_INDEX,
-                PermissionEnum::MACHINES_VIEW,
-                PermissionEnum::MACHINES_CREATE,
-                PermissionEnum::MACHINES_EDIT,
-                PermissionEnum::MACHINES_DELETE,
-
-                PermissionEnum::PRODUCTS_INDEX,
-                PermissionEnum::PRODUCTS_VIEW,
-                PermissionEnum::PRODUCTS_CREATE,
-                PermissionEnum::PRODUCTS_EDIT,
-                PermissionEnum::PRODUCTS_DELETE,
-
-                PermissionEnum::VENDING_REQUESTS_INDEX,
-                PermissionEnum::VENDING_REQUESTS_VIEW,
-                PermissionEnum::VENDING_REQUESTS_EDIT,
-                PermissionEnum::VENDING_REQUESTS_DELETE,
-            ],
+            // Gate::before grants everything (admin excludes roles.* / permissions.*).
+            self::SUPER_ADMIN => [],
+            self::ADMIN => [],
 
             self::EDITOR => [
                 PermissionEnum::DASHBOARD_VIEW,

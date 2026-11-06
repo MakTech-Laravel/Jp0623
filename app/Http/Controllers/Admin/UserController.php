@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\RoleEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
@@ -12,25 +13,40 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
-use Spatie\Permission\Models\Role;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserController extends Controller
 {
+    public const SCOPE_USER = 'user';
+
+    public const SCOPE_ADMIN = 'admin';
+
+    /** @var list<string> */
+    private const PROFILE_KEYS = [
+        'first_name',
+        'last_name',
+        'company_name',
+        'owns_machines',
+        'machine_types',
+        'machines_needed',
+        'primary_city',
+    ];
+
     public function index(Request $request): Response
     {
+        $scope = $this->scope($request);
+
         $search = trim((string) $request->query('search', ''));
-        $role = trim((string) $request->query('role', ''));
+        $roleName = $this->forcedRole($scope);
 
         $users = User::query()
             ->with('roles:id,name')
+            ->role($roleName)
             ->when($search !== '', function ($query) use ($search): void {
                 $query->where(function ($query) use ($search): void {
                     $query->where('name', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%");
                 });
-            })
-            ->when($role !== '', function ($query) use ($role): void {
-                $query->whereHas('roles', fn ($query) => $query->where('name', $role));
             })
             ->latest('id')
             ->paginate(10)
@@ -38,80 +54,114 @@ class UserController extends Controller
 
         return Inertia::render('admin/users/index', [
             'users' => $users,
-            'roles' => Role::orderBy('name')->pluck('name'),
             'filters' => [
                 'search' => $search,
-                'role' => $role,
             ],
-            // Lets the client disable destructive actions on the last super-admin.
+            'scope' => $scope,
             'superAdminCount' => SuperAdmin::count(),
-            // Optional so the table renders instantly; fetched on scroll-into-view
-            // by the <WhenVisible> wrapper on the client.
             'stats' => Inertia::optional(fn (): array => [
-                'total' => User::count(),
-                'verified' => User::whereNotNull('email_verified_at')->count(),
-                'roles' => Role::count(),
+                'total' => User::role($roleName)->count(),
+                'verified' => User::role($roleName)->whereNotNull('email_verified_at')->count(),
             ]),
         ]);
     }
 
-    public function create(): Response
+    public function create(Request $request): Response
     {
+        $scope = $this->scope($request);
+
         return Inertia::render('admin/users/create', [
-            'roles' => Role::orderBy('name')->get(['id', 'name']),
+            'scope' => $scope,
         ]);
     }
 
     public function store(StoreUserRequest $request): RedirectResponse
     {
+        $scope = $this->scope($request);
+
         $data = $request->validated();
 
-        // The User model casts `password` as `hashed`, so we pass it as-is.
         if ($request->hasFile('avatar')) {
             $data['avatar'] = $request->file('avatar')->store('avatars', 'public');
         }
 
-        $user = User::create(collect($data)->except(['roles', 'remove_avatar'])->all());
+        if ($scope === self::SCOPE_USER) {
+            $data['name'] = trim(($data['first_name'] ?? '').' '.($data['last_name'] ?? ''));
+        }
 
-        $user->syncRoles($request->validated('roles', []));
+        $user = User::create(collect($data)->except([
+            'roles',
+            'remove_avatar',
+            ...self::PROFILE_KEYS,
+        ])->all());
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'User created successfully.']);
+        $user->syncRoles([$this->forcedRole($scope)]);
 
-        return redirect()->route('admin.users.index');
+        if ($scope === self::SCOPE_USER) {
+            $this->syncOperatorProfile($user, $data);
+        }
+
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => $scope === self::SCOPE_ADMIN
+                ? 'Admin created successfully.'
+                : 'User created successfully.',
+        ]);
+
+        return redirect()->route($this->routeName($scope, 'index'));
     }
 
-    public function show(User $user): Response
+    public function show(Request $request, User $user): Response
     {
+        $scope = $this->scope($request);
+        $this->ensureUserInScope($user, $scope);
+
         $user->load('roles:id,name', 'permissions:id,name');
+
+        if ($scope === self::SCOPE_USER) {
+            $user->load('operatorProfile');
+        }
 
         return Inertia::render('admin/users/show', [
             'user' => $user,
+            'scope' => $scope,
+            'operatorProfile' => $scope === self::SCOPE_USER
+                ? $user->operatorProfile
+                : null,
         ]);
     }
 
-    public function edit(User $user): Response
+    public function edit(Request $request, User $user): Response
     {
+        $scope = $this->scope($request);
+        $this->ensureUserInScope($user, $scope);
         $this->authorize('update', $user);
 
         $user->load('roles:id,name');
 
+        if ($scope === self::SCOPE_USER) {
+            $user->load('operatorProfile');
+        }
+
         return Inertia::render('admin/users/edit', [
             'user' => $user,
-            'roles' => Role::orderBy('name')->get(['id', 'name']),
+            'scope' => $scope,
             'userRoles' => $user->roles->pluck('name'),
-            // The last super-admin cannot have the role removed from the UI.
             'isLastSuperAdmin' => SuperAdmin::isLast($user),
+            'operatorProfile' => $scope === self::SCOPE_USER
+                ? $user->operatorProfile
+                : null,
         ]);
     }
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
+        $scope = $this->scope($request);
+        $this->ensureUserInScope($user, $scope);
         $this->authorize('update', $user);
 
         $data = $request->validated();
 
-        // Keep the current password when the field is left blank; the model's
-        // `hashed` cast handles hashing when a new password is provided.
         if (empty($data['password'])) {
             unset($data['password']);
         }
@@ -124,19 +174,38 @@ class UserController extends Controller
             $data['avatar'] = null;
         }
 
-        $user->update(collect($data)->except(['roles', 'remove_avatar'])->all());
-        $user->syncRoles($request->validated('roles', []));
+        if ($scope === self::SCOPE_USER) {
+            $data['name'] = trim(($data['first_name'] ?? '').' '.($data['last_name'] ?? ''));
+        }
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'User updated successfully.']);
+        $user->update(collect($data)->except([
+            'roles',
+            'remove_avatar',
+            ...self::PROFILE_KEYS,
+        ])->all());
 
-        return redirect()->route('admin.users.index');
+        $user->syncRoles([$this->forcedRole($scope)]);
+
+        if ($scope === self::SCOPE_USER) {
+            $this->syncOperatorProfile($user, $data);
+        }
+
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => $scope === self::SCOPE_ADMIN
+                ? 'Admin updated successfully.'
+                : 'User updated successfully.',
+        ]);
+
+        return redirect()->route($this->routeName($scope, 'index'));
     }
 
-    public function destroy(User $user): RedirectResponse
+    public function destroy(Request $request, User $user): RedirectResponse
     {
+        $scope = $this->scope($request);
+        $this->ensureUserInScope($user, $scope);
         $this->authorize('delete', $user);
 
-        // Never allow the system to be left without a super-admin.
         if (SuperAdmin::isLast($user)) {
             Inertia::flash('toast', [
                 'type' => 'error',
@@ -149,9 +218,81 @@ class UserController extends Controller
         $this->deleteAvatar($user);
         $user->delete();
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'User deleted successfully.']);
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => $scope === self::SCOPE_ADMIN
+                ? 'Admin deleted successfully.'
+                : 'User deleted successfully.',
+        ]);
 
         return redirect()->back();
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    private function syncOperatorProfile(User $user, array $data): void
+    {
+        $payload = [
+            'first_name' => (string) $data['first_name'],
+            'last_name' => (string) $data['last_name'],
+            'company_name' => (string) $data['company_name'],
+            'owns_machines' => (bool) $data['owns_machines'],
+            'machine_types' => array_values(array_filter(
+                array_map(
+                    static fn (mixed $type): string => trim((string) $type),
+                    is_array($data['machine_types'] ?? null) ? $data['machine_types'] : [],
+                ),
+                static fn (string $type): bool => $type !== '',
+            )),
+            'machines_needed' => (string) $data['machines_needed'],
+            'primary_city' => (string) $data['primary_city'],
+        ];
+
+        $profile = $user->operatorProfile;
+
+        if ($profile === null) {
+            $user->operatorProfile()->create([
+                ...$payload,
+                'terms_accepted_at' => now(),
+            ]);
+
+            return;
+        }
+
+        $profile->update($payload);
+    }
+
+    private function scope(Request $request): string
+    {
+        if ($request->routeIs('admin.admin-management.*')) {
+            return self::SCOPE_ADMIN;
+        }
+
+        return self::SCOPE_USER;
+    }
+
+    private function forcedRole(string $scope): string
+    {
+        return $scope === self::SCOPE_ADMIN
+            ? RoleEnum::ADMIN->value
+            : RoleEnum::USER->value;
+    }
+
+    private function routeName(string $scope, string $action): string
+    {
+        $prefix = $scope === self::SCOPE_ADMIN
+            ? 'admin.admin-management'
+            : 'admin.user-management';
+
+        return "{$prefix}.{$action}";
+    }
+
+    private function ensureUserInScope(User $user, string $scope): void
+    {
+        if (! $user->hasRole($this->forcedRole($scope))) {
+            throw new NotFoundHttpException;
+        }
     }
 
     private function deleteAvatar(User $user): void

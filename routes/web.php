@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\PermissionEnum;
+use App\Http\Controllers\Admin\CoffeeServiceRequestController as AdminCoffeeServiceRequestController;
 use App\Http\Controllers\Admin\MachineCategoryController;
 use App\Http\Controllers\Admin\MachineController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\FileUploadDemoController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\AtmController;
 use App\Http\Controllers\Frontend\CitiesController;
+use App\Http\Controllers\Frontend\CoffeeServiceRequestController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\IndustriesController;
@@ -35,6 +37,7 @@ use App\Http\Controllers\Operator\LeadController;
 use App\Http\Controllers\Operator\RouteController;
 use App\Http\Controllers\Operator\SubscriptionController;
 use App\Http\Controllers\PostAttachmentController;
+use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +45,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/vending-requests', [VendingRequestController::class, 'store'])
     ->middleware('throttle:10,1')
     ->name('vending-requests.store');
+Route::post('/coffee-service-requests', [CoffeeServiceRequestController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('coffee-service-requests.store');
 Route::get('/machines', [MachinesController::class, 'index'])->name('machines');
 Route::get('/machines/{machine}', [MachinesController::class, 'show'])->name('machines.show');
 Route::get('/products', [ProductsController::class, 'index'])->name('products');
@@ -107,21 +113,45 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // ── Admin: access management ──────────────────────────────────────────────
     Route::prefix('admin')->name('admin.')->group(function () {
-        // Users — full CRUD with Precognition on write routes.
-        Route::controller(UserController::class)->group(function () {
-            Route::get('users', 'index')->name('users.index')
+        // Legacy users URLs → user management.
+        Route::redirect('users', '/admin/user-management');
+        Route::redirect('users/create', '/admin/user-management/create');
+        Route::get('users/{user}', fn (User $user) => redirect()->route('admin.user-management.show', $user));
+        Route::get('users/{user}/edit', fn (User $user) => redirect()->route('admin.user-management.edit', $user));
+
+        // User management — accounts with the `user` role only.
+        Route::controller(UserController::class)->prefix('user-management')->name('user-management.')->group(function () {
+            Route::get('/', 'index')->name('index')
                 ->middleware('permission:'.PermissionEnum::USERS_INDEX->value);
-            Route::get('users/create', 'create')->name('users.create')
+            Route::get('create', 'create')->name('create')
                 ->middleware('permission:'.PermissionEnum::USERS_CREATE->value);
-            Route::post('users', 'store')->name('users.store')
+            Route::post('/', 'store')->name('store')
                 ->middleware(['permission:'.PermissionEnum::USERS_CREATE->value, HandlePrecognitiveRequests::class]);
-            Route::get('users/{user}', 'show')->name('users.show')
+            Route::get('{user}', 'show')->name('show')
                 ->middleware('permission:'.PermissionEnum::USERS_VIEW->value);
-            Route::get('users/{user}/edit', 'edit')->name('users.edit')
+            Route::get('{user}/edit', 'edit')->name('edit')
                 ->middleware('permission:'.PermissionEnum::USERS_EDIT->value);
-            Route::put('users/{user}', 'update')->name('users.update')
+            Route::put('{user}', 'update')->name('update')
                 ->middleware(['permission:'.PermissionEnum::USERS_EDIT->value, HandlePrecognitiveRequests::class]);
-            Route::delete('users/{user}', 'destroy')->name('users.destroy')
+            Route::delete('{user}', 'destroy')->name('destroy')
+                ->middleware('permission:'.PermissionEnum::USERS_DELETE->value);
+        });
+
+        // Admin management — accounts with the `admin` role only (super-admin actors).
+        Route::controller(UserController::class)->prefix('admin-management')->name('admin-management.')->group(function () {
+            Route::get('/', 'index')->name('index')
+                ->middleware('permission:'.PermissionEnum::USERS_INDEX->value);
+            Route::get('create', 'create')->name('create')
+                ->middleware('permission:'.PermissionEnum::USERS_CREATE->value);
+            Route::post('/', 'store')->name('store')
+                ->middleware(['permission:'.PermissionEnum::USERS_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('{user}', 'show')->name('show')
+                ->middleware('permission:'.PermissionEnum::USERS_VIEW->value);
+            Route::get('{user}/edit', 'edit')->name('edit')
+                ->middleware('permission:'.PermissionEnum::USERS_EDIT->value);
+            Route::put('{user}', 'update')->name('update')
+                ->middleware(['permission:'.PermissionEnum::USERS_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('{user}', 'destroy')->name('destroy')
                 ->middleware('permission:'.PermissionEnum::USERS_DELETE->value);
         });
 
@@ -211,6 +241,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('permission:'.PermissionEnum::VENDING_REQUESTS_EDIT->value);
             Route::delete('vending-requests/{vending_request}', 'destroy')->name('vending-requests.destroy')
                 ->middleware('permission:'.PermissionEnum::VENDING_REQUESTS_DELETE->value);
+        });
+
+        // Coffee service requests — office coffee form inbox.
+        Route::controller(AdminCoffeeServiceRequestController::class)->group(function () {
+            Route::get('coffee-service-requests', 'index')->name('coffee-service-requests.index')
+                ->middleware('permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_INDEX->value);
+            Route::get('coffee-service-requests/{coffee_service_request}', 'show')->name('coffee-service-requests.show')
+                ->middleware('permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_VIEW->value);
+            Route::put('coffee-service-requests/{coffee_service_request}', 'update')->name('coffee-service-requests.update')
+                ->middleware('permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_EDIT->value);
+            Route::delete('coffee-service-requests/{coffee_service_request}', 'destroy')->name('coffee-service-requests.destroy')
+                ->middleware('permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_DELETE->value);
         });
     });
 });

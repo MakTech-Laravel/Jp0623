@@ -1,4 +1,5 @@
 import { ShortRequestSection } from '@/components/frontend/short-request-section';
+import { store as storeCoffeeServiceRequest } from '@/routes/coffee-service-requests';
 import type { OfficeCoffeeRequestFormData } from '@/types/frontend';
 
 export function OfficeCoffeeRequestSection({
@@ -6,5 +7,11 @@ export function OfficeCoffeeRequestSection({
 }: {
     data: OfficeCoffeeRequestFormData;
 }) {
-    return <ShortRequestSection data={data} id="coffee-form" />;
+    return (
+        <ShortRequestSection
+            data={data}
+            id="coffee-form"
+            action={storeCoffeeServiceRequest()}
+        />
+    );
 }

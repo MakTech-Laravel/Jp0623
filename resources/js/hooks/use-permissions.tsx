@@ -1,6 +1,6 @@
 import { usePage } from '@inertiajs/react';
-import { PERMISSIONS  } from '@/types/permissions';
-import type {PermissionKey} from '@/types/permissions';
+import { PERMISSIONS } from '@/types/permissions';
+import type { PermissionKey } from '@/types/permissions';
 
 /**
  * usePermission
@@ -17,6 +17,8 @@ import type {PermissionKey} from '@/types/permissions';
  * NOT:
  *   auth.user.roles       → Role[]   (Eloquent objects — wrong)
  *   auth.user.permissions → []       (empty because model relation — wrong)
+ *
+ * super-admin and admin both get full UI access (same as Gate::before).
  */
 export function usePermission() {
     const { auth } = usePage().props;
@@ -26,6 +28,13 @@ export function usePermission() {
         []) as PermissionKey[];
     const userRoles: string[] = auth?.user?.roles ?? [];
 
+    const hasRole = (role: string): boolean => userRoles.includes(role);
+
+    const hasAnyRole = (roles: string[]): boolean =>
+        roles.some((r) => userRoles.includes(r));
+
+    const hasFullAccess = isSuperAdmin || hasRole('admin');
+
     /**
      * Check one permission.
      * Always use the PERMISSIONS constant — never a raw string.
@@ -34,7 +43,7 @@ export function usePermission() {
      *   ❌ can('posts.delete')
      */
     const can = (permission: PermissionKey): boolean =>
-        isSuperAdmin || userPermissions.includes(permission);
+        hasFullAccess || userPermissions.includes(permission);
 
     /**
      * Check if user has ANY of the given permissions.
@@ -42,7 +51,7 @@ export function usePermission() {
      *   canAny([PERMISSIONS.POSTS.EDIT, PERMISSIONS.POSTS.DELETE])
      */
     const canAny = (permissions: PermissionKey[]): boolean =>
-        isSuperAdmin || permissions.some((p) => userPermissions.includes(p));
+        hasFullAccess || permissions.some((p) => userPermissions.includes(p));
 
     /**
      * Check if user has ALL of the given permissions.
@@ -50,25 +59,7 @@ export function usePermission() {
      *   canAll([PERMISSIONS.POSTS.CREATE, PERMISSIONS.POSTS.PUBLISH])
      */
     const canAll = (permissions: PermissionKey[]): boolean =>
-        isSuperAdmin || permissions.every((p) => userPermissions.includes(p));
-
-    /**
-     * Check a role by name.
-     * Roles are dynamic strings — no constant.
-     * Prefer can() for features. Use hasRole() for role-specific UI only.
-     *
-     *   hasRole('admin')
-     *   hasRole('super-admin')
-     */
-    const hasRole = (role: string): boolean => userRoles.includes(role);
-
-    /**
-     * Check if user has ANY of the given roles.
-     *
-     *   hasAnyRole(['admin', 'super-admin'])
-     */
-    const hasAnyRole = (roles: string[]): boolean =>
-        roles.some(r => userRoles.includes(r));
+        hasFullAccess || permissions.every((p) => userPermissions.includes(p));
 
     return { can, canAny, canAll, hasRole, hasAnyRole };
 }
