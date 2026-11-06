@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
+use App\Enums\RoleEnum;
 use App\Models\User;
 use App\Support\RegisterOtp;
 use Illuminate\Support\Facades\DB;
@@ -73,6 +74,8 @@ class CreateNewUser implements CreatesNewUsers
                     ? $now
                     : null,
             ]);
+
+            $user->assignRole(RoleEnum::USER->value);
 
             return $user;
         });

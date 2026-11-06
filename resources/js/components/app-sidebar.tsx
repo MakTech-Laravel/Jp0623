@@ -17,11 +17,13 @@ import {
     Settings,
     Shield,
     ShieldCheck,
+    ShoppingBasket,
     Ticket,
     Upload,
     User,
     Users,
     Wallet,
+    Inbox,
 } from 'lucide-react';
 import { useMemo } from 'react';
 import AppLogo from '@/components/app-logo';
@@ -47,8 +49,10 @@ import {
 import adminMachineCategories from '@/routes/admin/machine-categories';
 import adminMachines from '@/routes/admin/machines';
 import adminPermissions from '@/routes/admin/permissions';
+import adminProducts from '@/routes/admin/products';
 import adminRoles from '@/routes/admin/roles';
 import adminUsers from '@/routes/admin/users';
+import adminVendingRequests from '@/routes/admin/vending-requests';
 import { index as billingIndex } from '@/routes/billing';
 import { index as fileUploadDemo } from '@/routes/file-upload-demo';
 import {
@@ -220,6 +224,25 @@ export function AppSidebar() {
                         permissions: [PERMISSIONS.MACHINES.INDEX],
                     },
                 ],
+            },
+            {
+                title: 'Product Management',
+                icon: ShoppingBasket,
+                permissions: [PERMISSIONS.PRODUCTS.INDEX],
+                items: [
+                    {
+                        title: 'Products',
+                        href: adminProducts.index(),
+                        icon: ShoppingBasket,
+                        permissions: [PERMISSIONS.PRODUCTS.INDEX],
+                    },
+                ],
+            },
+            {
+                title: 'Vending Requests',
+                href: adminVendingRequests.index(),
+                icon: Inbox,
+                permissions: [PERMISSIONS.VENDING_REQUESTS.INDEX],
             },
             {
                 title: 'Access Control',

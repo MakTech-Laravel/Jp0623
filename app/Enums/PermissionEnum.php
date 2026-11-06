@@ -63,6 +63,19 @@ enum PermissionEnum: string
     case MACHINES_EDIT = 'machines.edit';
     case MACHINES_DELETE = 'machines.delete';
 
+    // PRODUCTS
+    case PRODUCTS_INDEX = 'products.index';
+    case PRODUCTS_VIEW = 'products.view';
+    case PRODUCTS_CREATE = 'products.create';
+    case PRODUCTS_EDIT = 'products.edit';
+    case PRODUCTS_DELETE = 'products.delete';
+
+    // VENDING REQUESTS
+    case VENDING_REQUESTS_INDEX = 'vending-requests.index';
+    case VENDING_REQUESTS_VIEW = 'vending-requests.view';
+    case VENDING_REQUESTS_EDIT = 'vending-requests.edit';
+    case VENDING_REQUESTS_DELETE = 'vending-requests.delete';
+
     // -------------------------------------------------------------------------
     // group() — returns the display group for the `group` DB column.
     // Used by PermissionSeeder and the role management UI (grouped checkboxes).
@@ -119,6 +132,17 @@ enum PermissionEnum: string
             self::MACHINES_CREATE,
             self::MACHINES_EDIT,
             self::MACHINES_DELETE => 'Machines',
+
+            self::PRODUCTS_INDEX,
+            self::PRODUCTS_VIEW,
+            self::PRODUCTS_CREATE,
+            self::PRODUCTS_EDIT,
+            self::PRODUCTS_DELETE => 'Products',
+
+            self::VENDING_REQUESTS_INDEX,
+            self::VENDING_REQUESTS_VIEW,
+            self::VENDING_REQUESTS_EDIT,
+            self::VENDING_REQUESTS_DELETE => 'Vending Requests',
         };
     }
 

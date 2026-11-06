@@ -116,6 +116,47 @@ export interface AdminMachine {
     category?: MachineCategoryOption & { slug?: string };
 }
 
+export interface AdminProduct {
+    id: number;
+    name: string;
+    slug: string;
+    kind: string;
+    tags: string[] | null;
+    description: string | null;
+    image: string | null;
+    image_url: string | null;
+    is_featured: boolean;
+    is_active: boolean;
+    sort_order: number;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AdminVendingRequest {
+    id: number;
+    location_type: string;
+    business_name: string;
+    address_or_zip: string;
+    employees_on_site: number | null;
+    daily_visitors: number | null;
+    placement: string;
+    space_notes: string | null;
+    food_on_site: string;
+    comparing_quotes: string;
+    machine_interests: string[];
+    machine_count: string;
+    existing_vending: string;
+    switch_reason: string | null;
+    contact_name: string;
+    job_title: string | null;
+    email: string;
+    phone: string;
+    terms_accepted: boolean;
+    status: 'new' | 'reviewed';
+    created_at: string;
+    updated_at: string;
+}
+
 /** Build the public URL for a stored avatar path, or null. */
 export function avatarUrl(path: string | null): string | null {
     if (!path) {

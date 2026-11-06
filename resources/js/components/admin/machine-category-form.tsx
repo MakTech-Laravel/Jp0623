@@ -2,6 +2,7 @@ import type { UrlMethodPair } from '@inertiajs/core';
 import { useForm } from '@inertiajs/react';
 import { Save } from 'lucide-react';
 import { motion } from 'motion/react';
+import { NameSlugFields } from '@/components/admin/name-slug-fields';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -56,38 +57,20 @@ export function MachineCategoryForm({
             onSubmit={handleSubmit}
             className="space-y-6"
         >
-            <div className="grid gap-5 sm:grid-cols-2">
-                <div className="grid gap-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input
-                        id="name"
-                        value={form.data.name}
-                        onChange={(e) => form.setData('name', e.target.value)}
-                        onBlur={() => form.validate('name')}
-                        aria-invalid={form.invalid('name')}
-                        placeholder="e.g. Combo"
-                    />
-                    <InputError message={form.errors.name} />
-                </div>
-
-                <div className="grid gap-2">
-                    <Label htmlFor="slug">
-                        Slug
-                        <span className="ml-1 text-xs font-normal text-muted-foreground">
-                            optional
-                        </span>
-                    </Label>
-                    <Input
-                        id="slug"
-                        value={form.data.slug}
-                        onChange={(e) => form.setData('slug', e.target.value)}
-                        onBlur={() => form.validate('slug')}
-                        aria-invalid={form.invalid('slug')}
-                        placeholder="auto-generated from name"
-                    />
-                    <InputError message={form.errors.slug} />
-                </div>
-            </div>
+            <NameSlugFields
+                name={form.data.name}
+                slug={form.data.slug}
+                nameError={form.errors.name}
+                slugError={form.errors.slug}
+                nameInvalid={form.invalid('name')}
+                slugInvalid={form.invalid('slug')}
+                namePlaceholder="e.g. Combo"
+                autoSyncInitially={!isEdit}
+                onNameChange={(value) => form.setData('name', value)}
+                onSlugChange={(value) => form.setData('slug', value)}
+                onNameBlur={() => form.validate('name')}
+                onSlugBlur={() => form.validate('slug')}
+            />
 
             <div className="grid gap-2">
                 <Label htmlFor="description">Description</Label>

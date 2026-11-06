@@ -781,7 +781,6 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
 
         const inputRef = useRef<HTMLInputElement>(null);
         const dragDepth = useRef(0);
-        const alive = useRef(true);
 
         // Always-current snapshot of previews so the unmount cleanup can revoke them.
         const previewsRef = useRef<FilePreview[]>([]);
@@ -790,7 +789,6 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
         }, [filePreviews]);
         useEffect(
             () => () => {
-                alive.current = false;
                 previewsRef.current.forEach(revokePreview);
             },
             [],
@@ -975,12 +973,6 @@ const FileUpload = forwardRef<FileUploadHandle, FileUploadProps>(
                 }
 
                 const previews = valid.map(buildPreview);
-
-                if (!alive.current) {
-                    previews.forEach(revokePreview);
-
-                    return;
-                }
 
                 if (multiple) {
                     setFilePreviews((prev) => [...prev, ...previews]);

@@ -1,6 +1,5 @@
 import { Link } from '@inertiajs/react';
 import type { PropsWithChildren } from 'react';
-import AppLogoIcon from '@/components/app-logo-icon';
 import { Wrap } from '@/components/frontend/wrap';
 import { home } from '@/routes';
 
@@ -11,12 +10,13 @@ export default function AuthRegisterLayout({ children }: PropsWithChildren) {
                 <Wrap className="flex h-14 items-center">
                     <Link
                         href={home()}
-                        className="flex items-center gap-2 font-medium text-brand-ink no-underline"
+                        className="flex items-center font-medium text-brand-ink no-underline"
                     >
-                        <AppLogoIcon className="size-8 fill-current text-brand-ink" />
-                        <span className="font-display text-sm font-bold tracking-tight">
-                            Vending Machine Locations For Sale
-                        </span>
+                        <img
+                            src="/images/logo-final-dark2.png"
+                            alt="Logo"
+                            className="h-16 w-auto object-contain object-left"
+                        />
                     </Link>
                 </Wrap>
             </header>
