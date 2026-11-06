@@ -30,7 +30,9 @@ class ProductController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('admin/products/create');
+        return Inertia::render('admin/products/create', [
+            'defaultSortOrder' => $this->products->nextSortOrder(),
+        ]);
     }
 
     public function store(StoreProductRequest $request): RedirectResponse

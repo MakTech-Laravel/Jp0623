@@ -15,7 +15,7 @@ import {
     Send,
     ShoppingBasket,
     Ticket,
-    Upload,
+    // Upload, // File Upload Demo — uncomment with nav item below
     User,
     Users,
     UserCog,
@@ -51,7 +51,7 @@ import adminUserManagement from '@/routes/admin/user-management';
 import adminCoffeeServiceRequests from '@/routes/admin/coffee-service-requests';
 import adminVendingRequests from '@/routes/admin/vending-requests';
 import { index as billingIndex } from '@/routes/billing';
-import { index as fileUploadDemo } from '@/routes/file-upload-demo';
+// import { index as fileUploadDemo } from '@/routes/file-upload-demo'; // File Upload Demo — uncomment with nav item below
 import {
     commission as leadsCommission,
     faq as leadsFaq,
@@ -195,11 +195,28 @@ export function AppSidebar() {
 
         items.push(
             {
-                title: 'File Upload Demo',
-                href: fileUploadDemo(),
-                icon: Upload,
-                permissions: [PERMISSIONS.FILE_UPLOAD.INDEX],
+                title: 'User Management',
+                href: adminUserManagement.index(),
+                icon: Users,
+                permissions: [PERMISSIONS.USERS.INDEX],
             },
+            {
+                title: 'Admin Management',
+                href: adminAdminManagement.index(),
+                icon: UserCog,
+                permissions: [PERMISSIONS.USERS.INDEX],
+            },
+            /*
+             * File Upload Demo — commented out; uncomment to restore.
+             * Also re-enable the Upload and fileUploadDemo imports above.
+             *
+             * {
+             *     title: 'File Upload Demo',
+             *     href: fileUploadDemo(),
+             *     icon: Upload,
+             *     permissions: [PERMISSIONS.FILE_UPLOAD.INDEX],
+             * },
+             */
             {
                 title: 'Machine Management',
                 icon: Package,
@@ -246,18 +263,6 @@ export function AppSidebar() {
                 href: adminCoffeeServiceRequests.index(),
                 icon: Coffee,
                 permissions: [PERMISSIONS.COFFEE_SERVICE_REQUESTS.INDEX],
-            },
-            {
-                title: 'User Management',
-                href: adminUserManagement.index(),
-                icon: Users,
-                permissions: [PERMISSIONS.USERS.INDEX],
-            },
-            {
-                title: 'Admin Management',
-                href: adminAdminManagement.index(),
-                icon: UserCog,
-                permissions: [PERMISSIONS.USERS.INDEX],
             },
             /*
              * Access Control — commented out so neither admin nor super-admin

@@ -12,7 +12,6 @@ class ProductsPageData
         return [
             'site' => self::site(),
             'hero' => self::hero(),
-            'catalog' => self::catalog(),
         ];
     }
 
@@ -44,23 +43,6 @@ class ProductsPageData
                 'label' => 'Request a free machine',
                 'href' => '/#request-sec',
             ],
-        ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    public static function catalog(): array
-    {
-        $items = HomePageData::productCatalog();
-
-        return [
-            'disclaimer' => 'Availability of products may vary by location',
-            'filters' => array_merge(
-                ['All'],
-                array_column($items, 'name'),
-            ),
-            'items' => $items,
         ];
     }
 }

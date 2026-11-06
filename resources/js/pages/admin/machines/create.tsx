@@ -9,8 +9,10 @@ import type { MachineCategoryOption } from '@/types/admin';
 
 export default function CreateMachine({
     categories,
+    defaultSortOrder,
 }: {
     categories: MachineCategoryOption[];
+    defaultSortOrder: number;
 }) {
     return (
         <>
@@ -33,6 +35,7 @@ export default function CreateMachine({
                     <MachineForm
                         action={machines.store()}
                         categories={categories}
+                        defaultSortOrder={defaultSortOrder}
                         onCancel={() => router.visit(machines.index().url)}
                     />
                 </div>

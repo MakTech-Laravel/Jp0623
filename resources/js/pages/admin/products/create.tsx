@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/button';
 import { dashboard } from '@/routes';
 import products from '@/routes/admin/products';
 
-export default function CreateProduct() {
+export default function CreateProduct({
+    defaultSortOrder,
+}: {
+    defaultSortOrder: number;
+}) {
     return (
         <>
             <Head title="Create product" />
@@ -27,6 +31,7 @@ export default function CreateProduct() {
                 <div className="rounded-xl border bg-card p-6 shadow-sm">
                     <ProductForm
                         action={products.store()}
+                        defaultSortOrder={defaultSortOrder}
                         onCancel={() => router.visit(products.index().url)}
                     />
                 </div>

@@ -11,6 +11,53 @@ use Illuminate\Support\Str;
 class ProductService
 {
     /**
+     * @return array{
+     *     disclaimer: string,
+     *     filters: list<string>,
+     *     items: list<array{kind: string, name: string, desc: string, tags: list<string>, image: string|null}>
+     * }
+     */
+    public function catalogForFrontend(): array
+    {
+        $items = Product::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (Product $product): array => $this->toFrontendCatalogItem($product))
+            ->values()
+            ->all();
+
+        return [
+            'disclaimer' => 'Availability of products may vary by location',
+            'filters' => array_values(array_merge(
+                ['All'],
+                array_column($items, 'name'),
+            )),
+            'items' => $items,
+        ];
+    }
+
+    public function nextSortOrder(): int
+    {
+        return (int) Product::query()->max('sort_order') + 1;
+    }
+
+    /**
+     * @return array{kind: string, name: string, desc: string, tags: list<string>, image: string|null}
+     */
+    public function toFrontendCatalogItem(Product $product): array
+    {
+        return [
+            'kind' => $product->kind,
+            'name' => $product->name,
+            'desc' => $product->description ?? '',
+            'tags' => $product->tags ?? [],
+            'image' => $product->image_url,
+        ];
+    }
+
+    /**
      * @return LengthAwarePaginator<int, Product>
      */
     public function paginate(
@@ -28,7 +75,7 @@ class ProductService
                 });
             })
             ->orderBy('sort_order')
-            ->orderBy('name')
+            ->orderBy('id')
             ->paginate($perPage)
             ->withQueryString();
     }
@@ -43,7 +90,9 @@ class ProductService
             ? Str::slug((string) $data['kind'])
             : Str::slug((string) ($data['name'] ?? 'product'));
         $data['tags'] = $this->normalizeTags($data['tags'] ?? []);
-        $data['sort_order'] = $data['sort_order'] ?? 0;
+        $data['sort_order'] = array_key_exists('sort_order', $data) && $data['sort_order'] !== null
+            ? (int) $data['sort_order']
+            : $this->nextSortOrder();
         $data['is_featured'] = (bool) ($data['is_featured'] ?? false);
         $data['is_active'] = array_key_exists('is_active', $data) ? (bool) $data['is_active'] : true;
 

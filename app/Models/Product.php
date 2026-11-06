@@ -6,7 +6,6 @@ use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 
 /**
  * @property int $id
@@ -52,7 +51,7 @@ class Product extends Model
             return $this->image;
         }
 
-        return Storage::disk('public')->url($this->image);
+        return '/storage/'.$this->image;
     }
 
     public function usesStoredUpload(): bool
