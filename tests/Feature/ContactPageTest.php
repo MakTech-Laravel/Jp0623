@@ -14,6 +14,7 @@ test('contact page renders with demo props', function () {
             ->where('panel.title', 'Talk to our team')
             ->where('panel.email', 'hello@vendingmachinelocationsforsale.com')
             ->missing('panel.phone')
+            ->missing('panel.hours')
             ->has('form.topics', 4)
             ->has('form.successMessage')
         );

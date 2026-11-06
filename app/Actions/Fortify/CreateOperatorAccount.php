@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
+use App\Enums\RoleEnum;
 use App\Mail\RegisterOtpMail;
 use App\Models\User;
 use App\Support\RegisterOtp;
@@ -55,6 +56,8 @@ class CreateOperatorAccount
                 'email_code_confirmed_at' => null,
                 'trial_started_at' => null,
             ]);
+
+            $user->assignRole(RoleEnum::USER->value);
 
             return $user;
         });

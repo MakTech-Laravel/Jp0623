@@ -271,7 +271,6 @@ export type ContactPanelData = {
     title: string;
     email: string;
     emailHref: string;
-    hours: string;
     operatorTitle: string;
     operatorLinks: NavLink[];
 };

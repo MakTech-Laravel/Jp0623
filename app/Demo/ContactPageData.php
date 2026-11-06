@@ -53,7 +53,6 @@ class ContactPageData
             'title' => 'Talk to our team',
             'email' => 'hello@vendingmachinelocationsforsale.com',
             'emailHref' => 'mailto:hello@vendingmachinelocationsforsale.com',
-            'hours' => 'Mon–Fri, 8am–6pm ET',
             'operatorTitle' => 'Vending operator?',
             'operatorLinks' => [
                 [

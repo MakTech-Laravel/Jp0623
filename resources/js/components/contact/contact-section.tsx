@@ -37,8 +37,6 @@ export function ContactSection({
                             >
                                 {panel.email}
                             </a>
-                            <br />
-                            {panel.hours}
                         </p>
                         <h3 className="mt-5 font-display text-xl font-bold text-brand-ink">
                             {panel.operatorTitle}

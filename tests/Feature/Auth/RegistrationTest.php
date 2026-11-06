@@ -1,9 +1,12 @@
 <?php
 
+use App\Enums\RoleEnum;
 use App\Mail\RegisterOtpMail;
 use App\Models\OperatorProfile;
 use App\Models\User;
 use App\Support\RegisterOtp;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Fortify\Features;
@@ -12,6 +15,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->skipUnlessFortifyHas(Features::registration());
+    $this->seed([PermissionSeeder::class, RoleSeeder::class]);
 });
 
 /**
@@ -62,7 +66,8 @@ test('account create stores unverified user profile and sends otp', function () 
     $user = User::query()->where('email', 'test@example.com')->first();
 
     expect($user)->not->toBeNull()
-        ->and($user->hasVerifiedEmail())->toBeFalse();
+        ->and($user->hasVerifiedEmail())->toBeFalse()
+        ->and($user->hasRole(RoleEnum::USER->value))->toBeTrue();
 
     $profile = OperatorProfile::query()->where('user_id', $user->id)->first();
 

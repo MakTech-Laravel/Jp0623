@@ -66,7 +66,6 @@ class AboutPageData
             'values' => [
                 'No cost to the location',
                 'Local operators who respond quickly',
-                'Clear rules for operators: verified leads, one buyer per lead',
             ],
             'kpis' => [
                 [
@@ -80,10 +79,6 @@ class AboutPageData
                 [
                     'label' => 'Operators in network',
                     'value' => '1,000+',
-                ],
-                [
-                    'label' => 'Machine types',
-                    'value' => '9',
                 ],
             ],
         ];
