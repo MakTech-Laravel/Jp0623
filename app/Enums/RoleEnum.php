@@ -84,6 +84,11 @@ enum RoleEnum: string
                 PermissionEnum::PRODUCTS_CREATE,
                 PermissionEnum::PRODUCTS_EDIT,
                 PermissionEnum::PRODUCTS_DELETE,
+
+                PermissionEnum::VENDING_REQUESTS_INDEX,
+                PermissionEnum::VENDING_REQUESTS_VIEW,
+                PermissionEnum::VENDING_REQUESTS_EDIT,
+                PermissionEnum::VENDING_REQUESTS_DELETE,
             ],
 
             self::EDITOR => [

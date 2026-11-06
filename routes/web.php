@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VendingRequestController as AdminVendingRequestController;
 use App\Http\Controllers\Auth\RegisterAccountController;
 use App\Http\Controllers\Auth\RegisterOtpController;
 use App\Http\Controllers\Auth\RegisterOtpVerifyController;
@@ -27,6 +28,7 @@ use App\Http\Controllers\Frontend\OperatorsController;
 use App\Http\Controllers\Frontend\ProductsController;
 use App\Http\Controllers\Frontend\ResourcesController;
 use App\Http\Controllers\Frontend\SchoolsController;
+use App\Http\Controllers\Frontend\VendingRequestController;
 use App\Http\Controllers\Operator\AccountController;
 use App\Http\Controllers\Operator\BillingController;
 use App\Http\Controllers\Operator\LeadController;
@@ -37,6 +39,9 @@ use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::post('/vending-requests', [VendingRequestController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('vending-requests.store');
 Route::get('/machines', [MachinesController::class, 'index'])->name('machines');
 Route::get('/machines/{machine}', [MachinesController::class, 'show'])->name('machines.show');
 Route::get('/products', [ProductsController::class, 'index'])->name('products');
@@ -194,6 +199,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware(['permission:'.PermissionEnum::PRODUCTS_EDIT->value, HandlePrecognitiveRequests::class]);
             Route::delete('products/{product}', 'destroy')->name('products.destroy')
                 ->middleware('permission:'.PermissionEnum::PRODUCTS_DELETE->value);
+        });
+
+        // Vending requests — public form inbox.
+        Route::controller(AdminVendingRequestController::class)->group(function () {
+            Route::get('vending-requests', 'index')->name('vending-requests.index')
+                ->middleware('permission:'.PermissionEnum::VENDING_REQUESTS_INDEX->value);
+            Route::get('vending-requests/{vending_request}', 'show')->name('vending-requests.show')
+                ->middleware('permission:'.PermissionEnum::VENDING_REQUESTS_VIEW->value);
+            Route::put('vending-requests/{vending_request}', 'update')->name('vending-requests.update')
+                ->middleware('permission:'.PermissionEnum::VENDING_REQUESTS_EDIT->value);
+            Route::delete('vending-requests/{vending_request}', 'destroy')->name('vending-requests.destroy')
+                ->middleware('permission:'.PermissionEnum::VENDING_REQUESTS_DELETE->value);
         });
     });
 });

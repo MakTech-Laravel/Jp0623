@@ -23,6 +23,7 @@ import {
     User,
     Users,
     Wallet,
+    Inbox,
 } from 'lucide-react';
 import { useMemo } from 'react';
 import AppLogo from '@/components/app-logo';
@@ -51,6 +52,7 @@ import adminPermissions from '@/routes/admin/permissions';
 import adminProducts from '@/routes/admin/products';
 import adminRoles from '@/routes/admin/roles';
 import adminUsers from '@/routes/admin/users';
+import adminVendingRequests from '@/routes/admin/vending-requests';
 import { index as billingIndex } from '@/routes/billing';
 import { index as fileUploadDemo } from '@/routes/file-upload-demo';
 import {
@@ -235,6 +237,12 @@ export function AppSidebar() {
                         permissions: [PERMISSIONS.PRODUCTS.INDEX],
                     },
                 ],
+            },
+            {
+                title: 'Vending Requests',
+                href: adminVendingRequests.index(),
+                icon: Inbox,
+                permissions: [PERMISSIONS.VENDING_REQUESTS.INDEX],
             },
             {
                 title: 'Access Control',
