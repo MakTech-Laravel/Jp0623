@@ -53,9 +53,31 @@ class StoreVendingRequestRequest extends FormRequest
             'contact_name' => ['required', 'string', 'max:255'],
             'job_title' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
-            'phone' => ['required', 'string', 'max:50'],
+            'phone' => [
+                'required',
+                'string',
+                'max:50',
+                'regex:/^[0-9+\-() ]+$/',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $digits = preg_replace('/\D+/', '', (string) $value) ?? '';
+                    $length = strlen($digits);
+
+                    if ($length < 7 || $length > 15) {
+                        $fail('The phone must contain between 7 and 15 digits.');
+                    }
+                },
+            ],
             'terms_accepted' => ['accepted'],
-            'captcha_confirmed' => ['accepted'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'phone.regex' => 'The phone may only contain digits and phone punctuation.',
         ];
     }
 
@@ -83,7 +105,6 @@ class StoreVendingRequestRequest extends FormRequest
             'email' => 'email',
             'phone' => 'phone',
             'terms_accepted' => 'terms',
-            'captcha_confirmed' => 'captcha',
         ];
     }
 }

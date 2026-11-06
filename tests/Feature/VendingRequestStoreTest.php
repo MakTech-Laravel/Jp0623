@@ -29,7 +29,6 @@ function validVendingRequestPayload(array $overrides = []): array
         'email' => 'jane@example.com',
         'phone' => '(555) 555-5555',
         'terms_accepted' => true,
-        'captcha_confirmed' => true,
         ...$overrides,
     ];
 }
@@ -64,7 +63,6 @@ test('vending request validation requires core fields', function () {
             'email' => 'not-an-email',
             'phone' => '',
             'terms_accepted' => false,
-            'captcha_confirmed' => false,
         ])
         ->assertSessionHasErrors([
             'location_type',
@@ -80,7 +78,6 @@ test('vending request validation requires core fields', function () {
             'email',
             'phone',
             'terms_accepted',
-            'captcha_confirmed',
         ]);
 
     expect(VendingRequest::query()->count())->toBe(0);
@@ -127,4 +124,18 @@ test('empty employees and daily visitors are stored as null', function () {
 
     expect($request->employees_on_site)->toBeNull()
         ->and($request->daily_visitors)->toBeNull();
+});
+
+test('phone rejects letters and too few digits', function () {
+    $this->from('/')
+        ->post(route('vending-requests.store'), validVendingRequestPayload([
+            'phone' => 'not-a-phone',
+        ]))
+        ->assertSessionHasErrors(['phone']);
+
+    $this->from('/')
+        ->post(route('vending-requests.store'), validVendingRequestPayload([
+            'phone' => '123',
+        ]))
+        ->assertSessionHasErrors(['phone']);
 });
