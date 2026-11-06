@@ -39,6 +39,7 @@ class MachineController extends Controller
     {
         return Inertia::render('admin/machines/create', [
             'categories' => $this->categoryOptions(),
+            'defaultSortOrder' => $this->machines->nextSortOrder(),
         ]);
     }
 

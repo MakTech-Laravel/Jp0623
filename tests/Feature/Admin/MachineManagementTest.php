@@ -223,7 +223,7 @@ test('updating a machine with a new image stores the upload', function () {
 
     expect($machine->image)->not->toBe('/images/machines/Alpine-ST5000.png')
         ->and($machine->image)->toStartWith('machines/')
-        ->and($machine->image_url)->not->toBeNull();
+        ->and($machine->image_url)->toBe('/storage/'.$machine->image);
 
     Storage::disk('public')->assertExists($machine->image);
 });
@@ -248,4 +248,52 @@ test('an empty image string on update does not fail validation', function () {
         ])
         ->assertSessionDoesntHaveErrors('image')
         ->assertRedirect(route('admin.machines.index'));
+});
+
+test('create machine form receives the next sort order', function () {
+    Machine::factory()->create([
+        'machine_category_id' => $this->category->id,
+        'sort_order' => 5,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.machines.create'))
+        ->assertOk()
+        ->assertInertia(
+            fn (Assert $page) => $page
+                ->component('admin/machines/create')
+                ->where('defaultSortOrder', 6)
+        );
+});
+
+test('a machine created without sort order appends after existing rows', function () {
+    Machine::factory()->create([
+        'machine_category_id' => $this->category->id,
+        'name' => 'Older Machine',
+        'sort_order' => 3,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.machines.store'), [
+            'machine_category_id' => $this->category->id,
+            'name' => 'Newest Machine',
+            'kind' => 'combo',
+            'status' => 'Available nationwide',
+            'is_featured' => false,
+            'is_active' => true,
+        ])
+        ->assertRedirect(route('admin.machines.index'));
+
+    $newest = Machine::query()->where('name', 'Newest Machine')->sole();
+
+    expect($newest->sort_order)->toBe(4);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.machines.index'))
+        ->assertOk()
+        ->assertInertia(
+            fn (Assert $page) => $page
+                ->where('machines.data.0.name', 'Older Machine')
+                ->where('machines.data.1.name', 'Newest Machine')
+        );
 });

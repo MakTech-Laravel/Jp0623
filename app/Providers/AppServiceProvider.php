@@ -58,7 +58,12 @@ class AppServiceProvider extends ServiceProvider
     protected function configureSpatiePermissions(): void
     {
         Gate::before(function ($user, $ability) {
-            return $user->hasRole(RoleEnum::SUPER_ADMIN->value) ? true : null;
+            if ($user->hasRole(RoleEnum::SUPER_ADMIN->value)
+                || $user->hasRole(RoleEnum::ADMIN->value)) {
+                return true;
+            }
+
+            return null;
         });
     }
 }

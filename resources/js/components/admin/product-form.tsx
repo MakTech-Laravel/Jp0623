@@ -49,6 +49,7 @@ interface ProductFormProps {
     isEdit?: boolean;
     currentImageUrl?: string | null;
     defaults?: ProductFormDefaults;
+    defaultSortOrder?: number;
     onCancel?: () => void;
 }
 
@@ -57,6 +58,7 @@ export function ProductForm({
     isEdit = false,
     currentImageUrl = null,
     defaults,
+    defaultSortOrder = 0,
     onCancel,
 }: ProductFormProps) {
     const form = useForm(action, {
@@ -67,7 +69,7 @@ export function ProductForm({
         description: defaults?.description ?? '',
         is_featured: defaults?.is_featured ?? false,
         is_active: defaults?.is_active ?? true,
-        sort_order: defaults?.sort_order ?? 0,
+        sort_order: defaults?.sort_order ?? defaultSortOrder,
         image: null as File | null,
         remove_image: false as boolean,
     });

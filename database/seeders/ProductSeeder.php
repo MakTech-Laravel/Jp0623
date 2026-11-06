@@ -24,7 +24,7 @@ class ProductSeeder extends Seeder
                     'image' => $item['image'],
                     'is_featured' => $index < 5,
                     'is_active' => true,
-                    'sort_order' => $index,
+                    'sort_order' => $index + 1,
                 ],
             );
         }

@@ -39,8 +39,6 @@ class VendingRequestService
      */
     public function create(array $data): VendingRequest
     {
-        unset($data['captcha_confirmed']);
-
         $data['terms_accepted'] = (bool) ($data['terms_accepted'] ?? false);
         $data['status'] = VendingRequest::STATUS_NEW;
         $data['machine_interests'] = array_values(array_filter(

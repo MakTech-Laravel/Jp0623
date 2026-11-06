@@ -34,7 +34,7 @@ test('operators see the operator dashboard overview', function () {
         );
 });
 
-test('admins see the admin dashboard placeholders', function () {
+test('admins see the admin dashboard overview', function () {
     $admin = User::factory()->create();
     $admin->assignRole(RoleEnum::ADMIN->value);
 
@@ -42,11 +42,23 @@ test('admins see the admin dashboard placeholders', function () {
         ->get(route('dashboard'))
         ->assertOk()
         ->assertInertia(
-            fn (Assert $page) => $page->component('admin/dashboard')
+            fn (Assert $page) => $page
+                ->component('admin/dashboard')
+                ->has('stats.operators')
+                ->has('stats.admins')
+                ->has('stats.machines')
+                ->has('stats.categories')
+                ->has('stats.products')
+                ->has('stats.vendingRequests.total')
+                ->has('stats.vendingRequests.new')
+                ->has('stats.coffeeRequests.total')
+                ->has('stats.coffeeRequests.new')
+                ->has('recentVendingRequests')
+                ->has('recentCoffeeRequests')
         );
 });
 
-test('super admins see the admin dashboard placeholders', function () {
+test('super admins see the admin dashboard overview', function () {
     $admin = User::factory()->create();
     $admin->assignRole(RoleEnum::SUPER_ADMIN->value);
 
@@ -54,7 +66,11 @@ test('super admins see the admin dashboard placeholders', function () {
         ->get(route('dashboard'))
         ->assertOk()
         ->assertInertia(
-            fn (Assert $page) => $page->component('admin/dashboard')
+            fn (Assert $page) => $page
+                ->component('admin/dashboard')
+                ->has('stats')
+                ->has('recentVendingRequests')
+                ->has('recentCoffeeRequests')
         );
 });
 

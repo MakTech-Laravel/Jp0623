@@ -6,7 +6,6 @@ import {
     Pencil,
     Plus,
     Search,
-    ShieldCheck,
     Trash2,
     UserCheck,
     Users,
@@ -20,13 +19,6 @@ import { DataPagination } from '@/components/admin/data-pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
     Table,
@@ -37,34 +29,37 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { usePermission } from '@/hooks/use-permissions';
+import {
+    managementLabels,
+    managementRoutes,
+    type UserManagementScope,
+} from '@/lib/user-management';
 import { dashboard } from '@/routes';
-import users from '@/routes/admin/users';
 import { avatarUrl, SUPER_ADMIN_ROLE } from '@/types/admin';
 import type { AdminUser, Paginated } from '@/types/admin';
 import { PERMISSIONS } from '@/types/permissions';
 
 interface UsersIndexProps {
     users: Paginated<AdminUser>;
-    roles: string[];
-    filters: { search: string; role: string };
+    filters: { search: string };
+    scope: UserManagementScope;
     superAdminCount: number;
-    stats?: { total: number; verified: number; roles: number };
+    stats?: { total: number; verified: number };
 }
-
-const ALL_ROLES = 'all';
 
 export default function UsersIndex({
     users: paginated,
-    roles,
     filters,
+    scope,
     superAdminCount,
     stats,
 }: UsersIndexProps) {
     const { can } = usePermission();
     const actorIsSuperAdmin =
         usePage().props.auth.user?.is_super_admin ?? false;
+    const routes = managementRoutes(scope);
+    const labels = managementLabels(scope);
     const [search, setSearch] = useState(filters.search ?? '');
-    const [role, setRole] = useState(filters.role || ALL_ROLES);
     const firstRender = useRef(true);
 
     useEffect(() => {
@@ -76,47 +71,45 @@ export default function UsersIndex({
 
         const timeout = setTimeout(() => {
             router.get(
-                users.index().url,
+                routes.index().url,
                 {
                     search: search || undefined,
-                    role: role === ALL_ROLES ? undefined : role,
                 },
                 { preserveState: true, preserveScroll: true, replace: true },
             );
         }, 350);
 
         return () => clearTimeout(timeout);
-    }, [search, role]);
+    }, [search, routes]);
 
     const handleDelete = (user: AdminUser) => {
-        router.delete(users.destroy(user.id).url, { preserveScroll: true });
+        router.delete(routes.destroy(user.id).url, { preserveScroll: true });
     };
 
     return (
         <>
-            <Head title="Users" />
+            <Head title={labels.title} />
 
             <div className="w-full space-y-6 px-4 py-6 sm:px-6 lg:px-8">
                 <AdminPageHeader
-                    title="Users"
-                    description="Manage accounts, assign roles, and control platform access."
+                    title={labels.title}
+                    description={labels.description}
                     icon={Users}
                 >
                     {can(PERMISSIONS.USERS.CREATE) && (
                         <Button asChild>
-                            <Link href={users.create().url}>
-                                <Plus className="h-4 w-4" /> Add user
+                            <Link href={routes.create().url}>
+                                <Plus className="h-4 w-4" /> {labels.addLabel}
                             </Link>
                         </Button>
                     )}
                 </AdminPageHeader>
 
-                {/* Deferred stats — loaded when scrolled into view */}
                 <WhenVisible
                     data="stats"
                     fallback={
-                        <div className="grid gap-4 sm:grid-cols-3">
-                            {[0, 1, 2].map((i) => (
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            {[0, 1].map((i) => (
                                 <Skeleton key={i} className="h-24 rounded-xl" />
                             ))}
                         </div>
@@ -126,10 +119,10 @@ export default function UsersIndex({
                         <motion.div
                             initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="grid gap-4 sm:grid-cols-3"
+                            className="grid gap-4 sm:grid-cols-2"
                         >
                             <StatCard
-                                label="Total users"
+                                label={`Total ${labels.singular}s`}
                                 value={stats.total}
                                 icon={UsersRound}
                             />
@@ -138,16 +131,10 @@ export default function UsersIndex({
                                 value={stats.verified}
                                 icon={UserCheck}
                             />
-                            <StatCard
-                                label="Roles"
-                                value={stats.roles}
-                                icon={ShieldCheck}
-                            />
                         </motion.div>
                     )}
                 </WhenVisible>
 
-                {/* Filters */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                     <div className="relative w-full sm:max-w-xs">
                         <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -158,26 +145,8 @@ export default function UsersIndex({
                             className="pl-9"
                         />
                     </div>
-                    <Select value={role} onValueChange={setRole}>
-                        <SelectTrigger className="w-full sm:w-48">
-                            <SelectValue placeholder="Filter by role" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value={ALL_ROLES}>All roles</SelectItem>
-                            {roles.map((r) => (
-                                <SelectItem
-                                    key={r}
-                                    value={r}
-                                    className="capitalize"
-                                >
-                                    {r}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
                 </div>
 
-                {/* Table */}
                 <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
                     <div className="overflow-x-auto">
                         <Table>
@@ -185,10 +154,13 @@ export default function UsersIndex({
                                 <TableRow className="bg-muted/50 hover:bg-muted/50">
                                     <TableHead>User</TableHead>
                                     <TableHead className="hidden md:table-cell">
-                                        Roles
+                                        Email status
                                     </TableHead>
                                     <TableHead className="hidden lg:table-cell">
                                         Joined
+                                    </TableHead>
+                                    <TableHead className="hidden lg:table-cell">
+                                        Updated
                                     </TableHead>
                                     <TableHead className="text-right">
                                         Actions
@@ -203,11 +175,9 @@ export default function UsersIndex({
                                                 (r) =>
                                                     r.name === SUPER_ADMIN_ROLE,
                                             );
-                                        // Only a super-admin may edit/delete a super-admin account.
                                         const canManage =
                                             !targetIsSuperAdmin ||
                                             actorIsSuperAdmin;
-                                        // The last super-admin can never be deleted.
                                         const lockDelete =
                                             targetIsSuperAdmin &&
                                             superAdminCount <= 1;
@@ -241,34 +211,37 @@ export default function UsersIndex({
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="hidden md:table-cell">
-                                                    <div className="flex flex-wrap gap-1">
-                                                        {user.roles.length ===
-                                                        0 ? (
-                                                            <span className="text-xs text-muted-foreground">
-                                                                —
-                                                            </span>
-                                                        ) : (
-                                                            user.roles.map(
-                                                                (r) => (
-                                                                    <Badge
-                                                                        key={
-                                                                            r.id
-                                                                        }
-                                                                        variant="secondary"
-                                                                        className="capitalize"
-                                                                    >
-                                                                        {r.name}
-                                                                    </Badge>
-                                                                ),
-                                                            )
-                                                        )}
-                                                    </div>
+                                                    <Badge
+                                                        variant={
+                                                            user.email_verified_at
+                                                                ? 'secondary'
+                                                                : 'outline'
+                                                        }
+                                                    >
+                                                        {user.email_verified_at
+                                                            ? 'Verified'
+                                                            : 'Unverified'}
+                                                    </Badge>
                                                 </TableCell>
                                                 <TableCell className="hidden lg:table-cell">
                                                     <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
                                                         <Calendar className="h-3.5 w-3.5" />
                                                         {new Date(
                                                             user.created_at,
+                                                        ).toLocaleDateString(
+                                                            undefined,
+                                                            {
+                                                                dateStyle:
+                                                                    'medium',
+                                                            },
+                                                        )}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell className="hidden lg:table-cell">
+                                                    <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                                                        <Calendar className="h-3.5 w-3.5" />
+                                                        {new Date(
+                                                            user.updated_at,
                                                         ).toLocaleDateString(
                                                             undefined,
                                                             {
@@ -291,7 +264,7 @@ export default function UsersIndex({
                                                             >
                                                                 <Link
                                                                     href={
-                                                                        users.show(
+                                                                        routes.show(
                                                                             user.id,
                                                                         ).url
                                                                     }
@@ -313,7 +286,7 @@ export default function UsersIndex({
                                                                 >
                                                                     <Link
                                                                         href={
-                                                                            users.edit(
+                                                                            routes.edit(
                                                                                 user.id,
                                                                             )
                                                                                 .url
@@ -387,10 +360,10 @@ export default function UsersIndex({
                             <div className="px-4 py-16 text-center">
                                 <UsersRound className="mx-auto h-10 w-10 text-muted-foreground/40" />
                                 <h3 className="mt-4 text-sm font-semibold">
-                                    No users found
+                                    {labels.emptyTitle}
                                 </h3>
                                 <p className="mt-1 text-xs text-muted-foreground">
-                                    Try adjusting your search or filters.
+                                    Try adjusting your search.
                                 </p>
                             </div>
                         )}
@@ -446,6 +419,6 @@ function StatCard({
 UsersIndex.layout = {
     breadcrumbs: [
         { title: 'Dashboard', href: dashboard() },
-        { title: 'Users', href: users.index() },
+        { title: 'Management', href: '#' },
     ],
 };

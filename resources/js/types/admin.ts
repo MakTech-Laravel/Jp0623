@@ -37,7 +37,23 @@ export interface AdminUser {
     avatar: string | null;
     email_verified_at: string | null;
     created_at: string;
+    updated_at: string;
     roles: RoleRef[];
+}
+
+export interface AdminOperatorProfile {
+    id: number;
+    first_name: string;
+    last_name: string;
+    company_name: string;
+    phone: string | null;
+    owns_machines: boolean;
+    machine_types: string[];
+    machines_needed: string;
+    primary_city: string;
+    terms_accepted_at: string | null;
+    email_code_confirmed_at: string | null;
+    trial_started_at: string | null;
 }
 
 export interface AdminUserDetail extends AdminUser {
@@ -153,6 +169,20 @@ export interface AdminVendingRequest {
     phone: string;
     terms_accepted: boolean;
     status: 'new' | 'reviewed';
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AdminCoffeeServiceRequest {
+    id: number;
+    business_name: string;
+    zip_code: string;
+    contact_name: string;
+    phone: string;
+    email: string;
+    notes: string | null;
+    terms_accepted: boolean;
+    status: 'new' | 'reviewed' | 'closed';
     created_at: string;
     updated_at: string;
 }

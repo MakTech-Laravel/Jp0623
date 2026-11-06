@@ -60,16 +60,8 @@ class MachinesPageData
         return [
             'title' => 'Our machine lineup.',
             'text' => 'Availability of machines and or micro markets may vary by region. Multiple machines can be placed at locations with more visitors/employees.',
-            'filters' => [
-                'All',
-                'Combo',
-                'Snack',
-                'Drink',
-                'Healthy',
-                'Vendera cooler',
-                'Micro market',
-            ],
-            'items' => HomePageData::machines(),
+            'filters' => ['All'],
+            'items' => [],
         ];
     }
 

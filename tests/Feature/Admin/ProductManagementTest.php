@@ -192,7 +192,7 @@ test('updating a product with a new image stores the upload', function () {
 
     expect($product->image)->not->toBe('/images/products/drinks.jpg')
         ->and($product->image)->toStartWith('products/')
-        ->and($product->image_url)->not->toBeNull();
+        ->and($product->image_url)->toBe('/storage/'.$product->image);
 
     Storage::disk('public')->assertExists($product->image);
 });
@@ -214,4 +214,49 @@ test('an empty image string on update does not fail validation', function () {
         ])
         ->assertSessionDoesntHaveErrors('image')
         ->assertRedirect(route('admin.products.index'));
+});
+
+test('create product form receives the next sort order', function () {
+    Product::factory()->create([
+        'sort_order' => 5,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.products.create'))
+        ->assertOk()
+        ->assertInertia(
+            fn (Assert $page) => $page
+                ->component('admin/products/create')
+                ->where('defaultSortOrder', 6)
+        );
+});
+
+test('a product created without sort order appends after existing rows', function () {
+    Product::factory()->create([
+        'name' => 'Older Product',
+        'kind' => 'drink',
+        'sort_order' => 3,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.products.store'), [
+            'name' => 'Newest Product',
+            'kind' => 'chips',
+            'is_featured' => false,
+            'is_active' => true,
+        ])
+        ->assertRedirect(route('admin.products.index'));
+
+    $newest = Product::query()->where('name', 'Newest Product')->sole();
+
+    expect($newest->sort_order)->toBe(4);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.products.index'))
+        ->assertOk()
+        ->assertInertia(
+            fn (Assert $page) => $page
+                ->where('products.data.0.name', 'Older Product')
+                ->where('products.data.1.name', 'Newest Product')
+        );
 });

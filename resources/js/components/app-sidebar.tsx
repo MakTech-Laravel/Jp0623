@@ -2,26 +2,23 @@ import { Link } from '@inertiajs/react';
 import {
     BookOpen,
     CircleHelp,
+    Coffee,
     CreditCard,
     FolderGit2,
     FolderTree,
-    KeyRound,
     LayoutGrid,
-    LockKeyhole,
     MapPinned,
     MapPin,
     Package,
     Receipt,
     Route,
     Send,
-    Settings,
-    Shield,
-    ShieldCheck,
     ShoppingBasket,
     Ticket,
-    Upload,
+    // Upload, // File Upload Demo — uncomment with nav item below
     User,
     Users,
+    UserCog,
     Wallet,
     Inbox,
 } from 'lucide-react';
@@ -46,15 +43,15 @@ import {
     index as accountIndex,
     location as accountLocation,
 } from '@/routes/account';
+import adminAdminManagement from '@/routes/admin/admin-management';
 import adminMachineCategories from '@/routes/admin/machine-categories';
 import adminMachines from '@/routes/admin/machines';
-import adminPermissions from '@/routes/admin/permissions';
 import adminProducts from '@/routes/admin/products';
-import adminRoles from '@/routes/admin/roles';
-import adminUsers from '@/routes/admin/users';
+import adminUserManagement from '@/routes/admin/user-management';
+import adminCoffeeServiceRequests from '@/routes/admin/coffee-service-requests';
 import adminVendingRequests from '@/routes/admin/vending-requests';
 import { index as billingIndex } from '@/routes/billing';
-import { index as fileUploadDemo } from '@/routes/file-upload-demo';
+// import { index as fileUploadDemo } from '@/routes/file-upload-demo'; // File Upload Demo — uncomment with nav item below
 import {
     commission as leadsCommission,
     faq as leadsFaq,
@@ -198,11 +195,28 @@ export function AppSidebar() {
 
         items.push(
             {
-                title: 'File Upload Demo',
-                href: fileUploadDemo(),
-                icon: Upload,
-                permissions: [PERMISSIONS.FILE_UPLOAD.INDEX],
+                title: 'User Management',
+                href: adminUserManagement.index(),
+                icon: Users,
+                permissions: [PERMISSIONS.USERS.INDEX],
             },
+            {
+                title: 'Admin Management',
+                href: adminAdminManagement.index(),
+                icon: UserCog,
+                permissions: [PERMISSIONS.USERS.INDEX],
+            },
+            /*
+             * File Upload Demo — commented out; uncomment to restore.
+             * Also re-enable the Upload and fileUploadDemo imports above.
+             *
+             * {
+             *     title: 'File Upload Demo',
+             *     href: fileUploadDemo(),
+             *     icon: Upload,
+             *     permissions: [PERMISSIONS.FILE_UPLOAD.INDEX],
+             * },
+             */
             {
                 title: 'Machine Management',
                 icon: Package,
@@ -245,65 +259,73 @@ export function AppSidebar() {
                 permissions: [PERMISSIONS.VENDING_REQUESTS.INDEX],
             },
             {
-                title: 'Access Control',
-                icon: ShieldCheck,
-                permissions: [
-                    PERMISSIONS.USERS.INDEX,
-                    PERMISSIONS.ROLES.INDEX,
-                    PERMISSIONS.PERMISSIONS.INDEX,
-                ],
-                items: [
-                    {
-                        title: 'Users',
-                        href: adminUsers.index(),
-                        icon: Users,
-                        permissions: [PERMISSIONS.USERS.INDEX],
-                    },
-                    {
-                        title: 'Roles',
-                        href: adminRoles.index(),
-                        icon: Shield,
-                        permissions: [PERMISSIONS.ROLES.INDEX],
-                    },
-                    {
-                        title: 'Permissions',
-                        href: adminPermissions.index(),
-                        icon: KeyRound,
-                        permissions: [PERMISSIONS.PERMISSIONS.INDEX],
-                    },
-                    {
-                        title: 'Settings',
-                        icon: Settings,
-                        permissions: [PERMISSIONS.SETTINGS.INDEX],
-                        classNames: {
-                            icon: 'size-5',
-                        },
-                        items: [
-                            {
-                                title: 'Profile',
-                                href: '#',
-                                icon: User,
-                                permissions: [PERMISSIONS.SETTINGS.INDEX],
-                            },
-                            {
-                                title: 'Security',
-                                icon: Shield,
-                                permissions: [PERMISSIONS.SETTINGS.INDEX],
-                                items: [
-                                    {
-                                        title: 'Password',
-                                        href: '#',
-                                        icon: LockKeyhole,
-                                        permissions: [
-                                            PERMISSIONS.SETTINGS.INDEX,
-                                        ],
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
+                title: 'Coffee Requests',
+                href: adminCoffeeServiceRequests.index(),
+                icon: Coffee,
+                permissions: [PERMISSIONS.COFFEE_SERVICE_REQUESTS.INDEX],
             },
+            /*
+             * Access Control — commented out so neither admin nor super-admin
+             * sees Roles / Permissions / Settings in the sidebar. Routes remain.
+             * To restore: re-import ShieldCheck, Shield, KeyRound, Settings,
+             * LockKeyhole, adminRoles, adminPermissions, and uncomment below.
+             *
+             * {
+             *     title: 'Access Control',
+             *     icon: ShieldCheck,
+             *     permissions: [
+             *         PERMISSIONS.USERS.INDEX,
+             *         PERMISSIONS.ROLES.INDEX,
+             *         PERMISSIONS.PERMISSIONS.INDEX,
+             *     ],
+             *     items: [
+             *         {
+             *             title: 'Users',
+             *             href: adminUsers.index(),
+             *             icon: Users,
+             *             permissions: [PERMISSIONS.USERS.INDEX],
+             *         },
+             *         {
+             *             title: 'Roles',
+             *             href: adminRoles.index(),
+             *             icon: Shield,
+             *             permissions: [PERMISSIONS.ROLES.INDEX],
+             *         },
+             *         {
+             *             title: 'Permissions',
+             *             href: adminPermissions.index(),
+             *             icon: KeyRound,
+             *             permissions: [PERMISSIONS.PERMISSIONS.INDEX],
+             *         },
+             *         {
+             *             title: 'Settings',
+             *             icon: Settings,
+             *             permissions: [PERMISSIONS.SETTINGS.INDEX],
+             *             items: [
+             *                 {
+             *                     title: 'Profile',
+             *                     href: '#',
+             *                     icon: User,
+             *                     permissions: [PERMISSIONS.SETTINGS.INDEX],
+             *                 },
+             *                 {
+             *                     title: 'Security',
+             *                     icon: Shield,
+             *                     permissions: [PERMISSIONS.SETTINGS.INDEX],
+             *                     items: [
+             *                         {
+             *                             title: 'Password',
+             *                             href: '#',
+             *                             icon: LockKeyhole,
+             *                             permissions: [PERMISSIONS.SETTINGS.INDEX],
+             *                         },
+             *                     ],
+             *                 },
+             *             ],
+             *         },
+             *     ],
+             * },
+             */
         );
 
         return items;

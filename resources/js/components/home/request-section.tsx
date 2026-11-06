@@ -33,7 +33,6 @@ const STEP_FIELDS: Record<number, string[]> = {
         'email',
         'phone',
         'terms_accepted',
-        'captcha_confirmed',
     ],
 };
 
@@ -43,6 +42,14 @@ function FieldError({ message }: { message?: string }) {
     }
 
     return <p className="text-sm font-medium text-bad">{message}</p>;
+}
+
+function sanitizePhone(value: string): string {
+    return value.replace(/[^0-9+\-() ]/g, '');
+}
+
+function phoneDigitCount(value: string): number {
+    return value.replace(/\D/g, '').length;
 }
 
 export function RequestSection({ data }: { data: RequestFormData }) {
@@ -69,7 +76,6 @@ export function RequestSection({ data }: { data: RequestFormData }) {
         email: '',
         phone: '',
         terms_accepted: false,
-        captcha_confirmed: false,
     });
 
     const isSwitchingProvider = form.data.existing_vending !== 'No';
@@ -136,12 +142,15 @@ export function RequestSection({ data }: { data: RequestFormData }) {
             }
             if (!form.data.phone.trim()) {
                 errors.phone = 'Phone is required.';
+            } else {
+                const digits = phoneDigitCount(form.data.phone);
+
+                if (digits < 7 || digits > 15) {
+                    errors.phone = 'Phone must contain between 7 and 15 digits.';
+                }
             }
             if (!form.data.terms_accepted) {
                 errors.terms_accepted = 'You must agree to the terms.';
-            }
-            if (!form.data.captcha_confirmed) {
-                errors.captcha_confirmed = 'Please confirm the captcha.';
             }
         }
 
@@ -629,12 +638,16 @@ export function RequestSection({ data }: { data: RequestFormData }) {
                                     <label className="flex flex-col gap-1 text-sm font-semibold">
                                         Phone
                                         <input
+                                            type="tel"
                                             inputMode="tel"
+                                            autoComplete="tel"
                                             value={form.data.phone}
                                             onChange={(e) =>
                                                 form.setData(
                                                     'phone',
-                                                    e.target.value,
+                                                    sanitizePhone(
+                                                        e.target.value,
+                                                    ),
                                                 )
                                             }
                                             placeholder="(555) 555-5555"
@@ -664,26 +677,6 @@ export function RequestSection({ data }: { data: RequestFormData }) {
                                     </label>
                                     <FieldError
                                         message={errorFor('terms_accepted')}
-                                    />
-                                    <div className="col-span-full flex max-w-xs items-center gap-2.5 rounded-lg border border-brand-line bg-brand-sunk p-3 text-sm">
-                                        <input
-                                            type="checkbox"
-                                            checked={
-                                                form.data.captcha_confirmed
-                                            }
-                                            onChange={(e) =>
-                                                form.setData(
-                                                    'captcha_confirmed',
-                                                    e.target.checked,
-                                                )
-                                            }
-                                            aria-label="reCAPTCHA check"
-                                            className="accent-brass"
-                                        />
-                                        reCAPTCHA check goes here
-                                    </div>
-                                    <FieldError
-                                        message={errorFor('captcha_confirmed')}
                                     />
                                 </div>
                             ) : null}
