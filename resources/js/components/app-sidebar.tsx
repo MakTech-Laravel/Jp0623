@@ -17,6 +17,7 @@ import {
     Settings,
     Shield,
     ShieldCheck,
+    ShoppingBasket,
     Ticket,
     Upload,
     User,
@@ -47,6 +48,7 @@ import {
 import adminMachineCategories from '@/routes/admin/machine-categories';
 import adminMachines from '@/routes/admin/machines';
 import adminPermissions from '@/routes/admin/permissions';
+import adminProducts from '@/routes/admin/products';
 import adminRoles from '@/routes/admin/roles';
 import adminUsers from '@/routes/admin/users';
 import { index as billingIndex } from '@/routes/billing';
@@ -218,6 +220,19 @@ export function AppSidebar() {
                         href: adminMachines.index(),
                         icon: Package,
                         permissions: [PERMISSIONS.MACHINES.INDEX],
+                    },
+                ],
+            },
+            {
+                title: 'Product Management',
+                icon: ShoppingBasket,
+                permissions: [PERMISSIONS.PRODUCTS.INDEX],
+                items: [
+                    {
+                        title: 'Products',
+                        href: adminProducts.index(),
+                        icon: ShoppingBasket,
+                        permissions: [PERMISSIONS.PRODUCTS.INDEX],
                     },
                 ],
             },

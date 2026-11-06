@@ -4,6 +4,7 @@ use App\Enums\PermissionEnum;
 use App\Http\Controllers\Admin\MachineCategoryController;
 use App\Http\Controllers\Admin\MachineController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\RegisterAccountController;
@@ -175,6 +176,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware(['permission:'.PermissionEnum::MACHINES_EDIT->value, HandlePrecognitiveRequests::class]);
             Route::delete('machines/{machine}', 'destroy')->name('machines.destroy')
                 ->middleware('permission:'.PermissionEnum::MACHINES_DELETE->value);
+        });
+
+        // Products — full CRUD (catalog cards).
+        Route::controller(ProductController::class)->group(function () {
+            Route::get('products', 'index')->name('products.index')
+                ->middleware('permission:'.PermissionEnum::PRODUCTS_INDEX->value);
+            Route::get('products/create', 'create')->name('products.create')
+                ->middleware('permission:'.PermissionEnum::PRODUCTS_CREATE->value);
+            Route::post('products', 'store')->name('products.store')
+                ->middleware(['permission:'.PermissionEnum::PRODUCTS_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('products/{product}', 'show')->name('products.show')
+                ->middleware('permission:'.PermissionEnum::PRODUCTS_VIEW->value);
+            Route::get('products/{product}/edit', 'edit')->name('products.edit')
+                ->middleware('permission:'.PermissionEnum::PRODUCTS_EDIT->value);
+            Route::put('products/{product}', 'update')->name('products.update')
+                ->middleware(['permission:'.PermissionEnum::PRODUCTS_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('products/{product}', 'destroy')->name('products.destroy')
+                ->middleware('permission:'.PermissionEnum::PRODUCTS_DELETE->value);
         });
     });
 });

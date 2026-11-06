@@ -68,6 +68,13 @@ export const PERMISSIONS = {
         EDIT: 'machines.edit',
         DELETE: 'machines.delete',
     },
+    PRODUCTS: {
+        INDEX: 'products.index',
+        VIEW: 'products.view',
+        CREATE: 'products.create',
+        EDIT: 'products.edit',
+        DELETE: 'products.delete',
+    },
 } as const;
 
 // Auto-derived union type from the const above.

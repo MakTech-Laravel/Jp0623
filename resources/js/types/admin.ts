@@ -116,6 +116,22 @@ export interface AdminMachine {
     category?: MachineCategoryOption & { slug?: string };
 }
 
+export interface AdminProduct {
+    id: number;
+    name: string;
+    slug: string;
+    kind: string;
+    tags: string[] | null;
+    description: string | null;
+    image: string | null;
+    image_url: string | null;
+    is_featured: boolean;
+    is_active: boolean;
+    sort_order: number;
+    created_at: string;
+    updated_at: string;
+}
+
 /** Build the public URL for a stored avatar path, or null. */
 export function avatarUrl(path: string | null): string | null {
     if (!path) {
