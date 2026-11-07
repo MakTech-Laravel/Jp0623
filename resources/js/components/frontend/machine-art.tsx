@@ -436,7 +436,7 @@ export function MachineArt({ kind, className }: MachineArtProps) {
                 <svg
                     {...common}
                     viewBox="0 0 180 240"
-                    aria-label="Glass-front snack vending machine"
+                    aria-label="Snack vending machine"
                 >
                     <Base w={168} />
                     <rect

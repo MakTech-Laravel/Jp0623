@@ -51,8 +51,8 @@ class ContactPageData
     {
         return [
             'title' => 'Talk to our team',
-            'email' => 'hello@vendingmachinelocationsforsale.com',
-            'emailHref' => 'mailto:hello@vendingmachinelocationsforsale.com',
+            'email' => 'info@vendingmachinelocationsforsale.com',
+            'emailHref' => 'mailto:info@vendingmachinelocationsforsale.com',
             'operatorTitle' => 'Vending operator?',
             'operatorLinks' => [
                 [

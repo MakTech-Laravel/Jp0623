@@ -241,7 +241,7 @@ class HomePageData
             ],
             'items' => array_values(array_filter(
                 self::machines(),
-                fn (array $machine): bool => in_array($machine['id'], $ids, true),
+                fn(array $machine): bool => in_array($machine['id'], $ids, true),
             )),
         ];
     }
@@ -260,7 +260,7 @@ class HomePageData
                 'tags' => ['Combo', 'Card + phone'],
                 'desc' => 'One machine for snacks and cold drinks. The most common choice for a first placement.',
                 'href' => '/machines/combo',
-                'image' => '/images/machines/space-saver-combo.jpg',
+                'image' => '/images/machines/snack-drink-combo.png',
             ],
             [
                 'id' => 'healthy',
@@ -274,13 +274,13 @@ class HomePageData
             ],
             [
                 'id' => 'snack',
-                'name' => 'Glass-Front Snack',
+                'name' => 'Snack Machine',
                 'kind' => 'snack',
                 'type' => 'Snack',
                 'tags' => ['Snack', 'High capacity'],
                 'desc' => 'A large snack selection that holds more product between service visits.',
                 'href' => '/machines/snack',
-                'image' => '/images/machines/tradational-vending.png',
+                'image' => '/images/machines/snack-machine.png',
             ],
             [
                 'id' => 'drink',
@@ -338,7 +338,7 @@ class HomePageData
                 'href' => '/products',
             ],
             'items' => array_map(
-                fn (array $item): array => [
+                fn(array $item): array => [
                     'kind' => $item['kind'],
                     'name' => $item['name'],
                     'href' => '/products',
@@ -670,10 +670,10 @@ class HomePageData
         return [
             'eyebrow' => 'Top cities',
             'title' => 'Cities where we manage vending.',
-            'items' => array_map(fn (array $city): array => [
+            'items' => array_map(fn(array $city): array => [
                 'city' => $city[0],
                 'state' => $city[1],
-                'label' => $city[0].' vending',
+                'label' => $city[0] . ' vending',
                 'href' => '/cities',
             ], $raw),
         ];
