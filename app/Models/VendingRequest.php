@@ -63,7 +63,6 @@ class VendingRequest extends Model
         'Vendera cooler',
         'Micro market',
         'Coffee',
-        'ATM',
     ];
 
     public const MACHINE_COUNTS = ['1', '2', '3', '4+'];

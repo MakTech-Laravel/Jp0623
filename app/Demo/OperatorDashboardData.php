@@ -38,11 +38,6 @@ class OperatorDashboardData
                     'hint' => null,
                 ],
                 [
-                    'label' => 'Commission earned',
-                    'value' => '$84',
-                    'hint' => '$42 pending',
-                ],
-                [
                     'label' => 'Subscription',
                     'value' => 'Trial',
                     'hint' => null,
@@ -58,10 +53,6 @@ class OperatorDashboardData
                 [
                     'text' => 'Your lead L-3074 issue is under review',
                     'when' => 'Yesterday',
-                ],
-                [
-                    'text' => 'Commission $42 approved',
-                    'when' => 'Oct 28',
                 ],
             ],
         ];
@@ -249,7 +240,7 @@ class OperatorDashboardData
     public static function subscription(): array
     {
         return [
-            'planPrice' => '$39',
+            'planPrice' => '$5.99',
             'status' => 'trial',
             'daysLeft' => 9,
             'renews' => 'Dec 1',
@@ -258,7 +249,6 @@ class OperatorDashboardData
                 'SMS and email alerts',
                 'Lead issue support',
                 'Proposal builder',
-                'Referral commissions',
             ],
         ];
     }

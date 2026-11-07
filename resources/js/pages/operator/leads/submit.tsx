@@ -57,7 +57,7 @@ export default function LeadSubmit() {
         }
 
         toast.success(
-            "Lead submitted. We'll call the business to verify it within 2 business days. Track it under Commission earned.",
+            "Lead submitted. We'll call the business to verify it within 2 business days.",
         );
         event.currentTarget.reset();
         setSource(SOURCES[0]);

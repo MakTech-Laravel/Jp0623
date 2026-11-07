@@ -31,7 +31,7 @@ export default function Home({
                 <meta
                     head-key="description"
                     name="description"
-                    content="Nationwide vending services with free machine installation, stocking and service. Vending machines, micro markets, Vendera smart coolers, office coffee and ATMs for businesses in all 50 states."
+                    content="Nationwide vending services with free machine installation, stocking and service. Vending machines, micro markets, Vendera smart coolers and office coffee for businesses in all 50 states."
                 />
             </Head>
 

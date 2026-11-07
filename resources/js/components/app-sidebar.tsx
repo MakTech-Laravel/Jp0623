@@ -19,7 +19,6 @@ import {
     User,
     Users,
     UserCog,
-    Wallet,
     Inbox,
 } from 'lucide-react';
 import { useMemo } from 'react';
@@ -53,7 +52,6 @@ import adminVendingRequests from '@/routes/admin/vending-requests';
 import { index as billingIndex } from '@/routes/billing';
 // import { index as fileUploadDemo } from '@/routes/file-upload-demo'; // File Upload Demo — uncomment with nav item below
 import {
-    commission as leadsCommission,
     faq as leadsFaq,
     index as leadsIndex,
     purchased as leadsPurchased,
@@ -124,12 +122,6 @@ export function AppSidebar() {
                             title: 'Submit lead for sale',
                             href: leadsSubmit(),
                             icon: Send,
-                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
-                        },
-                        {
-                            title: 'Commission earned',
-                            href: leadsCommission(),
-                            icon: Wallet,
                             permissions: [PERMISSIONS.DASHBOARD.VIEW],
                         },
                         {

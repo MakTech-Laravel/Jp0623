@@ -62,7 +62,7 @@ export default function RegisterPayment() {
                     </h1>
                     <p className="mt-3 text-brand-muted">
                         Your card is not charged today. Trial ends Dec 1, 2026,
-                        then $39/month.
+                        then $5.99/month.
                     </p>
                     <div className="mt-6 rounded-xl border border-dashed border-brand-line bg-brand-sunk px-4 py-10 text-center text-sm text-brand-muted">
                         Secure card form from the payment provider goes here.

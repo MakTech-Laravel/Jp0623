@@ -54,9 +54,10 @@ class OperatorsPageData
     {
         return [
             'eyebrow' => 'Operator membership',
-            'price' => '$39',
+            'oldPrice' => '$39',
+            'price' => '$5.99',
             'period' => '/ month',
-            'text' => '30 days free, then $39/month. No commitment. Cancel anytime.',
+            'text' => '30 days free, then $5.99/month. No commitment. Cancel anytime.',
             'cta' => [
                 'label' => 'Start free trial',
                 'href' => '/register',
@@ -114,10 +115,6 @@ class OperatorsPageData
                     'title' => 'Routes for sale',
                     'text' => 'Buy a route or get a valuation for yours.',
                 ],
-                [
-                    'title' => '30% referral commission',
-                    'text' => "Submit leads you can't service and earn when they sell.",
-                ],
             ],
         ];
     }
@@ -133,7 +130,7 @@ class OperatorsPageData
             'items' => [
                 [
                     'q' => "How much does it cost and what's included?",
-                    'a' => '$39 per month after a 30-day free trial. You get access to verified location leads in your area and alerts when new ones are added.',
+                    'a' => '$5.99 per month after a 30-day free trial. You get access to verified location leads in your area and alerts when new ones are added.',
                 ],
                 [
                     'q' => 'What are qualified location leads?',

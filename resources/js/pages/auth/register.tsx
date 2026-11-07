@@ -23,7 +23,7 @@ export default function Register({ passwordRules }: Props) {
                             Join Vending Machine Locations For Sale
                         </h1>
                         <p className="mt-3 text-brand-muted">
-                            30 days free, then $39/month. Cancel anytime.
+                            30 days free, then $5.99/month. Cancel anytime.
                         </p>
                         <ul className="mt-5 flex list-none flex-col gap-2 p-0 text-sm text-brand-ink">
                             <li className="before:mr-2 before:font-bold before:text-good before:content-['✓']">
@@ -33,7 +33,7 @@ export default function Register({ passwordRules }: Props) {
                                 Email alerts
                             </li>
                             <li className="before:mr-2 before:font-bold before:text-good before:content-['✓']">
-                                Routes for sale and referral commissions
+                                Routes for sale
                             </li>
                         </ul>
                         <p className="mt-6 text-sm text-brand-muted">

@@ -20,6 +20,7 @@ type OperatorsPageProps = {
     };
     pricing: {
         eyebrow: string;
+        oldPrice?: string;
         price: string;
         period: string;
         text: string;
@@ -77,6 +78,11 @@ export default function OperatorsPage({
                         {pricing.eyebrow}
                     </p>
                     <p className="mt-3 font-display text-5xl font-extrabold text-brand-ink">
+                        {pricing.oldPrice ? (
+                            <span className="mr-3 text-2xl font-semibold text-brand-muted line-through decoration-2">
+                                {pricing.oldPrice}
+                            </span>
+                        ) : null}
                         {pricing.price}
                         <span className="text-lg font-semibold text-brand-muted">
                             {pricing.period}

@@ -33,12 +33,11 @@ class HomePageData
         return [
             'name' => 'Vending Machine Location Services',
             'tagline' => 'Nationwide',
-            'footerBlurb' => 'Full-service vending, micro markets, office coffee and ATMs for businesses nationwide. One contact for every location.',
+            'footerBlurb' => 'Full-service vending, micro markets and office coffee for businesses nationwide. One contact for every location.',
             'copyright' => '© 2026 vendingmachinelocationsforsale.com',
             'topNav' => [
                 ['label' => 'About', 'href' => '/about'],
                 ['label' => 'Industries', 'href' => '/industries'],
-                ['label' => 'ATM', 'href' => '/atm'],
                 ['label' => 'Schools', 'href' => '/schools'],
                 ['label' => 'Cities', 'href' => '/cities'],
                 ['label' => 'Resources', 'href' => '/resources'],
@@ -67,7 +66,6 @@ class HomePageData
                         ['label' => 'Micro markets', 'href' => '/micro-markets'],
                         ['label' => 'Vendera smart coolers', 'href' => '/machines/ai-cooler'],
                         ['label' => 'Office coffee', 'href' => '/office-coffee'],
-                        ['label' => 'ATM machines', 'href' => '/atm'],
                         ['label' => 'School vending', 'href' => '/schools'],
                     ],
                 ],
@@ -241,7 +239,7 @@ class HomePageData
             ],
             'items' => array_values(array_filter(
                 self::machines(),
-                fn(array $machine): bool => in_array($machine['id'], $ids, true),
+                fn (array $machine): bool => in_array($machine['id'], $ids, true),
             )),
         ];
     }
@@ -338,7 +336,7 @@ class HomePageData
                 'href' => '/products',
             ],
             'items' => array_map(
-                fn(array $item): array => [
+                fn (array $item): array => [
                     'kind' => $item['kind'],
                     'name' => $item['name'],
                     'href' => '/products',
@@ -449,7 +447,6 @@ class HomePageData
                 'Vendera cooler',
                 'Micro market',
                 'Coffee',
-                'ATM',
             ],
             'machineCounts' => ['1', '2', '3', '4+'],
             'existingVending' => ['No', 'Yes, want to switch'],
@@ -557,7 +554,7 @@ class HomePageData
                 ],
                 [
                     'q' => 'What types of machines do you offer?',
-                    'a' => 'Snack, drink and combo machines, Vendera smart coolers, micro markets, office coffee and ATMs.',
+                    'a' => 'Snack, drink and combo machines, Vendera smart coolers, micro markets and office coffee.',
                 ],
                 [
                     'q' => 'Can you support multi-location businesses?',
@@ -670,10 +667,10 @@ class HomePageData
         return [
             'eyebrow' => 'Top cities',
             'title' => 'Cities where we manage vending.',
-            'items' => array_map(fn(array $city): array => [
+            'items' => array_map(fn (array $city): array => [
                 'city' => $city[0],
                 'state' => $city[1],
-                'label' => $city[0] . ' vending',
+                'label' => $city[0].' vending',
                 'href' => '/cities',
             ], $raw),
         ];
