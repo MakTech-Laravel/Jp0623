@@ -133,7 +133,7 @@ export function ContactSection({
                                     I agree to the Location Terms and Privacy
                                     Policy and to be contacted about my request.
                                 </label>
-                                <div className="col-span-full flex max-w-xs items-center gap-2.5 rounded-lg border border-brand-line bg-brand-sunk p-3 text-sm">
+                                {/* <div className="col-span-full flex max-w-xs items-center gap-2.5 rounded-lg border border-brand-line bg-brand-sunk p-3 text-sm">
                                     <input
                                         type="checkbox"
                                         required
@@ -141,7 +141,7 @@ export function ContactSection({
                                         className="accent-brass"
                                     />
                                     reCAPTCHA check goes here
-                                </div>
+                                </div> */}
                                 <div className="col-span-full">
                                     <BrandButton
                                         as="button"
