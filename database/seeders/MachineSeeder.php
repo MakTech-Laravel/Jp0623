@@ -145,7 +145,7 @@ class MachineSeeder extends Seeder
                 'type' => 'Micro market',
                 'tags' => ['Micro market', 'Self checkout'],
                 'desc' => 'Open shelves, coolers and a self-checkout kiosk: a small store in your break room.',
-                'image' => '/images/machines/micro-market.png',
+                'image' => '/images/machines/micro-market.jpg',
                 'capacity' => 'Up to 500+ items',
                 'dimensions' => 'Fits rooms from 8 × 10 ft',
                 'best_for' => 'Sites with 100+ people',

@@ -47,7 +47,7 @@ class OfficeCoffeePageData
                 'label' => 'Get coffee service',
                 'href' => '#coffee-form',
             ],
-            'image' => '/images/machines/coffee1.png',
+            'image' => '/images/machines/coffee1.jpg',
         ];
     }
 

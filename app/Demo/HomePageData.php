@@ -153,7 +153,7 @@ class HomePageData
                     'alt' => 'Vendera smart cooler',
                 ],
                 [
-                    'src' => '/images/machines/micro-market.png',
+                    'src' => '/images/machines/micro-market.jpg',
                     'alt' => 'Micro market setup',
                 ],
             ],
@@ -205,7 +205,7 @@ class HomePageData
                     'title' => 'Micro markets',
                     'text' => 'A self-checkout store for fresh food, snacks and drinks.',
                     'href' => '/micro-markets',
-                    'image' => '/images/machines/micro-market.png',
+                    'image' => '/images/machines/micro-market.jpg',
                 ],
                 [
                     'title' => 'Vendera smart coolers',
@@ -217,7 +217,7 @@ class HomePageData
                     'title' => 'Office coffee',
                     'text' => 'Brewers and supplies delivered on schedule.',
                     'href' => '/office-coffee',
-                    'image' => '/images/machines/coffee1.png',
+                    'image' => '/images/machines/coffee1.jpg',
                 ],
             ],
         ];
@@ -318,7 +318,7 @@ class HomePageData
                 'tags' => ['Micro market', 'Self checkout'],
                 'desc' => 'Open shelves, coolers and a self-checkout kiosk: a small store in your break room.',
                 'href' => '/machines/micro-market',
-                'image' => '/images/machines/micro-market.png',
+                'image' => '/images/machines/micro-market.jpg',
             ],
         ];
     }

@@ -171,14 +171,14 @@ class IndustriesPageData
                 'label' => 'Colleges & universities',
                 'text' => 'Dorms, libraries and student centers with card and phone pay.',
                 'kind' => 'touch',
-                'image' => '/images/machines/micro-market.png',
+                'image' => '/images/machines/micro-market.jpg',
             ],
             [
                 'slug' => 'hospitals',
                 'label' => 'Hospitals & medical',
                 'text' => '24/7 food and drinks for staff, patients and visitors.',
                 'kind' => 'food',
-                'image' => '/images/machines/coffee1.png',
+                'image' => '/images/machines/coffee1.jpg',
             ],
             [
                 'slug' => 'apartments',

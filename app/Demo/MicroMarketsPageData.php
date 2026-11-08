@@ -48,7 +48,7 @@ class MicroMarketsPageData
                 'label' => 'Get a micro market',
                 'href' => '/#request-sec',
             ],
-            'image' => '/images/machines/micro-market.png',
+            'image' => '/images/machines/micro-market.jpg',
         ];
     }
 
@@ -141,7 +141,7 @@ class MicroMarketsPageData
                 [
                     'title' => 'Micro market',
                     'text' => 'Best for 100+ people. The widest selection, including fresh meals.',
-                    'image' => '/images/machines/micro-market.png',
+                    'image' => '/images/machines/micro-market.jpg',
                     'href' => '/micro-markets',
                 ],
                 [

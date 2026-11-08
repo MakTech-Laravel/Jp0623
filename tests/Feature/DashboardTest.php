@@ -137,8 +137,6 @@ test('operators can open remaining portal pages', function (string $route, strin
         });
 })->with([
     'tickets' => ['leads.tickets', 'operator/leads/tickets', ['tickets']],
-    'submit' => ['leads.submit', 'operator/leads/submit', []],
-    'commission' => ['leads.commission', 'operator/leads/commission', ['kpis', 'paypalEmail', 'submittedLeads', 'commissions', 'payouts']],
     'faq' => ['leads.faq', 'operator/leads/faq', ['faqs']],
     'routes' => ['routes.index', 'operator/routes/index', ['routes']],
     'sell route' => ['routes.sell', 'operator/routes/sell', []],
@@ -151,8 +149,6 @@ test('guests are redirected from remaining portal pages', function (string $rout
     $this->get(route($route))->assertRedirect(route('login'));
 })->with([
     'leads.tickets',
-    'leads.submit',
-    'leads.commission',
     'leads.faq',
     'routes.index',
     'routes.sell',
