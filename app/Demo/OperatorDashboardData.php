@@ -287,72 +287,6 @@ class OperatorDashboardData
     }
 
     /**
-     * @return array<string, mixed>
-     */
-    public static function commission(): array
-    {
-        return [
-            'kpis' => [
-                ['label' => 'Leads submitted', 'value' => '4', 'hint' => null],
-                ['label' => 'Sold', 'value' => '2', 'hint' => null],
-                ['label' => 'Pending', 'value' => '$42', 'hint' => null],
-                ['label' => 'Paid to date', 'value' => '$42', 'hint' => null],
-            ],
-            'paypalEmail' => 'alex@example.com',
-            'submittedLeads' => [
-                [
-                    'submitted' => 'Oct 12',
-                    'location' => 'Lakeview Dental',
-                    'listed_price' => 110,
-                    'status' => 'Verifying',
-                ],
-                [
-                    'submitted' => 'Oct 02',
-                    'location' => 'Harbor Storage',
-                    'listed_price' => null,
-                    'status' => 'Not approved',
-                ],
-                [
-                    'submitted' => 'Sep 20',
-                    'location' => 'Northside Charter School',
-                    'listed_price' => 140,
-                    'status' => 'Sold',
-                ],
-                [
-                    'submitted' => 'Sep 08',
-                    'location' => 'Metro Auto Body',
-                    'listed_price' => 140,
-                    'status' => 'Sold',
-                ],
-            ],
-            'commissions' => [
-                [
-                    'location' => 'Northside Charter School',
-                    'sold' => 'Oct 22',
-                    'sold_price' => 140,
-                    'commission' => 42,
-                    'status' => 'Pending · Dec 1',
-                ],
-                [
-                    'location' => 'Metro Auto Body',
-                    'sold' => 'Sep 25',
-                    'sold_price' => 140,
-                    'commission' => 42,
-                    'status' => 'Paid',
-                ],
-            ],
-            'payouts' => [
-                [
-                    'paid_date' => 'Oct 01',
-                    'amount' => 42.0,
-                    'paypal' => 'alex@example.com',
-                    'notes' => 'September commissions',
-                ],
-            ],
-        ];
-    }
-
-    /**
      * @return list<array{question: string, answer: string}>
      */
     public static function faq(): array
@@ -373,10 +307,6 @@ class OperatorDashboardData
             [
                 'question' => 'Can I get a refund?',
                 'answer' => 'Report an issue within 7 days from Purchased location leads. We verify it and may issue a credit or refund.',
-            ],
-            [
-                'question' => 'How do commissions work?',
-                'answer' => 'Submit a lead; if it sells, you earn 30% of the sale price, paid monthly to PayPal.',
             ],
             [
                 'question' => 'How do I change my lead area?',

@@ -55,7 +55,6 @@ import {
     faq as leadsFaq,
     index as leadsIndex,
     purchased as leadsPurchased,
-    submit as leadsSubmit,
     tickets as leadsTickets,
 } from '@/routes/leads';
 import {
@@ -119,12 +118,6 @@ export function AppSidebar() {
                             permissions: [PERMISSIONS.DASHBOARD.VIEW],
                         },
                         {
-                            title: 'Submit lead for sale',
-                            href: leadsSubmit(),
-                            icon: Send,
-                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
-                        },
-                        {
                             title: 'FAQ',
                             href: leadsFaq(),
                             icon: CircleHelp,
@@ -132,25 +125,25 @@ export function AppSidebar() {
                         },
                     ],
                 },
-                {
-                    title: 'Routes for sale',
-                    icon: Route,
-                    permissions: [PERMISSIONS.DASHBOARD.VIEW],
-                    items: [
-                        {
-                            title: 'Routes for sale',
-                            href: routesIndex(),
-                            icon: Route,
-                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
-                        },
-                        {
-                            title: 'Submit route for sale',
-                            href: routesSell(),
-                            icon: Send,
-                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
-                        },
-                    ],
-                },
+                // {
+                //     title: 'Routes for sale',
+                //     icon: Route,
+                //     permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                //     items: [
+                //         {
+                //             title: 'Routes for sale',
+                //             href: routesIndex(),
+                //             icon: Route,
+                //             permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                //         },
+                //         {
+                //             title: 'Submit route for sale',
+                //             href: routesSell(),
+                //             icon: Send,
+                //             permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                //         },
+                //     ],
+                // },
                 {
                     title: 'Account',
                     icon: User,

@@ -41,19 +41,6 @@ class LeadController extends Controller
         ]);
     }
 
-    public function submit(): Response
-    {
-        return Inertia::render('operator/leads/submit');
-    }
-
-    public function commission(): Response
-    {
-        return Inertia::render(
-            'operator/leads/commission',
-            OperatorDashboardData::commission(),
-        );
-    }
-
     public function faq(): Response
     {
         return Inertia::render('operator/leads/faq', [

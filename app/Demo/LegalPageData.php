@@ -38,7 +38,6 @@ class LegalPageData
                 'sections' => [
                     'Membership and billing',
                     'Lead purchases',
-                    'Lead submissions and commissions',
                     'Lead issue reports',
                     'Routes and third-party brokers',
                     'Account termination',
