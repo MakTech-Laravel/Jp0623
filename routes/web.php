@@ -12,7 +12,6 @@ use App\Http\Controllers\Admin\VendingRequestController as AdminVendingRequestCo
 use App\Http\Controllers\Auth\RegisterAccountController;
 use App\Http\Controllers\Auth\RegisterOtpController;
 use App\Http\Controllers\Auth\RegisterOtpVerifyController;
-use App\Http\Controllers\Auth\RegisterTrialController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileUploadDemoController;
 use App\Http\Controllers\Frontend\AboutController;
@@ -73,13 +72,6 @@ Route::middleware(['auth', 'throttle:5,1'])->group(function () {
         ->name('register.otp');
     Route::post('/register/otp/verify', [RegisterOtpVerifyController::class, 'store'])
         ->name('register.otp.verify');
-});
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::inertia('/register/payment', 'auth/register-payment')
-        ->name('register.payment');
-    Route::post('/register/trial', [RegisterTrialController::class, 'store'])
-        ->name('register.trial');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

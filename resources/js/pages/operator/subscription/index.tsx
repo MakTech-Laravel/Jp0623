@@ -1,5 +1,4 @@
 import { Head, Link } from '@inertiajs/react';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { dashboard } from '@/routes';
 import { index as subscriptionIndex } from '@/routes/subscription';
@@ -8,8 +7,6 @@ interface SubscriptionPageProps {
     subscription: {
         planPrice: string;
         status: string;
-        daysLeft: number;
-        renews: string;
         includes: string[];
     };
 }
@@ -19,15 +16,15 @@ export default function SubscriptionIndex({
 }: SubscriptionPageProps) {
     return (
         <>
-            <Head title="Subscription" />
+            <Head title="Membership" />
 
             <div className="w-full space-y-6 px-4 py-6 sm:px-6 lg:px-8">
                 <div>
                     <h1 className="text-3xl font-extrabold tracking-tight">
-                        Subscription
+                        Membership
                     </h1>
                     <p className="mt-1 max-w-3xl text-muted-foreground">
-                        Your membership unlocks the lead marketplace and
+                        Your free membership unlocks the lead marketplace and
                         alerts.
                     </p>
                 </div>
@@ -36,39 +33,18 @@ export default function SubscriptionIndex({
                     <div className="rounded-xl border bg-card p-6 shadow-sm">
                         <h2 className="text-lg font-semibold">Current plan</h2>
                         <p className="mt-3 text-4xl font-extrabold tracking-tight">
-                            {subscription.planPrice}{' '}
-                            <span className="text-base font-medium text-muted-foreground">
-                                / month
-                            </span>
+                            {subscription.planPrice}
                         </p>
                         <p className="mt-3 text-sm">
                             Status:{' '}
-                            <span className="inline-flex rounded bg-amber-500/15 px-2 py-0.5 text-xs font-semibold text-amber-800 dark:text-amber-200">
-                                Free trial · {subscription.daysLeft} days left
+                            <span className="inline-flex rounded bg-emerald-500/15 px-2 py-0.5 text-xs font-semibold text-emerald-800 dark:text-emerald-200">
+                                Free member
                             </span>
                         </p>
-                        <div className="mt-5 flex flex-wrap gap-2">
-                            <Button
-                                className="bg-brass text-brass-ink hover:bg-brass/90"
-                                onClick={() =>
-                                    toast.success(
-                                        'Subscribe flow coming soon (demo).',
-                                    )
-                                }
-                            >
-                                Subscribe now
-                            </Button>
-                            <Button
-                                variant="outline"
-                                onClick={() =>
-                                    toast.message(
-                                        'Cancel flow coming soon (demo).',
-                                    )
-                                }
-                            >
-                                Cancel subscription
-                            </Button>
-                        </div>
+                        <p className="mt-3 text-sm text-muted-foreground">
+                            No membership fees. You only pay when you buy a
+                            lead.
+                        </p>
                     </div>
 
                     <div className="rounded-xl border bg-card p-6 shadow-sm">
@@ -83,9 +59,6 @@ export default function SubscriptionIndex({
                                 </li>
                             ))}
                         </ul>
-                        <p className="mt-4 text-xs text-muted-foreground">
-                            Trial renews / ends {subscription.renews}.
-                        </p>
                     </div>
                 </div>
 
@@ -100,6 +73,6 @@ export default function SubscriptionIndex({
 SubscriptionIndex.layout = {
     breadcrumbs: [
         { title: 'Dashboard', href: dashboard() },
-        { title: 'Subscription', href: subscriptionIndex() },
+        { title: 'Membership', href: subscriptionIndex() },
     ],
 };

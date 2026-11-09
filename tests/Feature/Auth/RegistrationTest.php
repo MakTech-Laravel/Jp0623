@@ -73,8 +73,7 @@ test('account create stores unverified user profile and sends otp', function () 
 
     expect($profile)->not->toBeNull()
         ->and($profile->company_name)->toBe('Test Vending Co')
-        ->and($profile->email_code_confirmed_at)->toBeNull()
-        ->and($profile->trial_started_at)->toBeNull();
+        ->and($profile->email_code_confirmed_at)->toBeNull();
 
     Mail::assertSent(RegisterOtpMail::class);
     expect(cache()->has(RegisterOtp::cacheKey('test@example.com')))->toBeTrue();
@@ -125,15 +124,14 @@ test('unverified user is redirected to verification notice after login', functio
     $response->assertRedirect(route('verification.notice'));
 });
 
-test('trial continue sets trial and redirects to dashboard', function () {
+test('verified operator reaches the dashboard without a payment step', function () {
     Mail::fake();
 
     $this->postJson(route('register.account'), operatorAccountPayload())->assertOk();
     RegisterOtp::store('test@example.com', '123456');
     $this->postJson(route('register.otp.verify'), ['email_otp' => '123456'])->assertOk();
 
-    $this->post(route('register.trial'))
-        ->assertRedirect(route('dashboard'));
-
-    expect(User::first()->operatorProfile->fresh()->trial_started_at)->not->toBeNull();
+    $this->get(route('dashboard'))->assertOk();
+    $this->get('/register/payment')->assertNotFound();
+    $this->post('/register/trial')->assertNotFound();
 });

@@ -36,7 +36,7 @@ class LegalPageData
             'operator-terms' => [
                 'title' => 'Operator terms',
                 'sections' => [
-                    'Membership and billing',
+                    'Membership and lead purchases',
                     'Lead purchases',
                     'Lead issue reports',
                     'Routes and third-party brokers',

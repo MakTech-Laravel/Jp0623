@@ -22,9 +22,8 @@ class OperatorDashboardData
             'firstName' => $firstName,
             'primaryCity' => $profile?->primary_city ?: 'Houston, TX',
             'subscription' => [
-                'status' => 'trial',
-                'daysLeft' => 9,
-                'label' => 'Trial',
+                'status' => 'free',
+                'label' => 'Free',
             ],
             'kpis' => [
                 [
@@ -38,8 +37,8 @@ class OperatorDashboardData
                     'hint' => null,
                 ],
                 [
-                    'label' => 'Subscription',
-                    'value' => 'Trial',
+                    'label' => 'Membership',
+                    'value' => 'Free',
                     'hint' => null,
                 ],
             ],
@@ -240,10 +239,8 @@ class OperatorDashboardData
     public static function subscription(): array
     {
         return [
-            'planPrice' => '$5.99',
-            'status' => 'trial',
-            'daysLeft' => 9,
-            'renews' => 'Dec 1',
+            'planPrice' => 'Free',
+            'status' => 'free',
             'includes' => [
                 'All verified leads in your area',
                 'SMS and email alerts',
@@ -435,15 +432,6 @@ class OperatorDashboardData
                     'status' => 'Paid',
                     'description' => 'Location lead ($40 credit used)',
                     'amount' => 110.0,
-                    'qty' => 1,
-                ],
-                [
-                    'id' => 'INV-1031',
-                    'location' => null,
-                    'date' => 'Nov 01',
-                    'status' => 'Trial',
-                    'description' => 'Monthly membership',
-                    'amount' => 0.0,
                     'qty' => 1,
                 ],
             ],

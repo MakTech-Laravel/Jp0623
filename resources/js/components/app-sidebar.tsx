@@ -162,7 +162,7 @@ export function AppSidebar() {
                             permissions: [PERMISSIONS.DASHBOARD.VIEW],
                         },
                         {
-                            title: 'Subscription',
+                            title: 'Membership',
                             href: subscriptionIndex(),
                             icon: CreditCard,
                             permissions: [PERMISSIONS.DASHBOARD.VIEW],

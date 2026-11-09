@@ -37,7 +37,7 @@ class OperatorsPageData
             'title' => 'Join the largest network of independent vending operators.',
             'lead' => 'See verified location leads in your area: businesses that asked for vending and confirmed their details with our team.',
             'primaryCta' => [
-                'label' => 'Get my free trial',
+                'label' => 'Join free',
                 'href' => '/register',
             ],
             'secondaryCta' => [
@@ -54,12 +54,11 @@ class OperatorsPageData
     {
         return [
             'eyebrow' => 'Operator membership',
-            'oldPrice' => '$39',
-            'price' => '$5.99',
-            'period' => '/ month',
-            'text' => '30 days free, then $5.99/month. No commitment. Cancel anytime.',
+            'price' => 'Free',
+            'period' => '',
+            'text' => 'Free to join. No membership fees and no credit card required.',
             'cta' => [
-                'label' => 'Start free trial',
+                'label' => 'Join free',
                 'href' => '/register',
             ],
         ];
@@ -130,7 +129,7 @@ class OperatorsPageData
             'items' => [
                 [
                     'q' => "How much does it cost and what's included?",
-                    'a' => '$5.99 per month after a 30-day free trial. You get access to verified location leads in your area and alerts when new ones are added.',
+                    'a' => 'Membership is free. You get access to verified location leads in your area and alerts when new ones are added.',
                 ],
                 [
                     'q' => 'What are qualified location leads?',

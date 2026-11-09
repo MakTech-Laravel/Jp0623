@@ -137,7 +137,7 @@ export default function VerifyOtp({ email }: Props) {
 
         try {
             await postJson('/register/otp/verify', { email_otp: code });
-            router.visit('/register/payment');
+            router.visit('/dashboard');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Invalid code.');
         } finally {

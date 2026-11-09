@@ -206,12 +206,6 @@ export default function ShowUser({
                                                 operatorProfile.email_code_confirmed_at,
                                             )}
                                         />
-                                        <Detail
-                                            label="Trial started"
-                                            value={formatDate(
-                                                operatorProfile.trial_started_at,
-                                            )}
-                                        />
                                     </dl>
                                 ) : (
                                     <p className="text-sm text-muted-foreground">

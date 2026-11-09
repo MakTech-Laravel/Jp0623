@@ -228,13 +228,13 @@ class HomePageData
      */
     public static function featuredMachines(): array
     {
-        $ids = ['combo', 'healthy', 'ai-cooler'];
+        $ids = ['combo', 'snack', 'ai-cooler'];
 
         return [
             'eyebrow' => 'Featured machines',
             'title' => 'Popular machines for new placements.',
             'link' => [
-                'label' => 'See all 7 machines →',
+                'label' => 'See all 6 machines →',
                 'href' => '/machines',
             ],
             'items' => array_values(array_filter(
@@ -259,16 +259,6 @@ class HomePageData
                 'desc' => 'One machine for snacks and cold drinks. The most common choice for a first placement.',
                 'href' => '/machines/combo',
                 'image' => '/images/machines/snack-drink-combo.png',
-            ],
-            [
-                'id' => 'healthy',
-                'name' => 'Healthy Choice Combo',
-                'kind' => 'healthy',
-                'type' => 'Healthy',
-                'tags' => ['Healthy', 'Combo'],
-                'desc' => 'Stocked with better-for-you snacks, waters and low-sugar drinks, with nutrition labels.',
-                'href' => '/machines/healthy',
-                'image' => '/images/machines/healthy-vending.png',
             ],
             [
                 'id' => 'snack',
