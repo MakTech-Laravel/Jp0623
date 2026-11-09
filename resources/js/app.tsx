@@ -24,7 +24,6 @@ createInertiaApp({
             case name.startsWith('frontend/'):
                 return FrontendLayout;
             case name === 'auth/register':
-            case name === 'auth/register-payment':
                 return AuthRegisterLayout;
             case name.startsWith('auth/'):
                 return AuthLayout;

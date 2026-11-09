@@ -54,7 +54,7 @@ async function postJson(
 const fieldClass =
     'rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink shadow-none focus-visible:border-brass focus-visible:ring-brass/30';
 
-const STEPS = ['Machines', 'Area', 'Account', 'Verify', 'Payment'] as const;
+const STEPS = ['Machines', 'Area', 'Account', 'Verify'] as const;
 const ACCOUNT_STEP = 2;
 const VERIFY_STEP = 3;
 const MACHINE_TYPES = [
@@ -279,7 +279,7 @@ export function RegisterStepper({ passwordRules }: RegisterStepperProps) {
                 return;
             }
 
-            router.visit('/register/payment');
+            router.visit('/dashboard');
             return;
         }
 

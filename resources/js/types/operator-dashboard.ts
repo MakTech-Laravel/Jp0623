@@ -49,7 +49,6 @@ export interface OperatorDashboardProps {
     primaryCity: string;
     subscription: {
         status: string;
-        daysLeft: number;
         label: string;
     };
     kpis: OperatorKpi[];
