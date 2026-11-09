@@ -15,7 +15,7 @@ class MachineSeeder extends Seeder
     {
         $categories = MachineCategory::query()->pluck('id', 'name');
 
-        $featured = ['combo', 'healthy', 'ai-cooler'];
+        $featured = ['combo', 'snack', 'ai-cooler'];
 
         foreach ($this->machines() as $index => $machine) {
             $categoryId = $categories[$machine['type']] ?? null;
@@ -45,7 +45,7 @@ class MachineSeeder extends Seeder
         }
 
         Machine::query()
-            ->whereIn('slug', ['touch', 'food'])
+            ->whereIn('slug', ['touch', 'food', 'healthy'])
             ->update(['is_active' => false]);
     }
 
@@ -77,18 +77,6 @@ class MachineSeeder extends Seeder
                 'capacity' => 'Up to 35 snack + 40 drink selections',
                 'dimensions' => '72" H × 39" W × 35" D',
                 'best_for' => 'Offices and break rooms with 25–150 people',
-            ],
-            [
-                'id' => 'healthy',
-                'name' => 'Healthy Choice Combo',
-                'kind' => 'healthy',
-                'type' => 'Healthy',
-                'tags' => ['Healthy', 'Combo'],
-                'desc' => 'Stocked with better-for-you snacks, waters and low-sugar drinks, with nutrition labels.',
-                'image' => '/images/machines/healthy-vending.png',
-                'capacity' => 'Up to 30 snack + 30 drink selections',
-                'dimensions' => '72" H × 39" W × 35" D',
-                'best_for' => 'Gyms, hospitals, schools and wellness programs',
             ],
             [
                 'id' => 'snack',
