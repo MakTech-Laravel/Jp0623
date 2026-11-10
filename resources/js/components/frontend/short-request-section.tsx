@@ -3,6 +3,10 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { BrandButton } from '@/components/frontend/brand-button';
 import { Band } from '@/components/frontend/wrap';
+import {
+    LocationAutocomplete,
+    type LocationSuggestion,
+} from '@/components/location/location-autocomplete';
 import type { RouteDefinition } from '@/wayfinder';
 
 export type ShortRequestFormData = {
@@ -16,6 +20,12 @@ export type ShortRequestFormData = {
 type ShortRequestFields = {
     business_name: string;
     zip_code: string;
+    address: string | null;
+    city: string;
+    state: string;
+    postal_code: string | null;
+    latitude: number | null;
+    longitude: number | null;
     contact_name: string;
     phone: string;
     email: string;
@@ -42,6 +52,12 @@ function FieldError({ message }: { message?: string }) {
 const emptyFields: ShortRequestFields = {
     business_name: '',
     zip_code: '',
+    address: null,
+    city: '',
+    state: '',
+    postal_code: null,
+    latitude: null,
+    longitude: null,
     contact_name: '',
     phone: '',
     email: '',
@@ -63,6 +79,9 @@ export function ShortRequestSection({
     const [localDone, setLocalDone] = useState(false);
     const [localErrors, setLocalErrors] = useState<Record<string, string>>({});
     const [localData, setLocalData] = useState<ShortRequestFields>(emptyFields);
+    const [locationQuery, setLocationQuery] = useState('');
+    const [selectedLocation, setSelectedLocation] =
+        useState<LocationSuggestion | null>(null);
 
     const form = useForm(action ?? { url: '', method: 'post' }, emptyFields);
 
@@ -82,6 +101,18 @@ export function ShortRequestSection({
         }
     }
 
+    function applyLocation(suggestion: LocationSuggestion | null) {
+        setSelectedLocation(suggestion);
+
+        setField('zip_code', suggestion?.postal_code ?? suggestion?.label ?? '');
+        setField('address', suggestion?.address ?? null);
+        setField('city', suggestion?.city ?? '');
+        setField('state', suggestion?.state ?? '');
+        setField('postal_code', suggestion?.postal_code ?? null);
+        setField('latitude', suggestion?.latitude ?? null);
+        setField('longitude', suggestion?.longitude ?? null);
+    }
+
     function validate(): Record<string, string> {
         const nextErrors: Record<string, string> = {};
 
@@ -89,8 +120,8 @@ export function ShortRequestSection({
             nextErrors.business_name = 'Business name is required.';
         }
 
-        if (!values.zip_code.trim()) {
-            nextErrors.zip_code = 'ZIP code is required.';
+        if (!selectedLocation) {
+            nextErrors.city = 'Select a valid address from the suggestions.';
         }
 
         if (!values.contact_name.trim()) {
@@ -149,9 +180,18 @@ export function ShortRequestSection({
             onSuccess: () => {
                 setLocalDone(true);
                 form.reset();
+                setLocationQuery('');
+                setSelectedLocation(null);
             },
         });
     }
+
+    const locationError =
+        errors.city ??
+        errors.state ??
+        errors.latitude ??
+        errors.longitude ??
+        errors.zip_code;
 
     return (
         <Band alt={alt} id={id}>
@@ -189,20 +229,21 @@ export function ShortRequestSection({
                                 />
                                 <FieldError message={errors.business_name} />
                             </label>
-                            <label className="flex flex-col gap-1 text-sm font-semibold">
-                                ZIP code
-                                <input
-                                    required
-                                    name="zip_code"
-                                    inputMode="numeric"
-                                    value={values.zip_code}
-                                    onChange={(event) =>
-                                        setField('zip_code', event.target.value)
-                                    }
-                                    className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink"
+                            <div className="flex flex-col gap-1 text-sm font-semibold">
+                                <LocationAutocomplete
+                                    label="Address"
+                                    value={locationQuery}
+                                    selected={selectedLocation}
+                                    onQueryChange={setLocationQuery}
+                                    onSelect={(suggestion) => {
+                                        setLocationQuery(suggestion.label);
+                                        applyLocation(suggestion);
+                                    }}
+                                    onClearSelection={() => applyLocation(null)}
+                                    inputClassName="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink"
+                                    error={locationError}
                                 />
-                                <FieldError message={errors.zip_code} />
-                            </label>
+                            </div>
                             <label className="flex flex-col gap-1 text-sm font-semibold">
                                 Your name
                                 <input

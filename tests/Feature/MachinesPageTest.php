@@ -2,12 +2,16 @@
 
 use App\Models\Machine;
 use App\Models\MachineCategory;
+use App\Models\MachineFaq;
+use Database\Seeders\MachineFaqSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
 test('machines page renders with database lineup', function () {
+    $this->seed(MachineFaqSeeder::class);
+
     $category = MachineCategory::factory()->create([
         'name' => 'Combo',
         'sort_order' => 1,
@@ -50,6 +54,30 @@ test('machines page renders with database lineup', function () {
             ->has('tech.items', 4)
             ->has('industries.items', 10)
             ->has('faqs.items', 4)
+            ->where('faqs.items.0.q', 'Are the machines really free?')
+        );
+});
+
+test('machines page faqs come from the database and hide inactive items', function () {
+    MachineFaq::factory()->create([
+        'question' => 'Active machine FAQ?',
+        'answer' => 'Yes.',
+        'sort_order' => 1,
+        'is_active' => true,
+    ]);
+
+    MachineFaq::factory()->inactive()->create([
+        'question' => 'Hidden machine FAQ?',
+        'answer' => 'No.',
+        'sort_order' => 2,
+    ]);
+
+    $this->get(route('machines'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('faqs.items', 1)
+            ->where('faqs.items.0.q', 'Active machine FAQ?')
+            ->where('faqs.items.0.a', 'Yes.')
         );
 });
 

@@ -2,6 +2,10 @@ import { router } from '@inertiajs/react';
 import { useRef, useState } from 'react';
 import type { ClipboardEvent, KeyboardEvent } from 'react';
 import InputError from '@/components/input-error';
+import {
+    LocationAutocomplete,
+    type LocationSuggestion,
+} from '@/components/location/location-autocomplete';
 import PasswordInput from '@/components/password-input';
 import { BrandButton } from '@/components/frontend/brand-button';
 import { Spinner } from '@/components/ui/spinner';
@@ -117,10 +121,13 @@ export function RegisterStepper({ passwordRules }: RegisterStepperProps) {
     const [ownsMachines, setOwnsMachines] = useState<'Yes' | 'No'>('Yes');
     const [machineTypes, setMachineTypes] = useState<string[]>(['Combo']);
     const [quantity, setQuantity] = useState('1');
-    const [city, setCity] = useState('');
+    const [locationQuery, setLocationQuery] = useState('');
+    const [selectedLocation, setSelectedLocation] =
+        useState<LocationSuggestion | null>(null);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [company, setCompany] = useState('');
+    const [phone, setPhone] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordConfirmation, setPasswordConfirmation] = useState('');
@@ -166,6 +173,13 @@ export function RegisterStepper({ passwordRules }: RegisterStepperProps) {
         setFieldErrors({});
 
         try {
+            if (!selectedLocation) {
+                setFieldErrors({
+                    city: 'Select a valid location from the suggestions.',
+                });
+                return false;
+            }
+
             await postJson('/register/account', {
                 first_name: firstName,
                 last_name: lastName,
@@ -173,10 +187,17 @@ export function RegisterStepper({ passwordRules }: RegisterStepperProps) {
                 password,
                 password_confirmation: passwordConfirmation,
                 company_name: company,
+                phone,
                 owns_machines: ownsMachines === 'Yes',
                 machine_types: machineTypes,
                 machines_needed: quantity,
-                primary_city: city,
+                primary_city: `${selectedLocation.city}, ${selectedLocation.state}`,
+                address: selectedLocation.address,
+                city: selectedLocation.city,
+                state: selectedLocation.state,
+                postal_code: selectedLocation.postal_code,
+                latitude: selectedLocation.latitude,
+                longitude: selectedLocation.longitude,
                 terms_accepted: agreed,
             });
             setOtpMessage('Verification code sent. Check your email.');
@@ -257,8 +278,20 @@ export function RegisterStepper({ passwordRules }: RegisterStepperProps) {
             return;
         }
 
+        if (step === 1 && !selectedLocation) {
+            setFieldErrors({
+                city: 'Select a valid location from the suggestions.',
+            });
+            return;
+        }
+
         if (step === ACCOUNT_STEP) {
             if (!agreed) {
+                return;
+            }
+
+            if (!phone.trim()) {
+                setFieldErrors({ phone: 'Phone number is required.' });
                 return;
             }
 
@@ -441,19 +474,34 @@ export function RegisterStepper({ passwordRules }: RegisterStepperProps) {
                                 ))}
                             </div>
                         </fieldset>
-                        <label className="flex flex-col gap-1 text-sm font-semibold text-brand-ink">
-                            Primary city you want locations in
-                            <input
-                                required
-                                value={city}
-                                onChange={(event) =>
-                                    setCity(event.target.value)
-                                }
-                                placeholder="Type city name, e.g. Houston, TX"
-                                className={fieldClass}
-                            />
-                            <InputError message={fieldErrors.primary_city} />
-                        </label>
+                        <LocationAutocomplete
+                            label="Primary city you want locations in"
+                            value={locationQuery}
+                            selected={selectedLocation}
+                            onQueryChange={setLocationQuery}
+                            onSelect={(suggestion) => {
+                                setSelectedLocation(suggestion);
+                                setLocationQuery(suggestion.label);
+                                setFieldErrors((current) => {
+                                    const next = { ...current };
+                                    delete next.city;
+                                    delete next.state;
+                                    delete next.primary_city;
+                                    delete next.latitude;
+                                    delete next.longitude;
+                                    return next;
+                                });
+                            }}
+                            onClearSelection={() => setSelectedLocation(null)}
+                            error={
+                                fieldErrors.city ??
+                                fieldErrors.state ??
+                                fieldErrors.primary_city ??
+                                fieldErrors.latitude ??
+                                fieldErrors.longitude ??
+                                null
+                            }
+                        />
                     </div>
                 ) : null}
 
@@ -497,6 +545,27 @@ export function RegisterStepper({ passwordRules }: RegisterStepperProps) {
                                 className={fieldClass}
                             />
                             <InputError message={fieldErrors.company_name} />
+                        </label>
+                        <label className="col-span-full flex flex-col gap-1 text-sm font-semibold text-brand-ink">
+                            Phone number
+                            <input
+                                required
+                                type="tel"
+                                inputMode="tel"
+                                value={phone}
+                                onChange={(event) =>
+                                    setPhone(
+                                        event.target.value.replace(
+                                            /[^\d+\-() ]/g,
+                                            '',
+                                        ),
+                                    )
+                                }
+                                autoComplete="tel"
+                                placeholder="(555) 123-4567"
+                                className={fieldClass}
+                            />
+                            <InputError message={fieldErrors.phone} />
                         </label>
                         <label className="col-span-full flex flex-col gap-1 text-sm font-semibold text-brand-ink">
                             Email

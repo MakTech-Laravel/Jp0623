@@ -3,6 +3,10 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { BrandButton } from '@/components/frontend/brand-button';
 import { Wrap } from '@/components/frontend/wrap';
+import {
+    LocationAutocomplete,
+    type LocationSuggestion,
+} from '@/components/location/location-autocomplete';
 import { store as storeVendingRequest } from '@/routes/vending-requests';
 import type { RequestFormData } from '@/types/frontend';
 import { cn } from '@/lib/utils';
@@ -12,7 +16,17 @@ const STEPS = ['Location', 'Details', 'Machines', 'Contact'] as const;
 const PLACEMENTS = ['Inside', 'Outside (covered)'] as const;
 
 const STEP_FIELDS: Record<number, string[]> = {
-    0: ['location_type', 'business_name', 'address_or_zip'],
+    0: [
+        'location_type',
+        'business_name',
+        'address_or_zip',
+        'address',
+        'city',
+        'state',
+        'postal_code',
+        'latitude',
+        'longitude',
+    ],
     1: [
         'employees_on_site',
         'daily_visitors',
@@ -56,11 +70,20 @@ export function RequestSection({ data }: { data: RequestFormData }) {
     const [step, setStep] = useState(0);
     const [done, setDone] = useState(false);
     const [stepErrors, setStepErrors] = useState<Record<string, string>>({});
+    const [locationQuery, setLocationQuery] = useState('');
+    const [selectedLocation, setSelectedLocation] =
+        useState<LocationSuggestion | null>(null);
 
     const form = useForm(storeVendingRequest(), {
         location_type: data.locationTypes[0] ?? '',
         business_name: '',
         address_or_zip: '',
+        address: null as string | null,
+        city: '',
+        state: '',
+        postal_code: null as string | null,
+        latitude: null as number | null,
+        longitude: null as number | null,
         employees_on_site: '',
         daily_visitors: '',
         placement: 'Inside' as string,
@@ -77,6 +100,18 @@ export function RequestSection({ data }: { data: RequestFormData }) {
         phone: '',
         terms_accepted: false,
     });
+
+    function applyLocation(suggestion: LocationSuggestion | null) {
+        setSelectedLocation(suggestion);
+
+        form.setData('address_or_zip', suggestion?.label ?? '');
+        form.setData('address', suggestion?.address ?? null);
+        form.setData('city', suggestion?.city ?? '');
+        form.setData('state', suggestion?.state ?? '');
+        form.setData('postal_code', suggestion?.postal_code ?? null);
+        form.setData('latitude', suggestion?.latitude ?? null);
+        form.setData('longitude', suggestion?.longitude ?? null);
+    }
 
     const isSwitchingProvider = form.data.existing_vending !== 'No';
 
@@ -116,8 +151,8 @@ export function RequestSection({ data }: { data: RequestFormData }) {
             if (!form.data.business_name.trim()) {
                 errors.business_name = 'Business name is required.';
             }
-            if (!form.data.address_or_zip.trim()) {
-                errors.address_or_zip = 'Address or ZIP is required.';
+            if (!selectedLocation) {
+                errors.city = 'Select a valid address from the suggestions.';
             }
         }
 
@@ -289,23 +324,36 @@ export function RequestSection({ data }: { data: RequestFormData }) {
                                             message={errorFor('business_name')}
                                         />
                                     </label>
-                                    <label className="flex flex-col gap-1 text-sm font-semibold">
-                                        Address or ZIP
-                                        <input
-                                            value={form.data.address_or_zip}
-                                            onChange={(e) =>
-                                                form.setData(
-                                                    'address_or_zip',
-                                                    e.target.value,
-                                                )
-                                            }
-                                            placeholder="e.g. 77002"
-                                            className={fieldClass}
-                                        />
-                                        <FieldError
-                                            message={errorFor('address_or_zip')}
-                                        />
-                                    </label>
+                                    <LocationAutocomplete
+                                        label="Address"
+                                        value={locationQuery}
+                                        selected={selectedLocation}
+                                        onQueryChange={setLocationQuery}
+                                        onSelect={(suggestion) => {
+                                            setLocationQuery(suggestion.label);
+                                            applyLocation(suggestion);
+                                            setStepErrors((current) => {
+                                                const next = { ...current };
+                                                delete next.city;
+                                                delete next.state;
+                                                delete next.latitude;
+                                                delete next.longitude;
+                                                delete next.address_or_zip;
+                                                return next;
+                                            });
+                                        }}
+                                        onClearSelection={() =>
+                                            applyLocation(null)
+                                        }
+                                        inputClassName={fieldClass}
+                                        error={
+                                            errorFor('city') ??
+                                            errorFor('state') ??
+                                            errorFor('latitude') ??
+                                            errorFor('longitude') ??
+                                            errorFor('address_or_zip')
+                                        }
+                                    />
                                 </div>
                             ) : null}
 

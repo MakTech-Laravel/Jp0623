@@ -43,8 +43,11 @@ import {
     location as accountLocation,
 } from '@/routes/account';
 import adminAdminManagement from '@/routes/admin/admin-management';
+import adminHomeFaqs from '@/routes/admin/home-faqs';
 import adminMachineCategories from '@/routes/admin/machine-categories';
+import adminMachineFaqs from '@/routes/admin/machine-faqs';
 import adminMachines from '@/routes/admin/machines';
+import adminOfficeCoffeeFaqs from '@/routes/admin/office-coffee-faqs';
 import adminProducts from '@/routes/admin/products';
 import adminUserManagement from '@/routes/admin/user-management';
 import adminCoffeeServiceRequests from '@/routes/admin/coffee-service-requests';
@@ -248,6 +251,35 @@ export function AppSidebar() {
                 href: adminCoffeeServiceRequests.index(),
                 icon: Coffee,
                 permissions: [PERMISSIONS.COFFEE_SERVICE_REQUESTS.INDEX],
+            },
+            {
+                title: 'FAQ Management',
+                icon: CircleHelp,
+                permissions: [
+                    PERMISSIONS.HOME_FAQS.INDEX,
+                    PERMISSIONS.MACHINE_FAQS.INDEX,
+                    PERMISSIONS.OFFICE_COFFEE_FAQS.INDEX,
+                ],
+                items: [
+                    {
+                        title: 'Home FAQs',
+                        href: adminHomeFaqs.index(),
+                        icon: CircleHelp,
+                        permissions: [PERMISSIONS.HOME_FAQS.INDEX],
+                    },
+                    {
+                        title: 'Machine FAQs',
+                        href: adminMachineFaqs.index(),
+                        icon: CircleHelp,
+                        permissions: [PERMISSIONS.MACHINE_FAQS.INDEX],
+                    },
+                    {
+                        title: 'Office Coffee FAQs',
+                        href: adminOfficeCoffeeFaqs.index(),
+                        icon: Coffee,
+                        permissions: [PERMISSIONS.OFFICE_COFFEE_FAQS.INDEX],
+                    },
+                ],
             },
             /*
              * Access Control — commented out so neither admin nor super-admin

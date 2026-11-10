@@ -2,13 +2,17 @@
 
 use App\Enums\PermissionEnum;
 use App\Http\Controllers\Admin\CoffeeServiceRequestController as AdminCoffeeServiceRequestController;
+use App\Http\Controllers\Admin\HomeFaqController;
 use App\Http\Controllers\Admin\MachineCategoryController;
 use App\Http\Controllers\Admin\MachineController;
+use App\Http\Controllers\Admin\MachineFaqController;
+use App\Http\Controllers\Admin\OfficeCoffeeFaqController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VendingRequestController as AdminVendingRequestController;
+use App\Http\Controllers\Auth\LocationSuggestController;
 use App\Http\Controllers\Auth\RegisterAccountController;
 use App\Http\Controllers\Auth\RegisterOtpController;
 use App\Http\Controllers\Auth\RegisterOtpVerifyController;
@@ -62,6 +66,10 @@ Route::get('/legal/{page}', [LegalController::class, 'show'])
     ->name('legal.show');
 Route::get('/industries', [IndustriesController::class, 'index'])->name('industries');
 Route::get('/industries/{industry}', [IndustriesController::class, 'show'])->name('industries.show');
+
+Route::get('/register/location-suggest', LocationSuggestController::class)
+    ->middleware('throttle:60,1')
+    ->name('register.location-suggest');
 
 Route::post('/register/account', [RegisterAccountController::class, 'store'])
     ->middleware(['guest', 'throttle:10,1'])
@@ -241,6 +249,54 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_EDIT->value);
             Route::delete('coffee-service-requests/{coffee_service_request}', 'destroy')->name('coffee-service-requests.destroy')
                 ->middleware('permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_DELETE->value);
+        });
+
+        // Home FAQs — public homepage FAQ items.
+        Route::controller(HomeFaqController::class)->group(function () {
+            Route::get('home-faqs', 'index')->name('home-faqs.index')
+                ->middleware('permission:'.PermissionEnum::HOME_FAQS_INDEX->value);
+            Route::get('home-faqs/create', 'create')->name('home-faqs.create')
+                ->middleware('permission:'.PermissionEnum::HOME_FAQS_CREATE->value);
+            Route::post('home-faqs', 'store')->name('home-faqs.store')
+                ->middleware(['permission:'.PermissionEnum::HOME_FAQS_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('home-faqs/{home_faq}/edit', 'edit')->name('home-faqs.edit')
+                ->middleware('permission:'.PermissionEnum::HOME_FAQS_EDIT->value);
+            Route::put('home-faqs/{home_faq}', 'update')->name('home-faqs.update')
+                ->middleware(['permission:'.PermissionEnum::HOME_FAQS_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('home-faqs/{home_faq}', 'destroy')->name('home-faqs.destroy')
+                ->middleware('permission:'.PermissionEnum::HOME_FAQS_DELETE->value);
+        });
+
+        // Machine FAQs — public machines-page FAQ items.
+        Route::controller(MachineFaqController::class)->group(function () {
+            Route::get('machine-faqs', 'index')->name('machine-faqs.index')
+                ->middleware('permission:'.PermissionEnum::MACHINE_FAQS_INDEX->value);
+            Route::get('machine-faqs/create', 'create')->name('machine-faqs.create')
+                ->middleware('permission:'.PermissionEnum::MACHINE_FAQS_CREATE->value);
+            Route::post('machine-faqs', 'store')->name('machine-faqs.store')
+                ->middleware(['permission:'.PermissionEnum::MACHINE_FAQS_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('machine-faqs/{machine_faq}/edit', 'edit')->name('machine-faqs.edit')
+                ->middleware('permission:'.PermissionEnum::MACHINE_FAQS_EDIT->value);
+            Route::put('machine-faqs/{machine_faq}', 'update')->name('machine-faqs.update')
+                ->middleware(['permission:'.PermissionEnum::MACHINE_FAQS_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('machine-faqs/{machine_faq}', 'destroy')->name('machine-faqs.destroy')
+                ->middleware('permission:'.PermissionEnum::MACHINE_FAQS_DELETE->value);
+        });
+
+        // Office coffee FAQs — public office coffee page FAQ items.
+        Route::controller(OfficeCoffeeFaqController::class)->group(function () {
+            Route::get('office-coffee-faqs', 'index')->name('office-coffee-faqs.index')
+                ->middleware('permission:'.PermissionEnum::OFFICE_COFFEE_FAQS_INDEX->value);
+            Route::get('office-coffee-faqs/create', 'create')->name('office-coffee-faqs.create')
+                ->middleware('permission:'.PermissionEnum::OFFICE_COFFEE_FAQS_CREATE->value);
+            Route::post('office-coffee-faqs', 'store')->name('office-coffee-faqs.store')
+                ->middleware(['permission:'.PermissionEnum::OFFICE_COFFEE_FAQS_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('office-coffee-faqs/{office_coffee_faq}/edit', 'edit')->name('office-coffee-faqs.edit')
+                ->middleware('permission:'.PermissionEnum::OFFICE_COFFEE_FAQS_EDIT->value);
+            Route::put('office-coffee-faqs/{office_coffee_faq}', 'update')->name('office-coffee-faqs.update')
+                ->middleware(['permission:'.PermissionEnum::OFFICE_COFFEE_FAQS_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('office-coffee-faqs/{office_coffee_faq}', 'destroy')->name('office-coffee-faqs.destroy')
+                ->middleware('permission:'.PermissionEnum::OFFICE_COFFEE_FAQS_DELETE->value);
         });
     });
 });

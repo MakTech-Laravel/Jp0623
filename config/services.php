@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'photon' => [
+        'url' => rtrim((string) env('PHOTON_API_URL', 'https://photon.komoot.io/api/'), '/').'/',
+    ],
+
 ];

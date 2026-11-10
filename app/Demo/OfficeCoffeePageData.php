@@ -16,6 +16,7 @@ class OfficeCoffeePageData
             'types' => self::types(),
             'service' => self::service(),
             'requestForm' => self::requestForm(),
+            'faqs' => self::faqs(),
         ];
     }
 
@@ -154,6 +155,20 @@ class OfficeCoffeePageData
             'successMessage' => 'Thanks! We\'ll send coffee options within one business day.',
             'submitLabel' => 'Send request',
             'subjectLabel' => 'office',
+        ];
+    }
+
+    /**
+     * Section chrome only — FAQ items come from the database.
+     *
+     * @return array{eyebrow: string, title: string, items: list<array{q: string, a: string}>}
+     */
+    public static function faqs(): array
+    {
+        return [
+            'eyebrow' => 'FAQ',
+            'title' => 'Office coffee questions.',
+            'items' => [],
         ];
     }
 }
