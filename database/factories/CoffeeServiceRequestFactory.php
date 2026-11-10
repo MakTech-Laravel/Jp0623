@@ -19,7 +19,13 @@ class CoffeeServiceRequestFactory extends Factory
     {
         return [
             'business_name' => fake()->company(),
-            'zip_code' => (string) fake()->numberBetween(10000, 99999),
+            'zip_code' => '77002',
+            'address' => '100 Main St',
+            'city' => 'Houston',
+            'state' => 'TX',
+            'postal_code' => '77002',
+            'latitude' => 29.7604000,
+            'longitude' => -95.3698000,
             'contact_name' => fake()->name(),
             'phone' => '(555) 555-5555',
             'email' => fake()->safeEmail(),

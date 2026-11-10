@@ -12,6 +12,12 @@ use Illuminate\Support\Carbon;
  * @property string $location_type
  * @property string $business_name
  * @property string $address_or_zip
+ * @property string|null $address
+ * @property string|null $city
+ * @property string|null $state
+ * @property string|null $postal_code
+ * @property string|null $latitude
+ * @property string|null $longitude
  * @property int|null $employees_on_site
  * @property int|null $daily_visitors
  * @property string $placement
@@ -78,6 +84,12 @@ class VendingRequest extends Model
         'location_type',
         'business_name',
         'address_or_zip',
+        'address',
+        'city',
+        'state',
+        'postal_code',
+        'latitude',
+        'longitude',
         'employees_on_site',
         'daily_visitors',
         'placement',
@@ -106,6 +118,8 @@ class VendingRequest extends Model
             'terms_accepted' => 'boolean',
             'employees_on_site' => 'integer',
             'daily_visitors' => 'integer',
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
         ];
     }
 }

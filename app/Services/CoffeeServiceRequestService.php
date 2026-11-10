@@ -25,7 +25,11 @@ class CoffeeServiceRequestService
                         ->orWhere('contact_name', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%")
                         ->orWhere('phone', 'like', "%{$search}%")
-                        ->orWhere('zip_code', 'like', "%{$search}%");
+                        ->orWhere('zip_code', 'like', "%{$search}%")
+                        ->orWhere('address', 'like', "%{$search}%")
+                        ->orWhere('city', 'like', "%{$search}%")
+                        ->orWhere('state', 'like', "%{$search}%")
+                        ->orWhere('postal_code', 'like', "%{$search}%");
                 });
             })
             ->when($status !== null, fn ($query) => $query->where('status', $status))
@@ -42,6 +46,7 @@ class CoffeeServiceRequestService
         $data['terms_accepted'] = (bool) ($data['terms_accepted'] ?? false);
         $data['status'] = CoffeeServiceRequest::STATUS_NEW;
         $data['notes'] = filled($data['notes'] ?? null) ? trim((string) $data['notes']) : null;
+        $data = $this->normalizeLocation($data);
 
         return CoffeeServiceRequest::create($data);
     }
@@ -56,5 +61,34 @@ class CoffeeServiceRequestService
     public function delete(CoffeeServiceRequest $coffeeServiceRequest): void
     {
         $coffeeServiceRequest->delete();
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function normalizeLocation(array $data): array
+    {
+        $city = trim((string) ($data['city'] ?? ''));
+        $state = trim((string) ($data['state'] ?? ''));
+        $address = filled($data['address'] ?? null) ? trim((string) $data['address']) : null;
+        $postalCode = filled($data['postal_code'] ?? null) ? trim((string) $data['postal_code']) : null;
+
+        $data['city'] = $city;
+        $data['state'] = $state;
+        $data['address'] = $address;
+        $data['postal_code'] = $postalCode;
+        $data['latitude'] = $data['latitude'] ?? null;
+        $data['longitude'] = $data['longitude'] ?? null;
+
+        if (filled($data['zip_code'] ?? null)) {
+            $data['zip_code'] = trim((string) $data['zip_code']);
+        } elseif ($postalCode !== null) {
+            $data['zip_code'] = $postalCode;
+        } else {
+            $data['zip_code'] = trim("{$city}, {$state}");
+        }
+
+        return $data;
     }
 }

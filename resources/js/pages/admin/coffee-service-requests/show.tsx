@@ -17,6 +17,7 @@ import { usePermission } from '@/hooks/use-permissions';
 import { dashboard } from '@/routes';
 import coffeeServiceRequests from '@/routes/admin/coffee-service-requests';
 import type { AdminCoffeeServiceRequest } from '@/types/admin';
+import { formatRequestLocation } from '@/types/admin';
 import { PERMISSIONS } from '@/types/permissions';
 
 function statusLabel(status: AdminCoffeeServiceRequest['status']): string {
@@ -137,8 +138,25 @@ export default function ShowCoffeeServiceRequest({
                                 value={coffeeServiceRequest.business_name}
                             />
                             <Detail
-                                label="ZIP code"
-                                value={coffeeServiceRequest.zip_code}
+                                label="Address"
+                                value={formatRequestLocation(
+                                    coffeeServiceRequest,
+                                )}
+                            />
+                            <Detail
+                                label="City"
+                                value={coffeeServiceRequest.city ?? '—'}
+                            />
+                            <Detail
+                                label="State"
+                                value={coffeeServiceRequest.state ?? '—'}
+                            />
+                            <Detail
+                                label="Postal code"
+                                value={
+                                    coffeeServiceRequest.postal_code ??
+                                    coffeeServiceRequest.zip_code
+                                }
                             />
                         </Section>
 

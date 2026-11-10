@@ -19,7 +19,13 @@ class StoreCoffeeServiceRequestRequest extends FormRequest
     {
         return [
             'business_name' => ['required', 'string', 'max:255'],
-            'zip_code' => ['required', 'string', 'max:20'],
+            'zip_code' => ['nullable', 'string', 'max:20'],
+            'address' => ['nullable', 'string', 'max:500'],
+            'city' => ['required', 'string', 'max:255'],
+            'state' => ['required', 'string', 'max:100'],
+            'postal_code' => ['nullable', 'string', 'max:20'],
+            'latitude' => ['required', 'numeric', 'between:-90,90'],
+            'longitude' => ['required', 'numeric', 'between:-180,180'],
             'contact_name' => ['required', 'string', 'max:255'],
             'phone' => [
                 'required',
@@ -59,6 +65,12 @@ class StoreCoffeeServiceRequestRequest extends FormRequest
         return [
             'business_name' => 'business name',
             'zip_code' => 'ZIP code',
+            'address' => 'address',
+            'city' => 'city',
+            'state' => 'state',
+            'postal_code' => 'postal code',
+            'latitude' => 'latitude',
+            'longitude' => 'longitude',
             'contact_name' => 'name',
             'phone' => 'phone',
             'email' => 'email',

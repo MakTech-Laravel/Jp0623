@@ -27,6 +27,7 @@ import { usePermission } from '@/hooks/use-permissions';
 import { dashboard } from '@/routes';
 import vendingRequests from '@/routes/admin/vending-requests';
 import type { AdminVendingRequest, Paginated } from '@/types/admin';
+import { formatRequestLocation } from '@/types/admin';
 import { PERMISSIONS } from '@/types/permissions';
 
 interface VendingRequestsIndexProps {
@@ -140,7 +141,9 @@ export default function VendingRequestsIndex({
                                                 </p>
                                                 <p className="text-xs text-muted-foreground">
                                                     {request.location_type} ·{' '}
-                                                    {request.address_or_zip}
+                                                    {formatRequestLocation(
+                                                        request,
+                                                    )}
                                                 </p>
                                             </TableCell>
                                             <TableCell className="hidden sm:table-cell">
