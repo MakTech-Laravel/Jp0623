@@ -110,6 +110,36 @@ export interface AdminMachineCategory {
     updated_at: string;
 }
 
+export interface AdminHomeFaq {
+    id: number;
+    question: string;
+    answer: string;
+    sort_order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AdminMachineFaq {
+    id: number;
+    question: string;
+    answer: string;
+    sort_order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AdminOfficeCoffeeFaq {
+    id: number;
+    question: string;
+    answer: string;
+    sort_order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface AdminMachine {
     id: number;
     machine_category_id: number;
@@ -153,6 +183,12 @@ export interface AdminVendingRequest {
     location_type: string;
     business_name: string;
     address_or_zip: string;
+    address: string | null;
+    city: string | null;
+    state: string | null;
+    postal_code: string | null;
+    latitude: string | null;
+    longitude: string | null;
     employees_on_site: number | null;
     daily_visitors: number | null;
     placement: string;
@@ -177,6 +213,12 @@ export interface AdminCoffeeServiceRequest {
     id: number;
     business_name: string;
     zip_code: string;
+    address: string | null;
+    city: string | null;
+    state: string | null;
+    postal_code: string | null;
+    latitude: string | null;
+    longitude: string | null;
     contact_name: string;
     phone: string;
     email: string;
@@ -185,6 +227,31 @@ export interface AdminCoffeeServiceRequest {
     status: 'new' | 'reviewed' | 'closed';
     created_at: string;
     updated_at: string;
+}
+
+/** Prefer structured city/state/postal; fall back to legacy display fields. */
+export function formatRequestLocation(request: {
+    address?: string | null;
+    city?: string | null;
+    state?: string | null;
+    postal_code?: string | null;
+    address_or_zip?: string | null;
+    zip_code?: string | null;
+}): string {
+    const cityState = [request.city, request.state].filter(Boolean).join(', ');
+    const withPostal = [cityState, request.postal_code]
+        .filter(Boolean)
+        .join(' ');
+
+    if (request.address && withPostal) {
+        return `${request.address}, ${withPostal}`;
+    }
+
+    if (withPostal) {
+        return withPostal;
+    }
+
+    return request.address_or_zip || request.zip_code || '—';
 }
 
 /** Build the public URL for a stored avatar path, or null. */

@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { PageHero } from '@/components/frontend/page-hero';
+import { OfficeCoffeeFaqSection } from '@/components/office-coffee/faq-section';
 import { OfficeCoffeeMachinesSection } from '@/components/office-coffee/machines-section';
 import { OfficeCoffeeRequestSection } from '@/components/office-coffee/request-section';
 import { OfficeCoffeeServiceSection } from '@/components/office-coffee/service-section';
@@ -12,6 +13,7 @@ export default function OfficeCoffee({
     types,
     service,
     requestForm,
+    faqs,
 }: OfficeCoffeePageProps) {
     return (
         <>
@@ -32,6 +34,7 @@ export default function OfficeCoffee({
             <OfficeCoffeeMachinesSection data={machines} />
             <OfficeCoffeeTypesSection data={types} />
             <OfficeCoffeeServiceSection data={service} />
+            <OfficeCoffeeFaqSection data={faqs} />
             <OfficeCoffeeRequestSection data={requestForm} />
         </>
     );

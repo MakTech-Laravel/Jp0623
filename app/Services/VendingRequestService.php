@@ -25,7 +25,11 @@ class VendingRequestService
                         ->orWhere('contact_name', 'like', "%{$search}%")
                         ->orWhere('email', 'like', "%{$search}%")
                         ->orWhere('phone', 'like', "%{$search}%")
-                        ->orWhere('address_or_zip', 'like', "%{$search}%");
+                        ->orWhere('address_or_zip', 'like', "%{$search}%")
+                        ->orWhere('address', 'like', "%{$search}%")
+                        ->orWhere('city', 'like', "%{$search}%")
+                        ->orWhere('state', 'like', "%{$search}%")
+                        ->orWhere('postal_code', 'like', "%{$search}%");
                 });
             })
             ->when($status !== null, fn ($query) => $query->where('status', $status))
@@ -53,6 +57,8 @@ class VendingRequestService
             $data['switch_reason'] = null;
         }
 
+        $data = $this->normalizeLocation($data);
+
         return VendingRequest::create($data);
     }
 
@@ -66,5 +72,47 @@ class VendingRequestService
     public function delete(VendingRequest $vendingRequest): void
     {
         $vendingRequest->delete();
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function normalizeLocation(array $data): array
+    {
+        $city = trim((string) ($data['city'] ?? ''));
+        $state = trim((string) ($data['state'] ?? ''));
+        $address = filled($data['address'] ?? null) ? trim((string) $data['address']) : null;
+        $postalCode = filled($data['postal_code'] ?? null) ? trim((string) $data['postal_code']) : null;
+
+        $data['city'] = $city;
+        $data['state'] = $state;
+        $data['address'] = $address;
+        $data['postal_code'] = $postalCode;
+        $data['latitude'] = $data['latitude'] ?? null;
+        $data['longitude'] = $data['longitude'] ?? null;
+
+        $label = filled($data['address_or_zip'] ?? null)
+            ? trim((string) $data['address_or_zip'])
+            : $this->composeLocationLabel($address, $city, $state, $postalCode);
+
+        $data['address_or_zip'] = $label !== '' ? $label : "{$city}, {$state}";
+
+        return $data;
+    }
+
+    private function composeLocationLabel(
+        ?string $address,
+        string $city,
+        string $state,
+        ?string $postalCode,
+    ): string {
+        $parts = array_values(array_filter([
+            $address,
+            $city,
+            trim($state.($postalCode !== null ? ' '.$postalCode : '')),
+        ], static fn (?string $part): bool => filled($part)));
+
+        return implode(', ', $parts);
     }
 }

@@ -10,6 +10,7 @@ import { usePermission } from '@/hooks/use-permissions';
 import { dashboard } from '@/routes';
 import vendingRequests from '@/routes/admin/vending-requests';
 import type { AdminVendingRequest } from '@/types/admin';
+import { formatRequestLocation } from '@/types/admin';
 import { PERMISSIONS } from '@/types/permissions';
 
 export default function ShowVendingRequest({
@@ -125,8 +126,20 @@ export default function ShowVendingRequest({
                                 value={vendingRequest.business_name}
                             />
                             <Detail
-                                label="Address / ZIP"
-                                value={vendingRequest.address_or_zip}
+                                label="Address"
+                                value={formatRequestLocation(vendingRequest)}
+                            />
+                            <Detail
+                                label="City"
+                                value={vendingRequest.city ?? '—'}
+                            />
+                            <Detail
+                                label="State"
+                                value={vendingRequest.state ?? '—'}
+                            />
+                            <Detail
+                                label="Postal code"
+                                value={vendingRequest.postal_code ?? '—'}
                             />
                         </Section>
 

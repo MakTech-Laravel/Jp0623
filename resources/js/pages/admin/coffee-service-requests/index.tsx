@@ -27,6 +27,7 @@ import { usePermission } from '@/hooks/use-permissions';
 import { dashboard } from '@/routes';
 import coffeeServiceRequests from '@/routes/admin/coffee-service-requests';
 import type { AdminCoffeeServiceRequest, Paginated } from '@/types/admin';
+import { formatRequestLocation } from '@/types/admin';
 import { PERMISSIONS } from '@/types/permissions';
 
 interface CoffeeServiceRequestsIndexProps {
@@ -152,7 +153,9 @@ export default function CoffeeServiceRequestsIndex({
                                                     {request.business_name}
                                                 </p>
                                                 <p className="text-xs text-muted-foreground">
-                                                    ZIP {request.zip_code}
+                                                    {formatRequestLocation(
+                                                        request,
+                                                    )}
                                                 </p>
                                             </TableCell>
                                             <TableCell className="hidden sm:table-cell">

@@ -11,6 +11,12 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $business_name
  * @property string $zip_code
+ * @property string|null $address
+ * @property string|null $city
+ * @property string|null $state
+ * @property string|null $postal_code
+ * @property string|null $latitude
+ * @property string|null $longitude
  * @property string $contact_name
  * @property string $phone
  * @property string $email
@@ -40,6 +46,12 @@ class CoffeeServiceRequest extends Model
     protected $fillable = [
         'business_name',
         'zip_code',
+        'address',
+        'city',
+        'state',
+        'postal_code',
+        'latitude',
+        'longitude',
         'contact_name',
         'phone',
         'email',
@@ -55,6 +67,8 @@ class CoffeeServiceRequest extends Model
     {
         return [
             'terms_accepted' => 'boolean',
+            'latitude' => 'decimal:7',
+            'longitude' => 'decimal:7',
         ];
     }
 }

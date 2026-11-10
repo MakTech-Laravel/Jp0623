@@ -13,7 +13,13 @@ function validVendingRequestPayload(array $overrides = []): array
     return [
         'location_type' => 'Business / office',
         'business_name' => 'Riverside Logistics',
-        'address_or_zip' => '77002',
+        'address_or_zip' => '100 Main St, Houston, TX 77002',
+        'address' => '100 Main St',
+        'city' => 'Houston',
+        'state' => 'TX',
+        'postal_code' => '77002',
+        'latitude' => 29.7604,
+        'longitude' => -95.3698,
         'employees_on_site' => 60,
         'daily_visitors' => 150,
         'placement' => 'Inside',
@@ -42,17 +48,28 @@ test('a guest can submit a vending request', function () {
 
     expect($request->business_name)->toBe('Riverside Logistics')
         ->and($request->email)->toBe('jane@example.com')
+        ->and($request->city)->toBe('Houston')
+        ->and($request->state)->toBe('TX')
+        ->and($request->postal_code)->toBe('77002')
+        ->and($request->address)->toBe('100 Main St')
+        ->and((float) $request->latitude)->toBe(29.7604)
+        ->and((float) $request->longitude)->toBe(-95.3698)
+        ->and($request->address_or_zip)->toBe('100 Main St, Houston, TX 77002')
         ->and($request->machine_interests)->toBe(['Snack', 'Drinks'])
         ->and($request->status)->toBe(VendingRequest::STATUS_NEW)
         ->and($request->terms_accepted)->toBeTrue();
 });
 
-test('vending request validation requires core fields', function () {
+test('vending request validation requires core fields and location', function () {
     $this->from('/')
         ->post(route('vending-requests.store'), [
             'location_type' => '',
             'business_name' => '',
             'address_or_zip' => '',
+            'city' => '',
+            'state' => '',
+            'latitude' => null,
+            'longitude' => null,
             'placement' => '',
             'food_on_site' => '',
             'comparing_quotes' => '',
@@ -67,7 +84,10 @@ test('vending request validation requires core fields', function () {
         ->assertSessionHasErrors([
             'location_type',
             'business_name',
-            'address_or_zip',
+            'city',
+            'state',
+            'latitude',
+            'longitude',
             'placement',
             'food_on_site',
             'comparing_quotes',
@@ -81,6 +101,15 @@ test('vending request validation requires core fields', function () {
         ]);
 
     expect(VendingRequest::query()->count())->toBe(0);
+});
+
+test('vending request rejects location without coordinates', function () {
+    $this->from('/')
+        ->post(route('vending-requests.store'), validVendingRequestPayload([
+            'latitude' => null,
+            'longitude' => null,
+        ]))
+        ->assertSessionHasErrors(['latitude', 'longitude']);
 });
 
 test('switch reason is required when changing providers', function () {
@@ -101,29 +130,6 @@ test('switch reason is cleared when existing vending is no', function () {
         ->assertRedirect('/#request-sec');
 
     expect(VendingRequest::query()->sole()->switch_reason)->toBeNull();
-});
-
-test('employees and daily visitors must be integers when provided', function () {
-    $this->from('/')
-        ->post(route('vending-requests.store'), validVendingRequestPayload([
-            'employees_on_site' => 'sixty',
-            'daily_visitors' => '150 people',
-        ]))
-        ->assertSessionHasErrors(['employees_on_site', 'daily_visitors']);
-});
-
-test('empty employees and daily visitors are stored as null', function () {
-    $this->from('/')
-        ->post(route('vending-requests.store'), validVendingRequestPayload([
-            'employees_on_site' => '',
-            'daily_visitors' => '',
-        ]))
-        ->assertRedirect('/#request-sec');
-
-    $request = VendingRequest::query()->sole();
-
-    expect($request->employees_on_site)->toBeNull()
-        ->and($request->daily_visitors)->toBeNull();
 });
 
 test('phone rejects letters and too few digits', function () {

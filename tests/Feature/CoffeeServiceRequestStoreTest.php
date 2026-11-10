@@ -13,6 +13,12 @@ function validCoffeeServiceRequestPayload(array $overrides = []): array
     return [
         'business_name' => 'Harbor Offices',
         'zip_code' => '77002',
+        'address' => '100 Main St',
+        'city' => 'Houston',
+        'state' => 'TX',
+        'postal_code' => '77002',
+        'latitude' => 29.7604,
+        'longitude' => -95.3698,
         'contact_name' => 'Jane Doe',
         'phone' => '(555) 555-5555',
         'email' => 'jane@example.com',
@@ -31,17 +37,27 @@ test('a guest can submit a coffee service request', function () {
 
     expect($request->business_name)->toBe('Harbor Offices')
         ->and($request->zip_code)->toBe('77002')
+        ->and($request->city)->toBe('Houston')
+        ->and($request->state)->toBe('TX')
+        ->and($request->postal_code)->toBe('77002')
+        ->and($request->address)->toBe('100 Main St')
+        ->and((float) $request->latitude)->toBe(29.7604)
+        ->and((float) $request->longitude)->toBe(-95.3698)
         ->and($request->email)->toBe('jane@example.com')
         ->and($request->notes)->toBe('Prefer morning delivery.')
         ->and($request->status)->toBe(CoffeeServiceRequest::STATUS_NEW)
         ->and($request->terms_accepted)->toBeTrue();
 });
 
-test('coffee service request validation requires core fields', function () {
+test('coffee service request validation requires core fields and location', function () {
     $this->from('/office-coffee')
         ->post(route('coffee-service-requests.store'), [
             'business_name' => '',
             'zip_code' => '',
+            'city' => '',
+            'state' => '',
+            'latitude' => null,
+            'longitude' => null,
             'contact_name' => '',
             'phone' => '',
             'email' => 'not-an-email',
@@ -50,7 +66,10 @@ test('coffee service request validation requires core fields', function () {
         ])
         ->assertSessionHasErrors([
             'business_name',
-            'zip_code',
+            'city',
+            'state',
+            'latitude',
+            'longitude',
             'contact_name',
             'phone',
             'email',
@@ -58,6 +77,15 @@ test('coffee service request validation requires core fields', function () {
         ]);
 
     expect(CoffeeServiceRequest::query()->count())->toBe(0);
+});
+
+test('coffee service request rejects location without coordinates', function () {
+    $this->from('/office-coffee')
+        ->post(route('coffee-service-requests.store'), validCoffeeServiceRequestPayload([
+            'latitude' => null,
+            'longitude' => null,
+        ]))
+        ->assertSessionHasErrors(['latitude', 'longitude']);
 });
 
 test('coffee service phone rejects letters and too few digits', function () {

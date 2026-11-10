@@ -31,10 +31,17 @@ function operatorAccountPayload(array $overrides = []): array
         'password' => 'password',
         'password_confirmation' => 'password',
         'company_name' => 'Test Vending Co',
+        'phone' => '(555) 123-4567',
         'owns_machines' => true,
         'machine_types' => ['Combo', 'Snack'],
         'machines_needed' => '2',
         'primary_city' => 'Houston, TX',
+        'address' => '100 Main St',
+        'city' => 'Houston',
+        'state' => 'TX',
+        'postal_code' => '77002',
+        'latitude' => 29.7604,
+        'longitude' => -95.3698,
         'terms_accepted' => true,
         ...$overrides,
     ];
@@ -73,10 +80,45 @@ test('account create stores unverified user profile and sends otp', function () 
 
     expect($profile)->not->toBeNull()
         ->and($profile->company_name)->toBe('Test Vending Co')
+        ->and($profile->phone)->toBe('(555) 123-4567')
+        ->and($profile->city)->toBe('Houston')
+        ->and($profile->state)->toBe('TX')
+        ->and($profile->postal_code)->toBe('77002')
+        ->and($profile->address)->toBe('100 Main St')
+        ->and((float) $profile->latitude)->toBe(29.7604)
+        ->and((float) $profile->longitude)->toBe(-95.3698)
         ->and($profile->email_code_confirmed_at)->toBeNull();
 
     Mail::assertSent(RegisterOtpMail::class);
     expect(cache()->has(RegisterOtp::cacheKey('test@example.com')))->toBeTrue();
+});
+
+test('account create requires phone and structured location', function () {
+    Mail::fake();
+
+    $this->postJson(route('register.account'), operatorAccountPayload([
+        'phone' => null,
+        'city' => null,
+        'state' => null,
+        'latitude' => null,
+        'longitude' => null,
+    ]))->assertUnprocessable()
+        ->assertJsonValidationErrors(['phone', 'city', 'state', 'latitude', 'longitude']);
+
+    expect(User::query()->where('email', 'test@example.com')->exists())->toBeFalse();
+});
+
+test('account create rejects free text location without coordinates', function () {
+    Mail::fake();
+
+    $this->postJson(route('register.account'), operatorAccountPayload([
+        'primary_city' => 'Houston, TX',
+        'city' => 'Houston',
+        'state' => 'TX',
+        'latitude' => null,
+        'longitude' => null,
+    ]))->assertUnprocessable()
+        ->assertJsonValidationErrors(['latitude', 'longitude']);
 });
 
 test('otp verify marks email verified', function () {
