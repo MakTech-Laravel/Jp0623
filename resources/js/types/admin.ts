@@ -110,6 +110,36 @@ export interface AdminMachineCategory {
     updated_at: string;
 }
 
+export interface AdminHomeFaq {
+    id: number;
+    question: string;
+    answer: string;
+    sort_order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AdminMachineFaq {
+    id: number;
+    question: string;
+    answer: string;
+    sort_order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AdminOfficeCoffeeFaq {
+    id: number;
+    question: string;
+    answer: string;
+    sort_order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface AdminMachine {
     id: number;
     machine_category_id: number;
