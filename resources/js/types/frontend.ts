@@ -265,6 +265,7 @@ export type OfficeCoffeePageProps = {
     types: OfficeCoffeeTypesData;
     service: OfficeCoffeeServiceData;
     requestForm: OfficeCoffeeRequestFormData;
+    faqs: FaqsData;
 };
 
 export type ContactPanelData = {

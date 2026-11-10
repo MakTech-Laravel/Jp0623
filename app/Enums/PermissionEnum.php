@@ -82,6 +82,24 @@ enum PermissionEnum: string
     case COFFEE_SERVICE_REQUESTS_EDIT = 'coffee-service-requests.edit';
     case COFFEE_SERVICE_REQUESTS_DELETE = 'coffee-service-requests.delete';
 
+    // HOME FAQS
+    case HOME_FAQS_INDEX = 'home-faqs.index';
+    case HOME_FAQS_CREATE = 'home-faqs.create';
+    case HOME_FAQS_EDIT = 'home-faqs.edit';
+    case HOME_FAQS_DELETE = 'home-faqs.delete';
+
+    // MACHINE FAQS
+    case MACHINE_FAQS_INDEX = 'machine-faqs.index';
+    case MACHINE_FAQS_CREATE = 'machine-faqs.create';
+    case MACHINE_FAQS_EDIT = 'machine-faqs.edit';
+    case MACHINE_FAQS_DELETE = 'machine-faqs.delete';
+
+    // OFFICE COFFEE FAQS
+    case OFFICE_COFFEE_FAQS_INDEX = 'office-coffee-faqs.index';
+    case OFFICE_COFFEE_FAQS_CREATE = 'office-coffee-faqs.create';
+    case OFFICE_COFFEE_FAQS_EDIT = 'office-coffee-faqs.edit';
+    case OFFICE_COFFEE_FAQS_DELETE = 'office-coffee-faqs.delete';
+
     // -------------------------------------------------------------------------
     // group() — returns the display group for the `group` DB column.
     // Used by PermissionSeeder and the role management UI (grouped checkboxes).
@@ -154,6 +172,21 @@ enum PermissionEnum: string
             self::COFFEE_SERVICE_REQUESTS_VIEW,
             self::COFFEE_SERVICE_REQUESTS_EDIT,
             self::COFFEE_SERVICE_REQUESTS_DELETE => 'Coffee Service Requests',
+
+            self::HOME_FAQS_INDEX,
+            self::HOME_FAQS_CREATE,
+            self::HOME_FAQS_EDIT,
+            self::HOME_FAQS_DELETE => 'Home FAQs',
+
+            self::MACHINE_FAQS_INDEX,
+            self::MACHINE_FAQS_CREATE,
+            self::MACHINE_FAQS_EDIT,
+            self::MACHINE_FAQS_DELETE => 'Machine FAQs',
+
+            self::OFFICE_COFFEE_FAQS_INDEX,
+            self::OFFICE_COFFEE_FAQS_CREATE,
+            self::OFFICE_COFFEE_FAQS_EDIT,
+            self::OFFICE_COFFEE_FAQS_DELETE => 'Office Coffee FAQs',
         };
     }
 

@@ -1,8 +1,15 @@
 <?php
 
+use App\Models\HomeFaq;
+use Database\Seeders\HomeFaqSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
+uses(RefreshDatabase::class);
+
 test('home page renders the frontend homepage with demo props', function () {
+    $this->seed(HomeFaqSeeder::class);
+
     $this->get(route('home'))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
@@ -21,7 +28,31 @@ test('home page renders the frontend homepage with demo props', function () {
             ->has('reviews.items', 6)
             ->has('industries.items', 10)
             ->has('faqs.items', 12)
+            ->where('faqs.items.0.q', 'What does a vending management company do?')
             ->has('articles.items', 3)
             ->has('cities.items', 30)
+        );
+});
+
+test('home page faqs come from the database and hide inactive items', function () {
+    HomeFaq::factory()->create([
+        'question' => 'Active FAQ?',
+        'answer' => 'Yes.',
+        'sort_order' => 1,
+        'is_active' => true,
+    ]);
+
+    HomeFaq::factory()->inactive()->create([
+        'question' => 'Hidden FAQ?',
+        'answer' => 'No.',
+        'sort_order' => 2,
+    ]);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('faqs.items', 1)
+            ->where('faqs.items.0.q', 'Active FAQ?')
+            ->where('faqs.items.0.a', 'Yes.')
         );
 });

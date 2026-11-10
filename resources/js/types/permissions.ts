@@ -87,6 +87,24 @@ export const PERMISSIONS = {
         EDIT: 'coffee-service-requests.edit',
         DELETE: 'coffee-service-requests.delete',
     },
+    HOME_FAQS: {
+        INDEX: 'home-faqs.index',
+        CREATE: 'home-faqs.create',
+        EDIT: 'home-faqs.edit',
+        DELETE: 'home-faqs.delete',
+    },
+    MACHINE_FAQS: {
+        INDEX: 'machine-faqs.index',
+        CREATE: 'machine-faqs.create',
+        EDIT: 'machine-faqs.edit',
+        DELETE: 'machine-faqs.delete',
+    },
+    OFFICE_COFFEE_FAQS: {
+        INDEX: 'office-coffee-faqs.index',
+        CREATE: 'office-coffee-faqs.create',
+        EDIT: 'office-coffee-faqs.edit',
+        DELETE: 'office-coffee-faqs.delete',
+    },
 } as const;
 
 // Auto-derived union type from the const above.
