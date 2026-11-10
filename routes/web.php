@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VendingRequestController as AdminVendingRequestController;
+use App\Http\Controllers\Auth\LocationSuggestController;
 use App\Http\Controllers\Auth\RegisterAccountController;
 use App\Http\Controllers\Auth\RegisterOtpController;
 use App\Http\Controllers\Auth\RegisterOtpVerifyController;
@@ -62,6 +63,10 @@ Route::get('/legal/{page}', [LegalController::class, 'show'])
     ->name('legal.show');
 Route::get('/industries', [IndustriesController::class, 'index'])->name('industries');
 Route::get('/industries/{industry}', [IndustriesController::class, 'show'])->name('industries.show');
+
+Route::get('/register/location-suggest', LocationSuggestController::class)
+    ->middleware('throttle:60,1')
+    ->name('register.location-suggest');
 
 Route::post('/register/account', [RegisterAccountController::class, 'store'])
     ->middleware(['guest', 'throttle:10,1'])
