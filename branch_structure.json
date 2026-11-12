@@ -2,12 +2,14 @@
   "default_branch": "main",
   "branches": [
     "authentication",
+    "backend",
     "frontend",
     "main",
     "production"
   ],
   "parent": {
     "authentication": "main",
+    "backend": "main",
     "frontend": "main",
     "main": null,
     "production": "main"
@@ -15,6 +17,7 @@
   "order": [
     "main",
     "authentication",
+    "backend",
     "frontend",
     "production"
   ]
