@@ -120,6 +120,15 @@ export interface AdminHomeFaq {
     updated_at: string;
 }
 
+export interface AdminLocationType {
+    id: number;
+    name: string;
+    sort_order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface AdminMachineFaq {
     id: number;
     question: string;

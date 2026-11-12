@@ -239,7 +239,7 @@ class HomePageData
             ],
             'items' => array_values(array_filter(
                 self::machines(),
-                fn (array $machine): bool => in_array($machine['id'], $ids, true),
+                fn(array $machine): bool => in_array($machine['id'], $ids, true),
             )),
         ];
     }
@@ -326,7 +326,7 @@ class HomePageData
                 'href' => '/products',
             ],
             'items' => array_map(
-                fn (array $item): array => [
+                fn(array $item): array => [
                     'kind' => $item['kind'],
                     'name' => $item['name'],
                     'href' => '/products',
@@ -420,15 +420,8 @@ class HomePageData
             'text' => 'Takes about a minute. Our team will email you to confirm the details, then a local operator gets in touch.',
             'successMessage' => 'Thanks! Our team will email you within one business day to confirm your request.',
             'submitLabel' => 'Get vending now',
-            'locationTypes' => [
-                'Business / office',
-                'Warehouse / factory',
-                'Apartment / hotel',
-                'School / college',
-                'Medical',
-                'Gym',
-                'Other',
-            ],
+            // Populated from active LocationType records in HomeController.
+            'locationTypes' => [],
             'machineInterests' => [
                 'Snack',
                 'Drinks',
@@ -657,10 +650,10 @@ class HomePageData
         return [
             'eyebrow' => 'Top cities',
             'title' => 'Cities where we manage vending.',
-            'items' => array_map(fn (array $city): array => [
+            'items' => array_map(fn(array $city): array => [
                 'city' => $city[0],
                 'state' => $city[1],
-                'label' => $city[0].' vending',
+                'label' => $city[0] . ' vending',
                 'href' => '/cities',
             ], $raw),
         ];

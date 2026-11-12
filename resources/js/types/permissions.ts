@@ -105,6 +105,12 @@ export const PERMISSIONS = {
         EDIT: 'office-coffee-faqs.edit',
         DELETE: 'office-coffee-faqs.delete',
     },
+    LOCATION_TYPES: {
+        INDEX: 'location-types.index',
+        CREATE: 'location-types.create',
+        EDIT: 'location-types.edit',
+        DELETE: 'location-types.delete',
+    },
 } as const;
 
 // Auto-derived union type from the const above.

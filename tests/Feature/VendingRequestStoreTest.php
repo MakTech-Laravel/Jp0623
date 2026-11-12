@@ -1,9 +1,17 @@
 <?php
 
+use App\Models\LocationType;
 use App\Models\VendingRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    LocationType::factory()->create([
+        'name' => 'Business / office',
+        'is_active' => true,
+    ]);
+});
 
 /**
  * @return array<string, mixed>
@@ -110,6 +118,16 @@ test('vending request rejects location without coordinates', function () {
             'longitude' => null,
         ]))
         ->assertSessionHasErrors(['latitude', 'longitude']);
+});
+
+test('vending request rejects inactive location types', function () {
+    LocationType::factory()->inactive()->create(['name' => 'Closed site']);
+
+    $this->from('/')
+        ->post(route('vending-requests.store'), validVendingRequestPayload([
+            'location_type' => 'Closed site',
+        ]))
+        ->assertSessionHasErrors(['location_type']);
 });
 
 test('switch reason is required when changing providers', function () {

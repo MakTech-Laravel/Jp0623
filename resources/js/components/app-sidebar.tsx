@@ -44,6 +44,7 @@ import {
 } from '@/routes/account';
 import adminAdminManagement from '@/routes/admin/admin-management';
 import adminHomeFaqs from '@/routes/admin/home-faqs';
+import adminLocationTypes from '@/routes/admin/location-types';
 import adminMachineCategories from '@/routes/admin/machine-categories';
 import adminMachineFaqs from '@/routes/admin/machine-faqs';
 import adminMachines from '@/routes/admin/machines';
@@ -60,10 +61,7 @@ import {
     purchased as leadsPurchased,
     tickets as leadsTickets,
 } from '@/routes/leads';
-import {
-    index as routesIndex,
-    sell as routesSell,
-} from '@/routes/routes';
+import { index as routesIndex, sell as routesSell } from '@/routes/routes';
 import { index as subscriptionIndex } from '@/routes/subscription';
 import type { NavItem } from '@/types';
 import { PERMISSIONS } from '@/types/permissions';
@@ -245,6 +243,12 @@ export function AppSidebar() {
                 href: adminVendingRequests.index(),
                 icon: Inbox,
                 permissions: [PERMISSIONS.VENDING_REQUESTS.INDEX],
+            },
+            {
+                title: 'Location Types',
+                href: adminLocationTypes.index(),
+                icon: MapPin,
+                permissions: [PERMISSIONS.LOCATION_TYPES.INDEX],
             },
             {
                 title: 'Coffee Requests',

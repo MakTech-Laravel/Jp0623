@@ -31,7 +31,12 @@ class StoreVendingRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'location_type' => ['required', 'string', Rule::in(VendingRequest::LOCATION_TYPES)],
+            'location_type' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::exists('location_types', 'name')->where(fn($query) => $query->where('is_active', true)),
+            ],
             'business_name' => ['required', 'string', 'max:255'],
             'address_or_zip' => ['nullable', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:500'],
@@ -54,7 +59,7 @@ class StoreVendingRequestRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:2000',
-                Rule::requiredIf(fn (): bool => $this->input('existing_vending') === 'Yes, want to switch'),
+                Rule::requiredIf(fn(): bool => $this->input('existing_vending') === 'Yes, want to switch'),
             ],
             'contact_name' => ['required', 'string', 'max:255'],
             'job_title' => ['nullable', 'string', 'max:255'],
