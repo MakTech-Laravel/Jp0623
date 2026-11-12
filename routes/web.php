@@ -88,6 +88,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('leads/purchased', [LeadController::class, 'purchased'])->name('leads.purchased');
     Route::get('leads/tickets', [LeadController::class, 'tickets'])->name('leads.tickets');
     Route::get('leads/faq', [LeadController::class, 'faq'])->name('leads.faq');
+    Route::post('leads/{source}/{lead}/purchase', [LeadController::class, 'purchase'])
+        ->whereIn('source', ['vending', 'coffee'])
+        ->whereNumber('lead')
+        ->name('leads.purchase');
     Route::get('routes', [RouteController::class, 'index'])->name('routes.index');
     Route::get('routes/sell', [RouteController::class, 'sell'])->name('routes.sell');
     Route::get('account', [AccountController::class, 'index'])->name('account.index');

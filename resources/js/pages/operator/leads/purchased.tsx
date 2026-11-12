@@ -112,7 +112,14 @@ export default function PurchasedLeads({
                                             </button>
                                         </TableCell>
                                         <TableCell>
-                                            {lead.city}, {lead.st} {lead.zip}
+                                            {[
+                                                [lead.city, lead.st]
+                                                    .filter(Boolean)
+                                                    .join(', '),
+                                                lead.zip,
+                                            ]
+                                                .filter(Boolean)
+                                                .join(' ') || '—'}
                                         </TableCell>
                                         <TableCell>{lead.address}</TableCell>
                                         <TableCell>

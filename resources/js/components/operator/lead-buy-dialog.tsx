@@ -1,3 +1,6 @@
+import { router } from '@inertiajs/react';
+import { Lock } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,6 +11,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { formatDistance, leadArea } from '@/lib/lead';
+import { purchase } from '@/routes/leads';
 import type { OperatorLead } from '@/types/operator-dashboard';
 
 interface LeadBuyDialogProps {
@@ -25,13 +30,30 @@ export function LeadBuyDialog({
     open,
     onOpenChange,
 }: LeadBuyDialogProps) {
+    const [processing, setProcessing] = useState(false);
+
     if (!lead) {
         return null;
     }
 
     const handleBuy = () => {
-        toast.success(`Lead ${lead.id} purchased (demo). Contact details unlocked.`);
-        onOpenChange(false);
+        const leadId = Number(lead.id.split('-')[1]);
+
+        router.post(
+            purchase.url({ source: lead.source, lead: leadId }),
+            {},
+            {
+                onStart: () => setProcessing(true),
+                onFinish: () => setProcessing(false),
+                onSuccess: () => {
+                    toast.success(
+                        `Lead ${lead.id} purchased. Contact details unlocked.`,
+                    );
+                    onOpenChange(false);
+                },
+                onError: () => toast.error('Could not buy this lead.'),
+            },
+        );
     };
 
     return (
@@ -45,21 +67,25 @@ export function LeadBuyDialog({
                 </DialogHeader>
 
                 <dl className="grid gap-3 text-sm sm:grid-cols-2">
+                    <Detail label="Location" value={leadArea(lead)} />
                     <Detail
-                        label="Location"
-                        value={`${lead.city}, ${lead.st} ${lead.zip.slice(0, 3)}xx`}
+                        label="Distance"
+                        value={formatDistance(lead.dist)}
                     />
-                    <Detail label="Distance" value={`${lead.dist} mi`} />
-                    <Detail label="People" value={String(lead.people)} />
-                    <Detail label="Wants" value={lead.wants} />
-                    <Detail label="Placement" value={lead.io} />
-                    <Detail label="Hours" value={lead.hours} />
                     <Detail
-                        label="Contact"
-                        value={lead.contact}
-                        className="sm:col-span-2"
+                        label="People"
+                        value={lead.people !== null ? String(lead.people) : '—'}
                     />
+                    <Detail label="Wants" value={lead.wants || '—'} />
+                    <Detail label="Placement" value={lead.io ?? '—'} />
+                    <Detail label="Listed" value={lead.listed || '—'} />
                 </dl>
+
+                <p className="flex items-start gap-2 rounded-lg bg-muted p-3 text-sm text-muted-foreground">
+                    <Lock className="mt-0.5 size-4 shrink-0" />
+                    Business name, address and contact details unlock after you
+                    buy this lead.
+                </p>
 
                 <DialogFooter className="gap-2 sm:gap-0">
                     <Button
@@ -70,6 +96,7 @@ export function LeadBuyDialog({
                     </Button>
                     <Button
                         className="bg-brass text-brass-ink hover:bg-brass/90"
+                        disabled={processing}
                         onClick={handleBuy}
                     >
                         Buy lead · {money(lead.price)}

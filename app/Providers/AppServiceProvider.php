@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use App\Enums\RoleEnum;
+use App\Models\CoffeeServiceRequest;
+use App\Models\VendingRequest;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -27,6 +30,11 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         $this->configureSpatiePermissions();
+
+        Relation::morphMap([
+            'vending' => VendingRequest::class,
+            'coffee' => CoffeeServiceRequest::class,
+        ]);
     }
 
     /**

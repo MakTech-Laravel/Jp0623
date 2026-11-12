@@ -13,6 +13,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import { dashboard } from '@/routes';
+import { formatDistance, leadArea } from '@/lib/lead';
 import { index as leadsIndex } from '@/routes/leads';
 import type {
     OperatorDashboardProps,
@@ -109,16 +110,17 @@ export default function OperatorDashboard({
                                                 </p>
                                             </TableCell>
                                             <TableCell>
-                                                {lead.city}, {lead.st}{' '}
-                                                {lead.zip.slice(0, 3)}xx
+                                                {leadArea(lead)}
                                             </TableCell>
                                             <TableCell className="text-right tabular-nums">
-                                                {lead.dist} mi
+                                                {formatDistance(lead.dist)}
                                             </TableCell>
                                             <TableCell className="text-right tabular-nums">
-                                                {lead.people}
+                                                {lead.people ?? '—'}
                                             </TableCell>
-                                            <TableCell>{lead.wants}</TableCell>
+                                            <TableCell>
+                                                {lead.wants || '—'}
+                                            </TableCell>
                                             <TableCell className="text-right tabular-nums">
                                                 {money(lead.price)}
                                             </TableCell>
@@ -135,6 +137,18 @@ export default function OperatorDashboard({
                                             </TableCell>
                                         </TableRow>
                                     ))}
+                                    {newestLeads.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell
+                                                colSpan={8}
+                                                className="py-8 text-center text-muted-foreground"
+                                            >
+                                                No leads available yet. New
+                                                requests appear here
+                                                automatically.
+                                            </TableCell>
+                                        </TableRow>
+                                    ) : null}
                                 </TableBody>
                             </Table>
                         </div>

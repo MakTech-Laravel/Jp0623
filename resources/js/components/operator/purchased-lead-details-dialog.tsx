@@ -57,6 +57,11 @@ export function PurchasedLeadDetailsDialog({
                     <Detail label="Contact" value={lead.contact_name} />
                     <Detail label="Phone" value={lead.contact_phone} />
                     <Detail
+                        label="Email"
+                        value={lead.email}
+                        className="sm:col-span-2"
+                    />
+                    <Detail
                         label="Credit used"
                         value={
                             lead.credit_used === null

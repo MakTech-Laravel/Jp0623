@@ -1,0 +1,265 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\CoffeeServiceRequest;
+use App\Models\LeadPurchase;
+use App\Models\OperatorProfile;
+use App\Models\User;
+use App\Models\VendingRequest;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+
+/**
+ * Builds the operator lead marketplace from public vending and coffee requests.
+ *
+ * Contact details are only ever returned by {@see self::purchasedBy()}.
+ */
+class LeadService
+{
+    public const SOURCE_VENDING = 'vending';
+
+    public const SOURCE_COFFEE = 'coffee';
+
+    /**
+     * @var list<string>
+     */
+    private const LISTED_STATUSES = ['new', 'reviewed'];
+
+    /**
+     * Leads the operator has not bought yet, without any contact details.
+     *
+     * @return list<array{
+     *     id: string,
+     *     source: string,
+     *     type: string,
+     *     cat: string,
+     *     city: string,
+     *     st: string,
+     *     zip: string,
+     *     dist: int|null,
+     *     people: int|null,
+     *     wants: string,
+     *     io: string|null,
+     *     price: int,
+     *     listed: string
+     * }>
+     */
+    public function availableFor(User $user, int $limit = 100): array
+    {
+        $profile = $user->operatorProfile;
+
+        $leads = $this->listedModels($user)
+            ->sortByDesc(fn (Model $lead): int => $lead->created_at?->getTimestamp() ?? 0)
+            ->take($limit)
+            ->map(fn (Model $lead): array => $this->mapAvailable($lead, $profile))
+            ->values()
+            ->all();
+
+        return $leads;
+    }
+
+    /**
+     * Full details of the leads the operator bought.
+     *
+     * @return list<array{
+     *     id: string,
+     *     purchased_at: string,
+     *     name: string,
+     *     type: string,
+     *     city: string,
+     *     st: string,
+     *     zip: string,
+     *     address: string,
+     *     contact_name: string,
+     *     contact_phone: string,
+     *     email: string,
+     *     price: int,
+     *     credit_used: int|null,
+     *     status: string
+     * }>
+     */
+    public function purchasedBy(User $user): array
+    {
+        return $user->leadPurchases()
+            ->with('leadable')
+            ->latest('purchased_at')
+            ->get()
+            ->filter(fn (LeadPurchase $purchase): bool => $purchase->leadable !== null)
+            ->map(fn (LeadPurchase $purchase): array => $this->mapPurchased($purchase))
+            ->values()
+            ->all();
+    }
+
+    /**
+     * @return array{available: int, purchased: int}
+     */
+    public function counts(User $user): array
+    {
+        return [
+            'available' => $this->listedModels($user)->count(),
+            'purchased' => $user->leadPurchases()->count(),
+        ];
+    }
+
+    /**
+     * Record a purchase and unlock the lead's details for the operator.
+     *
+     * Payment is not wired up yet, so this only records the purchase.
+     */
+    public function purchase(User $user, string $source, int $id): LeadPurchase
+    {
+        $existing = $user->leadPurchases()
+            ->where('leadable_type', $source)
+            ->where('leadable_id', $id)
+            ->first();
+
+        if ($existing !== null) {
+            return $existing;
+        }
+
+        $lead = $this->modelClass($source)::query()
+            ->whereIn('status', self::LISTED_STATUSES)
+            ->findOrFail($id);
+
+        return $user->leadPurchases()->create([
+            'leadable_type' => $source,
+            'leadable_id' => $lead->getKey(),
+            'price' => (int) config('leads.price'),
+            'purchased_at' => now(),
+        ]);
+    }
+
+    /**
+     * @return Collection<int, Model>
+     */
+    private function listedModels(User $user): Collection
+    {
+        $leads = collect();
+
+        foreach ([self::SOURCE_VENDING, self::SOURCE_COFFEE] as $source) {
+            $boughtIds = $user->leadPurchases()
+                ->where('leadable_type', $source)
+                ->pluck('leadable_id');
+
+            $leads = $leads->concat(
+                $this->modelClass($source)::query()
+                    ->whereIn('status', self::LISTED_STATUSES)
+                    ->whereNotIn('id', $boughtIds)
+                    ->latest()
+                    ->limit(200)
+                    ->get(),
+            );
+        }
+
+        return $leads;
+    }
+
+    /**
+     * @return class-string<Model>
+     */
+    private function modelClass(string $source): string
+    {
+        /** @var class-string<Model> $class */
+        $class = Relation::getMorphedModel($source);
+
+        return $class;
+    }
+
+    private function sourceOf(Model $lead): string
+    {
+        return $lead instanceof CoffeeServiceRequest
+            ? self::SOURCE_COFFEE
+            : self::SOURCE_VENDING;
+    }
+
+    private function publicId(Model $lead): string
+    {
+        return ($lead instanceof CoffeeServiceRequest ? 'C-' : 'V-').$lead->getKey();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function mapAvailable(Model $lead, ?OperatorProfile $profile): array
+    {
+        $isCoffee = $lead instanceof CoffeeServiceRequest;
+        $postalCode = (string) ($lead->postal_code ?: ($isCoffee ? $lead->zip_code : ''));
+
+        return [
+            'id' => $this->publicId($lead),
+            'source' => $this->sourceOf($lead),
+            'type' => $isCoffee ? 'Office coffee' : $lead->location_type,
+            'cat' => $isCoffee ? 'Coffee' : $lead->location_type,
+            'city' => (string) $lead->city,
+            'st' => (string) $lead->state,
+            'zip' => Str::substr($postalCode, 0, 3),
+            'dist' => $this->distanceInMiles($profile, $lead),
+            'people' => $isCoffee ? null : $lead->employees_on_site,
+            'wants' => $isCoffee ? 'Office coffee' : implode(', ', $lead->machine_interests ?? []),
+            'io' => $isCoffee ? null : $lead->placement,
+            'price' => (int) config('leads.price'),
+            'listed' => $this->listedLabel($lead),
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function mapPurchased(LeadPurchase $purchase): array
+    {
+        /** @var VendingRequest|CoffeeServiceRequest $lead */
+        $lead = $purchase->leadable;
+        $isCoffee = $lead instanceof CoffeeServiceRequest;
+
+        return [
+            'id' => $this->publicId($lead),
+            'purchased_at' => $purchase->purchased_at->format('M j'),
+            'name' => $lead->business_name,
+            'type' => $isCoffee ? 'Office coffee' : $lead->location_type,
+            'city' => (string) $lead->city,
+            'st' => (string) $lead->state,
+            'zip' => (string) ($lead->postal_code ?: ($isCoffee ? $lead->zip_code : '')),
+            'address' => (string) ($lead->address ?: ($isCoffee ? $lead->zip_code : $lead->address_or_zip)),
+            'contact_name' => $lead->contact_name,
+            'contact_phone' => $lead->phone,
+            'email' => $lead->email,
+            'price' => $purchase->price,
+            'credit_used' => null,
+            'status' => 'ok',
+        ];
+    }
+
+    private function listedLabel(Model $lead): string
+    {
+        $createdAt = $lead->created_at;
+
+        return match (true) {
+            $createdAt === null => '',
+            $createdAt->isToday() => 'Today',
+            $createdAt->isYesterday() => 'Yesterday',
+            default => $createdAt->format('M j'),
+        };
+    }
+
+    private function distanceInMiles(?OperatorProfile $profile, Model $lead): ?int
+    {
+        if ($profile === null
+            || $profile->latitude === null || $profile->longitude === null
+            || $lead->latitude === null || $lead->longitude === null) {
+            return null;
+        }
+
+        $fromLat = deg2rad((float) $profile->latitude);
+        $toLat = deg2rad((float) $lead->latitude);
+        $deltaLat = $toLat - $fromLat;
+        $deltaLng = deg2rad((float) $lead->longitude - (float) $profile->longitude);
+
+        $a = sin($deltaLat / 2) ** 2
+            + cos($fromLat) * cos($toLat) * sin($deltaLng / 2) ** 2;
+
+        return (int) round(3958.8 * 2 * asin(min(1, sqrt($a))));
+    }
+}

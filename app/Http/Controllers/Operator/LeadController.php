@@ -4,22 +4,24 @@ namespace App\Http\Controllers\Operator;
 
 use App\Demo\OperatorDashboardData;
 use App\Http\Controllers\Controller;
+use App\Services\LeadService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class LeadController extends Controller
 {
+    public function __construct(private LeadService $leads) {}
+
     public function index(Request $request): Response
     {
         $user = $request->user();
         $user->loadMissing('operatorProfile');
 
-        $data = OperatorDashboardData::for($user);
-
         return Inertia::render('operator/leads/index', [
-            'leads' => $data['leads'],
-            'primaryCity' => $data['primaryCity'],
+            'leads' => $this->leads->availableFor($user),
+            'primaryCity' => $user->operatorProfile?->primary_city ?: 'Not set',
         ]);
     }
 
@@ -29,9 +31,16 @@ class LeadController extends Controller
         $user->loadMissing('operatorProfile');
 
         return Inertia::render('operator/leads/purchased', [
-            'purchasedLeads' => OperatorDashboardData::purchasedLeads(),
-            'primaryCity' => $user->operatorProfile?->primary_city ?: 'Houston, TX',
+            'purchasedLeads' => $this->leads->purchasedBy($user),
+            'primaryCity' => $user->operatorProfile?->primary_city ?: 'Not set',
         ]);
+    }
+
+    public function purchase(Request $request, string $source, int $lead): RedirectResponse
+    {
+        $this->leads->purchase($request->user(), $source, $lead);
+
+        return redirect()->route('leads.purchased');
     }
 
     public function tickets(): Response

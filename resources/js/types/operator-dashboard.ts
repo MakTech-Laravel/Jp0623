@@ -1,18 +1,17 @@
 export interface OperatorLead {
     id: string;
+    source: 'vending' | 'coffee';
     type: string;
     cat: string;
     city: string;
     st: string;
     zip: string;
-    dist: number;
-    people: number;
+    dist: number | null;
+    people: number | null;
     wants: string;
-    io: string;
+    io: string | null;
     price: number;
     listed: string;
-    hours: string;
-    contact: string;
 }
 
 export type PurchasedLeadStatus = 'ok' | 'issue_open';
@@ -28,6 +27,7 @@ export interface PurchasedLead {
     address: string;
     contact_name: string;
     contact_phone: string;
+    email: string;
     price: number;
     credit_used: number | null;
     status: PurchasedLeadStatus;
