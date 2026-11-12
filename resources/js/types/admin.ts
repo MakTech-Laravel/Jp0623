@@ -187,6 +187,9 @@ export interface AdminProduct {
     updated_at: string;
 }
 
+export type OperatorSmsStatus =
+    'pending' | 'done' | 'partial' | 'failed' | 'skipped';
+
 export interface AdminVendingRequest {
     id: number;
     location_type: string;
@@ -214,6 +217,12 @@ export interface AdminVendingRequest {
     phone: string;
     terms_accepted: boolean;
     status: 'new' | 'reviewed';
+    operator_sms_status: OperatorSmsStatus;
+    operator_sms_sent_count: number;
+    operator_sms_failed_count: number;
+    operator_sms_provider_status: string | null;
+    operator_sms_note: string | null;
+    operator_sms_notified_at: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -234,6 +243,12 @@ export interface AdminCoffeeServiceRequest {
     notes: string | null;
     terms_accepted: boolean;
     status: 'new' | 'reviewed' | 'closed';
+    operator_sms_status: OperatorSmsStatus;
+    operator_sms_sent_count: number;
+    operator_sms_failed_count: number;
+    operator_sms_provider_status: string | null;
+    operator_sms_note: string | null;
+    operator_sms_notified_at: string | null;
     created_at: string;
     updated_at: string;
 }

@@ -2,6 +2,7 @@ import { Head, router, useForm } from '@inertiajs/react';
 import { Search, Send } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { AdminPageHeader } from '@/components/admin/admin-page-header';
+import { OperatorSmsTabs } from '@/components/admin/operator-sms-tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -68,12 +69,19 @@ interface Filters {
     reference_key: string;
 }
 
+interface ManualTemplate {
+    id: number;
+    name: string;
+    body: string;
+}
+
 interface OperatorSmsIndexProps {
     operators: OperatorRow[];
     total: number;
     truncated: boolean;
     referenceOptions: ReferenceOption[];
     rangeOptions: RangeOption[];
+    manualTemplates: ManualTemplate[];
     twilioEnabled: boolean;
     filters: Filters;
 }
@@ -84,6 +92,7 @@ export default function OperatorSmsIndex({
     truncated,
     referenceOptions,
     rangeOptions,
+    manualTemplates,
     twilioEnabled,
     filters,
 }: OperatorSmsIndexProps) {
@@ -104,6 +113,7 @@ export default function OperatorSmsIndex({
         filters.reference_key || 'none',
     );
     const [selected, setSelected] = useState<Set<number>>(new Set());
+    const [selectedTemplateId, setSelectedTemplateId] = useState('custom');
     const firstRender = useRef(true);
 
     const selectedReference = useMemo(
@@ -229,6 +239,8 @@ export default function OperatorSmsIndex({
                     icon={Send}
                 />
 
+                <OperatorSmsTabs active="send" />
+
                 {!twilioEnabled && (
                     <div className="rounded-xl border border-amber-300/60 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/40 dark:text-amber-100">
                         Twilio is disabled or incomplete in `.env`. Messages
@@ -236,14 +248,25 @@ export default function OperatorSmsIndex({
                     </div>
                 )}
 
+                <div className="rounded-xl border border-sky-300/50 bg-sky-50 px-4 py-3 text-sm text-sky-950 dark:border-sky-500/30 dark:bg-sky-950/30 dark:text-sky-100">
+                    Step 1: choose a <strong>Reference location (lead)</strong>.
+                    Step 2: Distance range unlocks and filters operators by
+                    miles from that lead.
+                </div>
+
                 <div className="grid gap-3 rounded-xl border bg-card p-4 shadow-sm lg:grid-cols-4">
                     <div className="space-y-2 lg:col-span-2">
                         <Label>Reference location (lead)</Label>
                         <Select
                             value={referenceKey}
-                            onValueChange={setReferenceKey}
+                            onValueChange={(value) => {
+                                setReferenceKey(value);
+                                if (value === 'none') {
+                                    setRange('all');
+                                }
+                            }}
                         >
-                            <SelectTrigger>
+                            <SelectTrigger className="border-primary/40">
                                 <SelectValue placeholder="Select a lead location" />
                             </SelectTrigger>
                             <SelectContent>
@@ -263,16 +286,31 @@ export default function OperatorSmsIndex({
                                 ))}
                             </SelectContent>
                         </Select>
+                        {referenceOptions.length === 0 && (
+                            <p className="text-xs text-destructive">
+                                No leads with coordinates found. Submit a
+                                vending/coffee request with an address first.
+                            </p>
+                        )}
                     </div>
 
                     <div className="space-y-2">
-                        <Label>Distance range</Label>
+                        <Label>
+                            Distance range
+                            {!hasCenter ? ' (locked)' : ''}
+                        </Label>
                         <Select
                             value={range}
                             onValueChange={setRange}
                             disabled={!hasCenter}
                         >
-                            <SelectTrigger>
+                            <SelectTrigger
+                                className={
+                                    hasCenter
+                                        ? 'border-primary/40'
+                                        : 'opacity-70'
+                                }
+                            >
                                 <SelectValue placeholder="All distances" />
                             </SelectTrigger>
                             <SelectContent>
@@ -286,6 +324,11 @@ export default function OperatorSmsIndex({
                                 ))}
                             </SelectContent>
                         </Select>
+                        {!hasCenter && (
+                            <p className="text-xs text-muted-foreground">
+                                Select a reference lead above to unlock this.
+                            </p>
+                        )}
                     </div>
 
                     <div className="relative space-y-2">
@@ -465,13 +508,58 @@ export default function OperatorSmsIndex({
                         </div>
 
                         <div className="space-y-2">
+                            <Label>Ready-made template</Label>
+                            <Select
+                                value={selectedTemplateId}
+                                onValueChange={(value) => {
+                                    setSelectedTemplateId(value);
+                                    if (value === 'custom') {
+                                        return;
+                                    }
+
+                                    const template = manualTemplates.find(
+                                        (item) => String(item.id) === value,
+                                    );
+
+                                    if (template) {
+                                        form.setData('message', template.body);
+                                    }
+                                }}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Choose a template" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="custom">
+                                        Custom message
+                                    </SelectItem>
+                                    {manualTemplates.map((template) => (
+                                        <SelectItem
+                                            key={template.id}
+                                            value={String(template.id)}
+                                        >
+                                            {template.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                            {manualTemplates.length === 0 && (
+                                <p className="text-xs text-muted-foreground">
+                                    No manual templates yet. Add some on the SMS
+                                    templates tab.
+                                </p>
+                            )}
+                        </div>
+
+                        <div className="space-y-2">
                             <Label htmlFor="sms-message">Message</Label>
                             <Textarea
                                 id="sms-message"
                                 value={form.data.message}
-                                onChange={(e) =>
-                                    form.setData('message', e.target.value)
-                                }
+                                onChange={(e) => {
+                                    setSelectedTemplateId('custom');
+                                    form.setData('message', e.target.value);
+                                }}
                                 rows={4}
                                 maxLength={1600}
                                 placeholder="Write the SMS operators will receive…"

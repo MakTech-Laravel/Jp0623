@@ -23,6 +23,12 @@ use Illuminate\Support\Carbon;
  * @property string|null $notes
  * @property bool $terms_accepted
  * @property string $status
+ * @property string $operator_sms_status
+ * @property int $operator_sms_sent_count
+ * @property int $operator_sms_failed_count
+ * @property string|null $operator_sms_provider_status
+ * @property string|null $operator_sms_note
+ * @property Carbon|null $operator_sms_notified_at
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
@@ -58,6 +64,12 @@ class CoffeeServiceRequest extends Model
         'notes',
         'terms_accepted',
         'status',
+        'operator_sms_status',
+        'operator_sms_sent_count',
+        'operator_sms_failed_count',
+        'operator_sms_provider_status',
+        'operator_sms_note',
+        'operator_sms_notified_at',
     ];
 
     /**
@@ -69,6 +81,9 @@ class CoffeeServiceRequest extends Model
             'terms_accepted' => 'boolean',
             'latitude' => 'decimal:7',
             'longitude' => 'decimal:7',
+            'operator_sms_sent_count' => 'integer',
+            'operator_sms_failed_count' => 'integer',
+            'operator_sms_notified_at' => 'datetime',
         ];
     }
 }

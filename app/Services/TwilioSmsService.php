@@ -18,10 +18,12 @@ class TwilioSmsService
     }
 
     /**
+     * @return array{sid: string|null, status: string}
+     *
      * @throws RuntimeException
      * @throws ConnectionException
      */
-    public function send(string $toE164, string $body): void
+    public function send(string $toE164, string $body): array
     {
         if (! $this->isEnabled()) {
             throw new RuntimeException('Twilio SMS is not configured.');
@@ -33,7 +35,7 @@ class TwilioSmsService
         $sandboxPrefix = trim((string) config('services.twilio.sandbox_message_prefix', ''));
 
         if ($sandboxPrefix !== '' && ! str_starts_with($body, $sandboxPrefix)) {
-            $body = trim($sandboxPrefix . ' ' . $body);
+            $body = trim($sandboxPrefix.' '.$body);
         }
 
         $payload = [
@@ -54,7 +56,7 @@ class TwilioSmsService
             ->acceptJson()
             ->connectTimeout(5)
             ->timeout(15)
-            ->retry(2, 500, fn(\Throwable $exception): bool => $exception instanceof ConnectionException)
+            ->retry(2, 500, fn (\Throwable $exception): bool => $exception instanceof ConnectionException)
             ->post("https://api.twilio.com/2010-04-01/Accounts/{$sid}/Messages.json", $payload);
 
         if ($response->failed()) {
@@ -66,5 +68,13 @@ class TwilioSmsService
 
             $response->throw();
         }
+
+        /** @var array<string, mixed> $json */
+        $json = $response->json() ?? [];
+
+        return [
+            'sid' => isset($json['sid']) ? (string) $json['sid'] : null,
+            'status' => isset($json['status']) ? (string) $json['status'] : 'queued',
+        ];
     }
 }

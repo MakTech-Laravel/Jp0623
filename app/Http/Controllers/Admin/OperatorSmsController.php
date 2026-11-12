@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SendOperatorSmsRequest;
 use App\Services\AdminOperatorSmsService;
+use App\Services\SmsTemplateService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -12,7 +13,10 @@ use Inertia\Response;
 
 class OperatorSmsController extends Controller
 {
-    public function __construct(private AdminOperatorSmsService $operatorSms) {}
+    public function __construct(
+        private AdminOperatorSmsService $operatorSms,
+        private SmsTemplateService $templates,
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -45,6 +49,11 @@ class OperatorSmsController extends Controller
             'truncated' => $result['truncated'],
             'referenceOptions' => $this->operatorSms->referenceOptions(),
             'rangeOptions' => $this->rangeOptions(),
+            'manualTemplates' => $this->templates->manualActive()->map(fn ($template): array => [
+                'id' => $template->id,
+                'name' => $template->name,
+                'body' => $template->body,
+            ])->values()->all(),
             'twilioEnabled' => (bool) config('services.twilio.enabled')
                 && filled(config('services.twilio.sid'))
                 && filled(config('services.twilio.token'))
@@ -70,7 +79,7 @@ class OperatorSmsController extends Controller
 
         Inertia::flash('toast', [
             'type' => 'success',
-            'message' => "SMS queued for {$count} operator" . ($count === 1 ? '' : 's') . '.',
+            'message' => "SMS queued for {$count} operator".($count === 1 ? '' : 's').'.',
         ]);
 
         return redirect()->back();
