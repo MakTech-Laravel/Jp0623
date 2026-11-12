@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\NotifyNearbyOperatorsOfLead;
 use App\Models\VendingRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -32,7 +33,7 @@ class VendingRequestService
                         ->orWhere('postal_code', 'like', "%{$search}%");
                 });
             })
-            ->when($status !== null, fn ($query) => $query->where('status', $status))
+            ->when($status !== null, fn($query) => $query->where('status', $status))
             ->latest()
             ->paginate($perPage)
             ->withQueryString();
@@ -47,10 +48,10 @@ class VendingRequestService
         $data['status'] = VendingRequest::STATUS_NEW;
         $data['machine_interests'] = array_values(array_filter(
             array_map(
-                static fn (mixed $interest): string => trim((string) $interest),
+                static fn(mixed $interest): string => trim((string) $interest),
                 is_array($data['machine_interests'] ?? null) ? $data['machine_interests'] : [],
             ),
-            static fn (string $interest): bool => $interest !== '',
+            static fn(string $interest): bool => $interest !== '',
         ));
 
         if (($data['existing_vending'] ?? '') === 'No') {
@@ -59,7 +60,11 @@ class VendingRequestService
 
         $data = $this->normalizeLocation($data);
 
-        return VendingRequest::create($data);
+        $vendingRequest = VendingRequest::create($data);
+
+        NotifyNearbyOperatorsOfLead::dispatch('vending', $vendingRequest->id);
+
+        return $vendingRequest;
     }
 
     public function updateStatus(VendingRequest $vendingRequest, string $status): VendingRequest
@@ -110,8 +115,8 @@ class VendingRequestService
         $parts = array_values(array_filter([
             $address,
             $city,
-            trim($state.($postalCode !== null ? ' '.$postalCode : '')),
-        ], static fn (?string $part): bool => filled($part)));
+            trim($state . ($postalCode !== null ? ' ' . $postalCode : '')),
+        ], static fn(?string $part): bool => filled($part)));
 
         return implode(', ', $parts);
     }

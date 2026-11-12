@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\NotifyNearbyOperatorsOfLead;
 use App\Models\CoffeeServiceRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -32,7 +33,7 @@ class CoffeeServiceRequestService
                         ->orWhere('postal_code', 'like', "%{$search}%");
                 });
             })
-            ->when($status !== null, fn ($query) => $query->where('status', $status))
+            ->when($status !== null, fn($query) => $query->where('status', $status))
             ->latest()
             ->paginate($perPage)
             ->withQueryString();
@@ -48,7 +49,11 @@ class CoffeeServiceRequestService
         $data['notes'] = filled($data['notes'] ?? null) ? trim((string) $data['notes']) : null;
         $data = $this->normalizeLocation($data);
 
-        return CoffeeServiceRequest::create($data);
+        $coffeeServiceRequest = CoffeeServiceRequest::create($data);
+
+        NotifyNearbyOperatorsOfLead::dispatch('coffee', $coffeeServiceRequest->id);
+
+        return $coffeeServiceRequest;
     }
 
     public function updateStatus(CoffeeServiceRequest $coffeeServiceRequest, string $status): CoffeeServiceRequest
