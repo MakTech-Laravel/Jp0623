@@ -36,7 +36,22 @@ return [
     ],
 
     'photon' => [
-        'url' => rtrim((string) env('PHOTON_API_URL', 'https://photon.komoot.io/api/'), '/').'/',
+        'url' => rtrim((string) env('PHOTON_API_URL', 'https://photon.komoot.io/api/'), '/') . '/',
+    ],
+
+    'twilio' => [
+        /*
+        | Trial / sandbox: set TWILIO_ENABLED=true with your Account SID, Auth Token,
+        | and Twilio phone number. Trial accounts can only SMS verified numbers.
+        | Optional TWILIO_SANDBOX_MESSAGE_PREFIX if your sandbox requires a keyword.
+        */
+        'enabled' => (bool) env('TWILIO_ENABLED', false),
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_AUTH_TOKEN'),
+        'from' => env('TWILIO_FROM'),
+        'messaging_service_sid' => env('TWILIO_MESSAGING_SERVICE_SID'),
+        'sandbox_message_prefix' => env('TWILIO_SANDBOX_MESSAGE_PREFIX', ''),
+        'lead_radius_miles' => (float) env('TWILIO_LEAD_RADIUS_MILES', 100),
     ],
 
 ];
