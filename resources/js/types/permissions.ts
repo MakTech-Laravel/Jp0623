@@ -111,6 +111,10 @@ export const PERMISSIONS = {
         EDIT: 'location-types.edit',
         DELETE: 'location-types.delete',
     },
+    OPERATOR_SMS: {
+        INDEX: 'operator-sms.index',
+        SEND: 'operator-sms.send',
+    },
 } as const;
 
 // Auto-derived union type from the const above.
@@ -212,8 +216,8 @@ export function groupPermissions(
         const key = permission.group ?? 'Other';
 
         if (!acc[key]) {
-acc[key] = [];
-}
+            acc[key] = [];
+        }
 
         acc[key].push(permission);
 

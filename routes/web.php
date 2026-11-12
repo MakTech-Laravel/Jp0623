@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\MachineCategoryController;
 use App\Http\Controllers\Admin\MachineController;
 use App\Http\Controllers\Admin\MachineFaqController;
 use App\Http\Controllers\Admin\OfficeCoffeeFaqController;
+use App\Http\Controllers\Admin\OperatorSmsController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
@@ -250,6 +251,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('permission:' . PermissionEnum::COFFEE_SERVICE_REQUESTS_EDIT->value);
             Route::delete('coffee-service-requests/{coffee_service_request}', 'destroy')->name('coffee-service-requests.destroy')
                 ->middleware('permission:' . PermissionEnum::COFFEE_SERVICE_REQUESTS_DELETE->value);
+        });
+
+        // Manual SMS to operators by distance / search.
+        Route::controller(OperatorSmsController::class)->group(function () {
+            Route::get('operator-sms', 'index')->name('operator-sms.index')
+                ->middleware('permission:' . PermissionEnum::OPERATOR_SMS_INDEX->value);
+            Route::post('operator-sms', 'send')->name('operator-sms.send')
+                ->middleware('permission:' . PermissionEnum::OPERATOR_SMS_SEND->value);
         });
 
         // Home FAQs — public homepage FAQ items.
