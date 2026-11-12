@@ -22,20 +22,28 @@ class CoffeeServiceRequestController extends Controller
         $status = is_string($status) && $status !== '' && $status !== 'all'
             ? $status
             : null;
+        $sale = $request->query('sale');
+        $sale = is_string($sale) && $sale !== '' && $sale !== 'all'
+            ? $sale
+            : null;
 
         return Inertia::render('admin/coffee-service-requests/index', [
-            'requests' => $this->coffeeServiceRequests->paginate($search, $status),
+            'requests' => $this->coffeeServiceRequests->paginate($search, $status, $sale),
             'filters' => [
                 'search' => $search,
                 'status' => $status,
+                'sale' => $sale,
             ],
         ]);
     }
 
     public function show(CoffeeServiceRequest $coffeeServiceRequest): Response
     {
+        $leadBuyer = $this->coffeeServiceRequests->prepareForAdminShow($coffeeServiceRequest);
+
         return Inertia::render('admin/coffee-service-requests/show', [
             'coffeeServiceRequest' => $coffeeServiceRequest,
+            'leadBuyer' => $leadBuyer,
         ]);
     }
 

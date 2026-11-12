@@ -225,6 +225,10 @@ export interface AdminVendingRequest {
     operator_sms_notified_at: string | null;
     created_at: string;
     updated_at: string;
+    /** True when a paid LeadPurchase exists for this lead. */
+    is_sold: boolean;
+    /** True when any LeadPurchase holds lead_lock (pending or paid). */
+    is_held: boolean;
 }
 
 export interface AdminCoffeeServiceRequest {
@@ -251,6 +255,10 @@ export interface AdminCoffeeServiceRequest {
     operator_sms_notified_at: string | null;
     created_at: string;
     updated_at: string;
+    /** True when a paid LeadPurchase exists for this lead. */
+    is_sold: boolean;
+    /** True when any LeadPurchase holds lead_lock (pending or paid). */
+    is_held: boolean;
 }
 
 /** Prefer structured city/state/postal; fall back to legacy display fields. */

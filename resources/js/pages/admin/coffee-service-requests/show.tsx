@@ -5,6 +5,11 @@ import type { ReactNode } from 'react';
 import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { ConfirmDeleteDialog } from '@/components/admin/confirm-delete-dialog';
 import {
+    LeadBuyerNote,
+    LeadSaleBadge,
+    type LeadBuyer,
+} from '@/components/admin/lead-sale-badge';
+import {
     OPERATOR_SMS_COLUMN_HINT,
     OPERATOR_SMS_COLUMN_LABEL,
     OperatorSmsStatusBadge,
@@ -39,8 +44,10 @@ function statusLabel(status: AdminCoffeeServiceRequest['status']): string {
 
 export default function ShowCoffeeServiceRequest({
     coffeeServiceRequest,
+    leadBuyer = null,
 }: {
     coffeeServiceRequest: AdminCoffeeServiceRequest;
+    leadBuyer?: LeadBuyer;
 }) {
     const { can } = usePermission();
 
@@ -118,22 +125,35 @@ export default function ShowCoffeeServiceRequest({
                     animate={{ opacity: 1, y: 0 }}
                     className="space-y-6"
                 >
-                    <div className="flex flex-wrap items-center gap-2">
-                        <Badge
-                            variant={
-                                coffeeServiceRequest.status === 'new'
-                                    ? 'secondary'
-                                    : 'outline'
-                            }
-                        >
-                            {statusLabel(coffeeServiceRequest.status)}
-                        </Badge>
-                        <span className="text-sm text-muted-foreground">
-                            Submitted{' '}
-                            {new Date(
-                                coffeeServiceRequest.created_at,
-                            ).toLocaleString()}
-                        </span>
+                    <div className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <Badge
+                                variant={
+                                    coffeeServiceRequest.status === 'new'
+                                        ? 'secondary'
+                                        : 'outline'
+                                }
+                            >
+                                {statusLabel(coffeeServiceRequest.status)}
+                            </Badge>
+                            <LeadSaleBadge
+                                is_sold={coffeeServiceRequest.is_sold}
+                                is_held={coffeeServiceRequest.is_held}
+                            />
+                            <span className="text-sm text-muted-foreground">
+                                Submitted{' '}
+                                {new Date(
+                                    coffeeServiceRequest.created_at,
+                                ).toLocaleString()}
+                            </span>
+                        </div>
+                        <LeadBuyerNote
+                            flags={{
+                                is_sold: coffeeServiceRequest.is_sold,
+                                is_held: coffeeServiceRequest.is_held,
+                            }}
+                            buyer={leadBuyer}
+                        />
                     </div>
 
                     <div className="grid gap-6 lg:grid-cols-2">

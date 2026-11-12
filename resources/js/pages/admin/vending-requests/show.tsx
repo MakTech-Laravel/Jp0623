@@ -5,6 +5,11 @@ import type { ReactNode } from 'react';
 import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { ConfirmDeleteDialog } from '@/components/admin/confirm-delete-dialog';
 import {
+    LeadBuyerNote,
+    LeadSaleBadge,
+    type LeadBuyer,
+} from '@/components/admin/lead-sale-badge';
+import {
     OPERATOR_SMS_COLUMN_HINT,
     OPERATOR_SMS_COLUMN_LABEL,
     OperatorSmsStatusBadge,
@@ -20,8 +25,10 @@ import { PERMISSIONS } from '@/types/permissions';
 
 export default function ShowVendingRequest({
     vendingRequest,
+    leadBuyer = null,
 }: {
     vendingRequest: AdminVendingRequest;
+    leadBuyer?: LeadBuyer;
 }) {
     const { can } = usePermission();
 
@@ -100,24 +107,37 @@ export default function ShowVendingRequest({
                     animate={{ opacity: 1, y: 0 }}
                     className="space-y-6"
                 >
-                    <div className="flex flex-wrap items-center gap-2">
-                        <Badge
-                            variant={
-                                vendingRequest.status === 'new'
-                                    ? 'secondary'
-                                    : 'outline'
-                            }
-                        >
-                            {vendingRequest.status === 'new'
-                                ? 'New'
-                                : 'Reviewed'}
-                        </Badge>
-                        <span className="text-sm text-muted-foreground">
-                            Submitted{' '}
-                            {new Date(
-                                vendingRequest.created_at,
-                            ).toLocaleString()}
-                        </span>
+                    <div className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <Badge
+                                variant={
+                                    vendingRequest.status === 'new'
+                                        ? 'secondary'
+                                        : 'outline'
+                                }
+                            >
+                                {vendingRequest.status === 'new'
+                                    ? 'New'
+                                    : 'Reviewed'}
+                            </Badge>
+                            <LeadSaleBadge
+                                is_sold={vendingRequest.is_sold}
+                                is_held={vendingRequest.is_held}
+                            />
+                            <span className="text-sm text-muted-foreground">
+                                Submitted{' '}
+                                {new Date(
+                                    vendingRequest.created_at,
+                                ).toLocaleString()}
+                            </span>
+                        </div>
+                        <LeadBuyerNote
+                            flags={{
+                                is_sold: vendingRequest.is_sold,
+                                is_held: vendingRequest.is_held,
+                            }}
+                            buyer={leadBuyer}
+                        />
                     </div>
 
                     <div className="grid gap-6 lg:grid-cols-2">

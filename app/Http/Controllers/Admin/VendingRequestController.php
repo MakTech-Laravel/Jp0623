@@ -22,20 +22,28 @@ class VendingRequestController extends Controller
         $status = is_string($status) && $status !== '' && $status !== 'all'
             ? $status
             : null;
+        $sale = $request->query('sale');
+        $sale = is_string($sale) && $sale !== '' && $sale !== 'all'
+            ? $sale
+            : null;
 
         return Inertia::render('admin/vending-requests/index', [
-            'requests' => $this->vendingRequests->paginate($search, $status),
+            'requests' => $this->vendingRequests->paginate($search, $status, $sale),
             'filters' => [
                 'search' => $search,
                 'status' => $status,
+                'sale' => $sale,
             ],
         ]);
     }
 
     public function show(VendingRequest $vendingRequest): Response
     {
+        $leadBuyer = $this->vendingRequests->prepareForAdminShow($vendingRequest);
+
         return Inertia::render('admin/vending-requests/show', [
             'vendingRequest' => $vendingRequest,
+            'leadBuyer' => $leadBuyer,
         ]);
     }
 

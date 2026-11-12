@@ -2,6 +2,7 @@
 
 use App\Enums\RoleEnum;
 use App\Models\CoffeeServiceRequest;
+use App\Models\LeadPurchase;
 use App\Models\User;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
@@ -42,7 +43,9 @@ test('super admin can view the coffee service requests list', function () {
             fn (Assert $page) => $page
                 ->component('admin/coffee-service-requests/index')
                 ->has('requests.data', 1)
-                ->has('filters')
+                ->where('requests.data.0.is_sold', false)
+                ->where('requests.data.0.is_held', false)
+                ->has('filters.sale')
         );
 });
 
@@ -56,6 +59,64 @@ test('a coffee service request can be viewed', function () {
             fn (Assert $page) => $page
                 ->component('admin/coffee-service-requests/show')
                 ->where('coffeeServiceRequest.id', $request->id)
+                ->where('coffeeServiceRequest.is_sold', false)
+                ->where('coffeeServiceRequest.is_held', false)
+                ->where('leadBuyer', null)
+        );
+});
+
+test('sold and pending coffee leads expose sale flags and buyer', function () {
+    $operator = makeOperator();
+    $soldLead = CoffeeServiceRequest::factory()->create(['business_name' => 'Sold Coffee']);
+    $pendingLead = CoffeeServiceRequest::factory()->create(['business_name' => 'Pending Coffee']);
+    $availableLead = CoffeeServiceRequest::factory()->create(['business_name' => 'Open Coffee']);
+
+    LeadPurchase::factory()->create([
+        'user_id' => $operator->id,
+        'leadable_type' => 'coffee',
+        'leadable_id' => $soldLead->id,
+    ]);
+
+    LeadPurchase::factory()->pending()->create([
+        'user_id' => $operator->id,
+        'leadable_type' => 'coffee',
+        'leadable_id' => $pendingLead->id,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.coffee-service-requests.index', ['sale' => 'sold']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('requests.data', 1)
+            ->where('requests.data.0.id', $soldLead->id)
+            ->where('requests.data.0.is_sold', true)
+            ->where('filters.sale', 'sold')
+        );
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.coffee-service-requests.index', ['sale' => 'processing']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('requests.data', 1)
+            ->where('requests.data.0.id', $pendingLead->id)
+            ->where('requests.data.0.is_held', true)
+            ->where('requests.data.0.is_sold', false)
+        );
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.coffee-service-requests.index', ['sale' => 'available']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('requests.data', 1)
+            ->where('requests.data.0.id', $availableLead->id)
+        );
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.coffee-service-requests.show', $soldLead))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('coffeeServiceRequest.is_sold', true)
+            ->where('leadBuyer.email', $operator->email)
         );
 });
 
