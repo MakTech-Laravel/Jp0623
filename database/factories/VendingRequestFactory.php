@@ -18,7 +18,15 @@ class VendingRequestFactory extends Factory
     public function definition(): array
     {
         return [
-            'location_type' => fake()->randomElement(VendingRequest::LOCATION_TYPES),
+            'location_type' => fake()->randomElement([
+                'Business / office',
+                'Warehouse / factory',
+                'Apartment / hotel',
+                'School / college',
+                'Medical',
+                'Gym',
+                'Other',
+            ]),
             'business_name' => fake()->company(),
             'address_or_zip' => 'Houston, TX 77002',
             'address' => '100 Main St',
@@ -48,14 +56,14 @@ class VendingRequestFactory extends Factory
 
     public function reviewed(): static
     {
-        return $this->state(fn (array $attributes): array => [
+        return $this->state(fn(array $attributes): array => [
             'status' => VendingRequest::STATUS_REVIEWED,
         ]);
     }
 
     public function switching(): static
     {
-        return $this->state(fn (array $attributes): array => [
+        return $this->state(fn(array $attributes): array => [
             'existing_vending' => 'Yes, want to switch',
             'switch_reason' => 'Looking for better service.',
         ]);

@@ -51,16 +51,6 @@ class VendingRequest extends Model
         'Outside (covered)',
     ];
 
-    public const LOCATION_TYPES = [
-        'Business / office',
-        'Warehouse / factory',
-        'Apartment / hotel',
-        'School / college',
-        'Medical',
-        'Gym',
-        'Other',
-    ];
-
     public const MACHINE_INTERESTS = [
         'Snack',
         'Drinks',

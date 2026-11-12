@@ -100,6 +100,12 @@ enum PermissionEnum: string
     case OFFICE_COFFEE_FAQS_EDIT = 'office-coffee-faqs.edit';
     case OFFICE_COFFEE_FAQS_DELETE = 'office-coffee-faqs.delete';
 
+    // LOCATION TYPES
+    case LOCATION_TYPES_INDEX = 'location-types.index';
+    case LOCATION_TYPES_CREATE = 'location-types.create';
+    case LOCATION_TYPES_EDIT = 'location-types.edit';
+    case LOCATION_TYPES_DELETE = 'location-types.delete';
+
     // -------------------------------------------------------------------------
     // group() — returns the display group for the `group` DB column.
     // Used by PermissionSeeder and the role management UI (grouped checkboxes).
@@ -187,6 +193,11 @@ enum PermissionEnum: string
             self::OFFICE_COFFEE_FAQS_CREATE,
             self::OFFICE_COFFEE_FAQS_EDIT,
             self::OFFICE_COFFEE_FAQS_DELETE => 'Office Coffee FAQs',
+
+            self::LOCATION_TYPES_INDEX,
+            self::LOCATION_TYPES_CREATE,
+            self::LOCATION_TYPES_EDIT,
+            self::LOCATION_TYPES_DELETE => 'Location Types',
         };
     }
 
