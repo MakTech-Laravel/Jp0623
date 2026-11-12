@@ -47,7 +47,7 @@ export default function EditUser({
                     </Button>
                 </AdminPageHeader>
 
-                <div className="max-w-3xl rounded-xl border bg-card p-6 shadow-sm">
+                <div className="rounded-xl border bg-card p-6 shadow-sm">
                     <UserForm
                         action={routes.update(user.id)}
                         hideRoles

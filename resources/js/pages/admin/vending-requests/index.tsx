@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { ConfirmDeleteDialog } from '@/components/admin/confirm-delete-dialog';
 import { DataPagination } from '@/components/admin/data-pagination';
+import { LeadSaleBadge } from '@/components/admin/lead-sale-badge';
 import {
     OPERATOR_SMS_COLUMN_HINT,
     OPERATOR_SMS_COLUMN_LABEL,
@@ -37,7 +38,7 @@ import { PERMISSIONS } from '@/types/permissions';
 
 interface VendingRequestsIndexProps {
     requests: Paginated<AdminVendingRequest>;
-    filters: { search: string; status: string | null };
+    filters: { search: string; status: string | null; sale: string | null };
 }
 
 export default function VendingRequestsIndex({
@@ -47,6 +48,7 @@ export default function VendingRequestsIndex({
     const { can } = usePermission();
     const [search, setSearch] = useState(filters.search ?? '');
     const [status, setStatus] = useState(filters.status ?? 'all');
+    const [sale, setSale] = useState(filters.sale ?? 'all');
     const firstRender = useRef(true);
 
     useEffect(() => {
@@ -62,13 +64,14 @@ export default function VendingRequestsIndex({
                 {
                     search: search || undefined,
                     status: status === 'all' ? undefined : status,
+                    sale: sale === 'all' ? undefined : sale,
                 },
                 { preserveState: true, preserveScroll: true, replace: true },
             );
         }, 350);
 
         return () => clearTimeout(timeout);
-    }, [search, status]);
+    }, [search, status, sale]);
 
     return (
         <>
@@ -102,6 +105,20 @@ export default function VendingRequestsIndex({
                             <SelectItem value="reviewed">Reviewed</SelectItem>
                         </SelectContent>
                     </Select>
+
+                    <Select value={sale} onValueChange={setSale}>
+                        <SelectTrigger className="w-full sm:w-44">
+                            <SelectValue placeholder="All sales" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All sales</SelectItem>
+                            <SelectItem value="available">Available</SelectItem>
+                            <SelectItem value="processing">
+                                Processing
+                            </SelectItem>
+                            <SelectItem value="sold">Sold</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
@@ -115,6 +132,9 @@ export default function VendingRequestsIndex({
                                     </TableHead>
                                     <TableHead className="hidden md:table-cell">
                                         Status
+                                    </TableHead>
+                                    <TableHead className="hidden md:table-cell">
+                                        Sale
                                     </TableHead>
                                     <TableHead
                                         className="hidden md:table-cell"
@@ -177,6 +197,12 @@ export default function VendingRequestsIndex({
                                                         ? 'New'
                                                         : 'Reviewed'}
                                                 </Badge>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                <LeadSaleBadge
+                                                    is_sold={request.is_sold}
+                                                    is_held={request.is_held}
+                                                />
                                             </TableCell>
                                             <TableCell className="hidden md:table-cell">
                                                 <OperatorSmsStatusBadge

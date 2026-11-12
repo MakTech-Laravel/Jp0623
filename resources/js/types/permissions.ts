@@ -115,6 +115,9 @@ export const PERMISSIONS = {
         INDEX: 'operator-sms.index',
         SEND: 'operator-sms.send',
     },
+    PAYMENTS: {
+        INDEX: 'payments.index',
+    },
 } as const;
 
 // Auto-derived union type from the const above.

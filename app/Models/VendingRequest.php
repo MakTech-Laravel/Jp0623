@@ -5,6 +5,7 @@ namespace App\Models;
 use Database\Factories\VendingRequestFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -109,6 +110,16 @@ class VendingRequest extends Model
         'operator_sms_note',
         'operator_sms_notified_at',
     ];
+
+    /**
+     * Operator purchases of this lead (pending / paid / failed / …).
+     *
+     * @return MorphMany<LeadPurchase, $this>
+     */
+    public function leadPurchases(): MorphMany
+    {
+        return $this->morphMany(LeadPurchase::class, 'leadable');
+    }
 
     /**
      * @return array<string, string>

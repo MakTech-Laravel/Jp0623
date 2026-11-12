@@ -9,11 +9,11 @@ enum PermissionEnum: string
     case REPOSITORY_VIEW = 'repository.view';
     case DOCUMENTATION_VIEW = 'documentation.view';
 
-        // FILE UPLOAD
+    // FILE UPLOAD
     case FILE_UPLOAD_INDEX = 'file-upload.index';
     case FILE_UPLOAD_STORE = 'file-upload.store';
 
-        // POSTS
+    // POSTS
     case POSTS_INDEX = 'posts.index';
     case POSTS_VIEW = 'posts.view';
     case POSTS_CREATE = 'posts.create';
@@ -21,25 +21,25 @@ enum PermissionEnum: string
     case POSTS_DELETE = 'posts.delete';
     case POSTS_PUBLISH = 'posts.publish';
 
-        // USERS
+    // USERS
     case USERS_INDEX = 'users.index';
     case USERS_VIEW = 'users.view';
     case USERS_CREATE = 'users.create';
     case USERS_EDIT = 'users.edit';
     case USERS_DELETE = 'users.delete';
 
-        // ROLES
+    // ROLES
     case ROLES_INDEX = 'roles.index';
     case ROLES_VIEW = 'roles.view';
     case ROLES_CREATE = 'roles.create';
     case ROLES_EDIT = 'roles.edit';
     case ROLES_DELETE = 'roles.delete';
 
-        // PERMISSIONS (developer-defined, read-only — listing & export only)
+    // PERMISSIONS (developer-defined, read-only — listing & export only)
     case PERMISSIONS_INDEX = 'permissions.index';
     case PERMISSIONS_EXPORT = 'permissions.export';
 
-        // SETTINGS
+    // SETTINGS
     case SETTINGS_INDEX = 'settings.index';
     case SETTINGS_VIEW = 'settings.view';
     case SETTINGS_CREATE = 'settings.create';
@@ -49,66 +49,69 @@ enum PermissionEnum: string
     case SETTINGS_EXPORT = 'settings.export';
     case SETTINGS_PRINT = 'settings.print';
 
-        // MACHINE CATEGORIES
+    // MACHINE CATEGORIES
     case MACHINE_CATEGORIES_INDEX = 'machine-categories.index';
     case MACHINE_CATEGORIES_VIEW = 'machine-categories.view';
     case MACHINE_CATEGORIES_CREATE = 'machine-categories.create';
     case MACHINE_CATEGORIES_EDIT = 'machine-categories.edit';
     case MACHINE_CATEGORIES_DELETE = 'machine-categories.delete';
 
-        // MACHINES
+    // MACHINES
     case MACHINES_INDEX = 'machines.index';
     case MACHINES_VIEW = 'machines.view';
     case MACHINES_CREATE = 'machines.create';
     case MACHINES_EDIT = 'machines.edit';
     case MACHINES_DELETE = 'machines.delete';
 
-        // PRODUCTS
+    // PRODUCTS
     case PRODUCTS_INDEX = 'products.index';
     case PRODUCTS_VIEW = 'products.view';
     case PRODUCTS_CREATE = 'products.create';
     case PRODUCTS_EDIT = 'products.edit';
     case PRODUCTS_DELETE = 'products.delete';
 
-        // VENDING REQUESTS
+    // VENDING REQUESTS
     case VENDING_REQUESTS_INDEX = 'vending-requests.index';
     case VENDING_REQUESTS_VIEW = 'vending-requests.view';
     case VENDING_REQUESTS_EDIT = 'vending-requests.edit';
     case VENDING_REQUESTS_DELETE = 'vending-requests.delete';
 
-        // COFFEE SERVICE REQUESTS
+    // COFFEE SERVICE REQUESTS
     case COFFEE_SERVICE_REQUESTS_INDEX = 'coffee-service-requests.index';
     case COFFEE_SERVICE_REQUESTS_VIEW = 'coffee-service-requests.view';
     case COFFEE_SERVICE_REQUESTS_EDIT = 'coffee-service-requests.edit';
     case COFFEE_SERVICE_REQUESTS_DELETE = 'coffee-service-requests.delete';
 
-        // HOME FAQS
+    // HOME FAQS
     case HOME_FAQS_INDEX = 'home-faqs.index';
     case HOME_FAQS_CREATE = 'home-faqs.create';
     case HOME_FAQS_EDIT = 'home-faqs.edit';
     case HOME_FAQS_DELETE = 'home-faqs.delete';
 
-        // MACHINE FAQS
+    // MACHINE FAQS
     case MACHINE_FAQS_INDEX = 'machine-faqs.index';
     case MACHINE_FAQS_CREATE = 'machine-faqs.create';
     case MACHINE_FAQS_EDIT = 'machine-faqs.edit';
     case MACHINE_FAQS_DELETE = 'machine-faqs.delete';
 
-        // OFFICE COFFEE FAQS
+    // OFFICE COFFEE FAQS
     case OFFICE_COFFEE_FAQS_INDEX = 'office-coffee-faqs.index';
     case OFFICE_COFFEE_FAQS_CREATE = 'office-coffee-faqs.create';
     case OFFICE_COFFEE_FAQS_EDIT = 'office-coffee-faqs.edit';
     case OFFICE_COFFEE_FAQS_DELETE = 'office-coffee-faqs.delete';
 
-        // LOCATION TYPES
+    // LOCATION TYPES
     case LOCATION_TYPES_INDEX = 'location-types.index';
     case LOCATION_TYPES_CREATE = 'location-types.create';
     case LOCATION_TYPES_EDIT = 'location-types.edit';
     case LOCATION_TYPES_DELETE = 'location-types.delete';
 
-        // OPERATOR SMS
+    // OPERATOR SMS
     case OPERATOR_SMS_INDEX = 'operator-sms.index';
     case OPERATOR_SMS_SEND = 'operator-sms.send';
+
+    // PAYMENTS (lead purchase history; refunds deferred)
+    case PAYMENTS_INDEX = 'payments.index';
 
     // -------------------------------------------------------------------------
     // group() — returns the display group for the `group` DB column.
@@ -205,6 +208,8 @@ enum PermissionEnum: string
 
             self::OPERATOR_SMS_INDEX,
             self::OPERATOR_SMS_SEND => 'Operator SMS',
+
+            self::PAYMENTS_INDEX => 'Payments',
         };
     }
 

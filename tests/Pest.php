@@ -1,6 +1,12 @@
 <?php
 
+use App\Enums\RoleEnum;
+use App\Models\LeadPurchase;
+use App\Models\OperatorProfile;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 /*
@@ -47,4 +53,87 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+/**
+ * Create a verified operator (role `user`) with an operator profile.
+ *
+ * @param  array<string, mixed>  $profile
+ */
+function makeOperator(array $profile = []): User
+{
+    $user = User::factory()->create();
+    $user->assignRole(RoleEnum::USER->value);
+    OperatorProfile::factory()->create(['user_id' => $user->id] + $profile);
+
+    return $user;
+}
+
+/**
+ * Point the app at a fully configured (fake) Square sandbox account.
+ *
+ * @param  array<string, mixed>  $overrides
+ */
+function configureSquare(array $overrides = []): void
+{
+    config()->set('services.square', array_replace([
+        'environment' => 'sandbox',
+        'application_id' => 'sandbox-sq0idb-test',
+        'access_token' => 'test-access-token',
+        'location_id' => 'LOC123',
+        'webhook_signature_key' => 'test-signature-key',
+        'webhook_url' => 'https://example.test/webhooks/square',
+        'currency' => 'USD',
+        'api_version' => '2026-09-16',
+        'base_url' => 'https://connect.squareupsandbox.com',
+        'sdk_url' => 'https://sandbox.web.squarecdn.com/v1/square.js',
+    ], $overrides));
+}
+
+/**
+ * A Square CreatePayment / webhook `payment` object for the given purchase.
+ *
+ * @param  array<string, mixed>  $overrides
+ * @return array<string, mixed>
+ */
+function squarePaymentObject(?LeadPurchase $purchase = null, array $overrides = []): array
+{
+    return array_replace_recursive([
+        'id' => 'PAY-'.($purchase?->id ?? 1),
+        'status' => 'COMPLETED',
+        'amount_money' => [
+            'amount' => $purchase?->amount_cents ?? 15000,
+            'currency' => 'USD',
+        ],
+        'location_id' => 'LOC123',
+        'reference_id' => 'LP-'.($purchase?->id ?? 1),
+        'order_id' => 'ORDER-1',
+        'receipt_url' => 'https://squareup.com/receipt/preview/abc',
+        'receipt_number' => 'abc1',
+        'card_details' => [
+            'status' => 'CAPTURED',
+            'card' => ['card_brand' => 'VISA', 'last_4' => '1111', 'fingerprint' => 'sq-fp'],
+        ],
+    ], $overrides);
+}
+
+/**
+ * Http::fake() for Square calls that also lets Inertia's dev SSR probe fail
+ * quietly (it is blocked by Http::preventStrayRequests()).
+ *
+ * @param  array<string, mixed>  $stubs
+ */
+function fakeSquareHttp(array $stubs): void
+{
+    Http::fake($stubs + ['*__inertia_ssr*' => Http::response('', 404)]);
+}
+
+/**
+ * How many requests were sent to Square's API (ignores Inertia's SSR probe).
+ */
+function squareCallCount(): int
+{
+    return Http::recorded(
+        fn (Request $request): bool => str_contains($request->url(), 'squareupsandbox.com'),
+    )->count();
 }

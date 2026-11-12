@@ -10,6 +10,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { formatDistance, leadArea } from '@/lib/lead';
 import { dashboard } from '@/routes';
 import { index as leadsIndex } from '@/routes/leads';
 import type { OperatorLead } from '@/types/operator-dashboard';
@@ -37,8 +38,9 @@ export default function LeadsIndex({
                         All location leads
                     </h1>
                     <p className="mt-1 max-w-3xl text-muted-foreground">
-                        Leads near {primaryCity}. Click a location to see
-                        details and buy the lead.
+                        Newest requests first (your area: {primaryCity}). Buy a
+                        lead to unlock the business name, address and contact
+                        details.
                     </p>
                 </div>
 
@@ -78,16 +80,15 @@ export default function LeadsIndex({
                                             </p>
                                         </TableCell>
                                         <TableCell>
-                                            {lead.city}, {lead.st}{' '}
-                                            {lead.zip.slice(0, 3)}xx
+                                            {leadArea(lead)}
                                         </TableCell>
                                         <TableCell className="text-right tabular-nums">
-                                            {lead.dist} mi
+                                            {formatDistance(lead.dist)}
                                         </TableCell>
                                         <TableCell className="text-right tabular-nums">
-                                            {lead.people}
+                                            {lead.people ?? '—'}
                                         </TableCell>
-                                        <TableCell>{lead.wants}</TableCell>
+                                        <TableCell>{lead.wants || '—'}</TableCell>
                                         <TableCell className="text-right tabular-nums">
                                             {money(lead.price)}
                                         </TableCell>
@@ -104,6 +105,17 @@ export default function LeadsIndex({
                                         </TableCell>
                                     </TableRow>
                                 ))}
+                                {leads.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell
+                                            colSpan={8}
+                                            className="py-10 text-center text-muted-foreground"
+                                        >
+                                            No leads available yet. New requests
+                                            appear here automatically.
+                                        </TableCell>
+                                    </TableRow>
+                                ) : null}
                             </TableBody>
                         </Table>
                     </div>

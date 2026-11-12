@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\RoleEnum;
+use App\Models\LeadPurchase;
 use App\Models\User;
 use App\Models\VendingRequest;
 use Database\Seeders\PermissionSeeder;
@@ -42,7 +43,9 @@ test('super admin can view the vending requests list', function () {
             fn (Assert $page) => $page
                 ->component('admin/vending-requests/index')
                 ->has('requests.data', 1)
-                ->has('filters')
+                ->where('requests.data.0.is_sold', false)
+                ->where('requests.data.0.is_held', false)
+                ->has('filters.sale')
         );
 });
 
@@ -56,6 +59,68 @@ test('a vending request can be viewed', function () {
             fn (Assert $page) => $page
                 ->component('admin/vending-requests/show')
                 ->where('vendingRequest.id', $request->id)
+                ->where('vendingRequest.is_sold', false)
+                ->where('vendingRequest.is_held', false)
+                ->where('leadBuyer', null)
+        );
+});
+
+test('sold and pending vending leads expose sale flags and buyer', function () {
+    $operator = makeOperator();
+    $soldLead = VendingRequest::factory()->create(['business_name' => 'Sold Site']);
+    $pendingLead = VendingRequest::factory()->create(['business_name' => 'Pending Site']);
+    $availableLead = VendingRequest::factory()->create(['business_name' => 'Open Site']);
+
+    LeadPurchase::factory()->create([
+        'user_id' => $operator->id,
+        'leadable_type' => 'vending',
+        'leadable_id' => $soldLead->id,
+    ]);
+
+    LeadPurchase::factory()->pending()->create([
+        'user_id' => $operator->id,
+        'leadable_type' => 'vending',
+        'leadable_id' => $pendingLead->id,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.vending-requests.index', ['sale' => 'sold']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('requests.data', 1)
+            ->where('requests.data.0.id', $soldLead->id)
+            ->where('requests.data.0.is_sold', true)
+            ->where('requests.data.0.is_held', true)
+            ->where('filters.sale', 'sold')
+        );
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.vending-requests.index', ['sale' => 'processing']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('requests.data', 1)
+            ->where('requests.data.0.id', $pendingLead->id)
+            ->where('requests.data.0.is_sold', false)
+            ->where('requests.data.0.is_held', true)
+        );
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.vending-requests.index', ['sale' => 'available']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('requests.data', 1)
+            ->where('requests.data.0.id', $availableLead->id)
+            ->where('requests.data.0.is_sold', false)
+            ->where('requests.data.0.is_held', false)
+        );
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.vending-requests.show', $soldLead))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('vendingRequest.is_sold', true)
+            ->where('leadBuyer.email', $operator->email)
+            ->where('leadBuyer.purchase_status', LeadPurchase::STATUS_PAID)
         );
 });
 

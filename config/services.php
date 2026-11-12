@@ -36,7 +36,7 @@ return [
     ],
 
     'photon' => [
-        'url' => rtrim((string) env('PHOTON_API_URL', 'https://photon.komoot.io/api/'), '/') . '/',
+        'url' => rtrim((string) env('PHOTON_API_URL', 'https://photon.komoot.io/api/'), '/').'/',
     ],
 
     'twilio' => [
@@ -52,6 +52,29 @@ return [
         'messaging_service_sid' => env('TWILIO_MESSAGING_SERVICE_SID'),
         'sandbox_message_prefix' => env('TWILIO_SANDBOX_MESSAGE_PREFIX', ''),
         'lead_radius_miles' => (float) env('TWILIO_LEAD_RADIUS_MILES', 100),
+    ],
+
+    'square' => [
+        /*
+        | Square payments for lead purchases. Card data is tokenized in the browser by
+        | the Web Payments SDK; only the server-side access token talks to Square.
+        | SQUARE_WEBHOOK_URL must equal the notification URL set in the Square
+        | webhook subscription (it is part of the signed message).
+        */
+        'environment' => env('SQUARE_ENVIRONMENT', 'sandbox'),
+        'application_id' => env('SQUARE_APPLICATION_ID'),
+        'access_token' => env('SQUARE_ACCESS_TOKEN'),
+        'location_id' => env('SQUARE_LOCATION_ID'),
+        'webhook_signature_key' => env('SQUARE_WEBHOOK_SIGNATURE_KEY'),
+        'webhook_url' => env('SQUARE_WEBHOOK_URL'),
+        'currency' => env('SQUARE_CURRENCY', 'USD'),
+        'api_version' => env('SQUARE_API_VERSION') ?: '2026-09-16',
+        'base_url' => env('SQUARE_ENVIRONMENT', 'sandbox') === 'production'
+            ? 'https://connect.squareup.com'
+            : 'https://connect.squareupsandbox.com',
+        'sdk_url' => env('SQUARE_ENVIRONMENT', 'sandbox') === 'production'
+            ? 'https://web.squarecdn.com/v1/square.js'
+            : 'https://sandbox.web.squarecdn.com/v1/square.js',
     ],
 
 ];

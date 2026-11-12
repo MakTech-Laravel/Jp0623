@@ -5,22 +5,27 @@ namespace App\Services;
 use App\Enums\OperatorSmsStatus;
 use App\Jobs\NotifyNearbyOperatorsOfLead;
 use App\Models\CoffeeServiceRequest;
+use App\Services\Concerns\FiltersLeadSaleStatus;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class CoffeeServiceRequestService
 {
+    use FiltersLeadSaleStatus;
+
     /**
      * @return LengthAwarePaginator<int, CoffeeServiceRequest>
      */
     public function paginate(
         ?string $search = null,
         ?string $status = null,
+        ?string $sale = null,
         int $perPage = 10,
     ): LengthAwarePaginator {
         $search = trim((string) $search);
         $status = filled($status) ? (string) $status : null;
+        $sale = filled($sale) ? (string) $sale : null;
 
-        return CoffeeServiceRequest::query()
+        $query = CoffeeServiceRequest::query()
             ->when($search !== '', function ($query) use ($search): void {
                 $query->where(function ($query) use ($search): void {
                     $query->where('business_name', 'like', "%{$search}%")
@@ -34,10 +39,25 @@ class CoffeeServiceRequestService
                         ->orWhere('postal_code', 'like', "%{$search}%");
                 });
             })
-            ->when($status !== null, fn ($query) => $query->where('status', $status))
-            ->latest()
-            ->paginate($perPage)
-            ->withQueryString();
+            ->when($status !== null, fn ($query) => $query->where('status', $status));
+
+        $this->applyLeadSaleFilter($query, $sale);
+        $this->withLeadSaleExists($query);
+
+        return $this->castLeadSaleFlags(
+            $query
+                ->latest()
+                ->paginate($perPage)
+                ->withQueryString(),
+        );
+    }
+
+    /**
+     * @return array{name: string, email: string, purchase_status: string}|null
+     */
+    public function prepareForAdminShow(CoffeeServiceRequest $coffeeServiceRequest): ?array
+    {
+        return $this->loadLeadSaleForAdmin($coffeeServiceRequest);
     }
 
     /**

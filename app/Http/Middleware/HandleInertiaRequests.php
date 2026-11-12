@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\Payments\SquareClient;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -51,6 +52,7 @@ class HandleInertiaRequests extends Middleware
                 ]) : null,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'square' => fn (): ?array => $user ? app(SquareClient::class)->publicConfig() : null,
         ];
     }
 }

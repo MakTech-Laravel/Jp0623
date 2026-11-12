@@ -19,6 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
+        // Square signs its webhooks instead of sending a CSRF token.
+        $middleware->validateCsrfTokens(except: ['webhooks/square']);
+
         $middleware->web(append: [
             HandleAppearance::class,
             HandleInertiaRequests::class,
