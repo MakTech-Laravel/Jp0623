@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\SmsTemplateController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VendingRequestController as AdminVendingRequestController;
 use App\Http\Controllers\Auth\LocationSuggestController;
@@ -265,7 +266,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_DELETE->value);
         });
 
-        // Manual SMS to operators by distance / search.
+        // Manual SMS to operators by distance / search + SMS templates.
         Route::controller(OperatorSmsController::class)->group(function () {
             Route::get('operator-sms', 'index')->name('operator-sms.index')
                 ->middleware('permission:'.PermissionEnum::OPERATOR_SMS_INDEX->value);
@@ -277,6 +278,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::controller(AdminPaymentController::class)->group(function () {
             Route::get('payments', 'index')->name('payments.index')
                 ->middleware('permission:'.PermissionEnum::PAYMENTS_INDEX->value);
+        });
+
+        Route::controller(SmsTemplateController::class)->group(function () {
+            Route::get('operator-sms/templates', 'index')->name('operator-sms.templates.index')
+                ->middleware('permission:' . PermissionEnum::OPERATOR_SMS_INDEX->value);
+            Route::post('operator-sms/templates', 'store')->name('operator-sms.templates.store')
+                ->middleware('permission:' . PermissionEnum::OPERATOR_SMS_SEND->value);
+            Route::put('operator-sms/templates/{sms_template}', 'update')->name('operator-sms.templates.update')
+                ->middleware('permission:' . PermissionEnum::OPERATOR_SMS_SEND->value);
+            Route::delete('operator-sms/templates/{sms_template}', 'destroy')->name('operator-sms.templates.destroy')
+                ->middleware('permission:' . PermissionEnum::OPERATOR_SMS_SEND->value);
         });
 
         // Home FAQs — public homepage FAQ items.

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\OperatorSmsStatus;
 use App\Models\CoffeeServiceRequest;
 use App\Models\VendingRequest;
 use App\Services\NearbyOperatorLeadNotifier;
@@ -60,6 +61,8 @@ class NotifyNearbyOperatorsOfLead implements ShouldQueue
             'lead_id' => $this->leadId,
             'error' => $exception?->getMessage(),
         ]);
+
+        $this->markLeadFailed($exception?->getMessage() ?? 'SMS job failed permanently.');
     }
 
     private function notifyVending(NearbyOperatorLeadNotifier $notifier): void
@@ -90,5 +93,24 @@ class NotifyNearbyOperatorsOfLead implements ShouldQueue
         }
 
         $notifier->notifyForCoffeeServiceRequest($request);
+    }
+
+    private function markLeadFailed(string $note): void
+    {
+        $request = match ($this->leadType) {
+            'vending' => VendingRequest::query()->find($this->leadId),
+            'coffee' => CoffeeServiceRequest::query()->find($this->leadId),
+            default => null,
+        };
+
+        if ($request === null) {
+            return;
+        }
+
+        $request->forceFill([
+            'operator_sms_status' => OperatorSmsStatus::FAILED->value,
+            'operator_sms_note' => $note,
+            'operator_sms_notified_at' => now(),
+        ])->save();
     }
 }

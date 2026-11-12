@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\OperatorSmsStatus;
 use App\Jobs\NotifyNearbyOperatorsOfLead;
 use App\Models\CoffeeServiceRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -33,7 +34,7 @@ class CoffeeServiceRequestService
                         ->orWhere('postal_code', 'like', "%{$search}%");
                 });
             })
-            ->when($status !== null, fn($query) => $query->where('status', $status))
+            ->when($status !== null, fn ($query) => $query->where('status', $status))
             ->latest()
             ->paginate($perPage)
             ->withQueryString();
@@ -46,6 +47,12 @@ class CoffeeServiceRequestService
     {
         $data['terms_accepted'] = (bool) ($data['terms_accepted'] ?? false);
         $data['status'] = CoffeeServiceRequest::STATUS_NEW;
+        $data['operator_sms_status'] = OperatorSmsStatus::PENDING->value;
+        $data['operator_sms_sent_count'] = 0;
+        $data['operator_sms_failed_count'] = 0;
+        $data['operator_sms_provider_status'] = null;
+        $data['operator_sms_note'] = 'Waiting to notify nearby operators.';
+        $data['operator_sms_notified_at'] = null;
         $data['notes'] = filled($data['notes'] ?? null) ? trim((string) $data['notes']) : null;
         $data = $this->normalizeLocation($data);
 

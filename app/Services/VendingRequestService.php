@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\OperatorSmsStatus;
 use App\Jobs\NotifyNearbyOperatorsOfLead;
 use App\Models\VendingRequest;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -33,7 +34,7 @@ class VendingRequestService
                         ->orWhere('postal_code', 'like', "%{$search}%");
                 });
             })
-            ->when($status !== null, fn($query) => $query->where('status', $status))
+            ->when($status !== null, fn ($query) => $query->where('status', $status))
             ->latest()
             ->paginate($perPage)
             ->withQueryString();
@@ -46,12 +47,18 @@ class VendingRequestService
     {
         $data['terms_accepted'] = (bool) ($data['terms_accepted'] ?? false);
         $data['status'] = VendingRequest::STATUS_NEW;
+        $data['operator_sms_status'] = OperatorSmsStatus::PENDING->value;
+        $data['operator_sms_sent_count'] = 0;
+        $data['operator_sms_failed_count'] = 0;
+        $data['operator_sms_provider_status'] = null;
+        $data['operator_sms_note'] = 'Waiting to notify nearby operators.';
+        $data['operator_sms_notified_at'] = null;
         $data['machine_interests'] = array_values(array_filter(
             array_map(
-                static fn(mixed $interest): string => trim((string) $interest),
+                static fn (mixed $interest): string => trim((string) $interest),
                 is_array($data['machine_interests'] ?? null) ? $data['machine_interests'] : [],
             ),
-            static fn(string $interest): bool => $interest !== '',
+            static fn (string $interest): bool => $interest !== '',
         ));
 
         if (($data['existing_vending'] ?? '') === 'No') {
@@ -115,8 +122,8 @@ class VendingRequestService
         $parts = array_values(array_filter([
             $address,
             $city,
-            trim($state . ($postalCode !== null ? ' ' . $postalCode : '')),
-        ], static fn(?string $part): bool => filled($part)));
+            trim($state.($postalCode !== null ? ' '.$postalCode : '')),
+        ], static fn (?string $part): bool => filled($part)));
 
         return implode(', ', $parts);
     }

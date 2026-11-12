@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\OperatorSmsStatus;
 use App\Models\VendingRequest;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -51,19 +52,25 @@ class VendingRequestFactory extends Factory
             'phone' => fake()->phoneNumber(),
             'terms_accepted' => true,
             'status' => VendingRequest::STATUS_NEW,
+            'operator_sms_status' => OperatorSmsStatus::PENDING->value,
+            'operator_sms_sent_count' => 0,
+            'operator_sms_failed_count' => 0,
+            'operator_sms_provider_status' => null,
+            'operator_sms_note' => null,
+            'operator_sms_notified_at' => null,
         ];
     }
 
     public function reviewed(): static
     {
-        return $this->state(fn(array $attributes): array => [
+        return $this->state(fn (array $attributes): array => [
             'status' => VendingRequest::STATUS_REVIEWED,
         ]);
     }
 
     public function switching(): static
     {
-        return $this->state(fn(array $attributes): array => [
+        return $this->state(fn (array $attributes): array => [
             'existing_vending' => 'Yes, want to switch',
             'switch_reason' => 'Looking for better service.',
         ]);

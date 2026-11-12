@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             MachineFaqSeeder::class,
             OfficeCoffeeFaqSeeder::class,
             LocationTypeSeeder::class,
+            SmsTemplateSeeder::class,
         ]);
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
     }

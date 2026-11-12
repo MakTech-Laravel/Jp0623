@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\OperatorSmsStatus;
 use App\Models\CoffeeServiceRequest;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -32,6 +33,12 @@ class CoffeeServiceRequestFactory extends Factory
             'notes' => fake()->optional()->sentence(),
             'terms_accepted' => true,
             'status' => CoffeeServiceRequest::STATUS_NEW,
+            'operator_sms_status' => OperatorSmsStatus::PENDING->value,
+            'operator_sms_sent_count' => 0,
+            'operator_sms_failed_count' => 0,
+            'operator_sms_provider_status' => null,
+            'operator_sms_note' => null,
+            'operator_sms_notified_at' => null,
         ];
     }
 

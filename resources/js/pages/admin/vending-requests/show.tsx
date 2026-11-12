@@ -4,6 +4,11 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { ConfirmDeleteDialog } from '@/components/admin/confirm-delete-dialog';
+import {
+    OPERATOR_SMS_COLUMN_HINT,
+    OPERATOR_SMS_COLUMN_LABEL,
+    OperatorSmsStatusBadge,
+} from '@/components/admin/operator-sms-status-badge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { usePermission } from '@/hooks/use-permissions';
@@ -152,8 +157,14 @@ export default function ShowVendingRequest({
                                 label="Job title"
                                 value={vendingRequest.job_title ?? '—'}
                             />
-                            <Detail label="Email" value={vendingRequest.email} />
-                            <Detail label="Phone" value={vendingRequest.phone} />
+                            <Detail
+                                label="Email"
+                                value={vendingRequest.email}
+                            />
+                            <Detail
+                                label="Phone"
+                                value={vendingRequest.phone}
+                            />
                         </Section>
 
                         <Section title="Site details">
@@ -226,6 +237,38 @@ export default function ShowVendingRequest({
                                 className="sm:col-span-2"
                             />
                         </Section>
+
+                        <Section title={OPERATOR_SMS_COLUMN_LABEL}>
+                            <p className="text-sm text-muted-foreground sm:col-span-2">
+                                {OPERATOR_SMS_COLUMN_HINT}
+                            </p>
+                            <Detail
+                                label="Status"
+                                value={
+                                    <OperatorSmsStatusBadge
+                                        status={
+                                            vendingRequest.operator_sms_status
+                                        }
+                                        note={vendingRequest.operator_sms_note}
+                                        providerStatus={
+                                            vendingRequest.operator_sms_provider_status
+                                        }
+                                        sentCount={
+                                            vendingRequest.operator_sms_sent_count
+                                        }
+                                    />
+                                }
+                            />
+                            <Detail
+                                label="Sent / failed"
+                                value={`${vendingRequest.operator_sms_sent_count} / ${vendingRequest.operator_sms_failed_count}`}
+                            />
+                            <Detail
+                                label="Details"
+                                value={vendingRequest.operator_sms_note ?? '—'}
+                                className="sm:col-span-2"
+                            />
+                        </Section>
                     </div>
                 </motion.div>
             </div>
@@ -233,13 +276,7 @@ export default function ShowVendingRequest({
     );
 }
 
-function Section({
-    title,
-    children,
-}: {
-    title: string;
-    children: ReactNode;
-}) {
+function Section({ title, children }: { title: string; children: ReactNode }) {
     return (
         <div className="rounded-xl border bg-card p-6 shadow-sm">
             <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
@@ -256,7 +293,7 @@ function Detail({
     className,
 }: {
     label: string;
-    value: string;
+    value: ReactNode;
     className?: string;
 }) {
     return (

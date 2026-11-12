@@ -1,9 +1,11 @@
 <?php
 
+use App\Enums\OperatorSmsStatus;
 use App\Jobs\NotifyNearbyOperatorsOfLead;
 use App\Models\CoffeeServiceRequest;
 use App\Models\LocationType;
 use App\Models\OperatorProfile;
+use App\Models\SmsTemplate;
 use App\Models\VendingRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -118,6 +120,11 @@ test('nearby operators within 100 miles receive twilio sms for a vending lead', 
         'api.twilio.com/*' => Http::response(['sid' => 'SMxxxxxxxx', 'status' => 'queued'], 201),
     ]);
 
+    SmsTemplate::factory()->autoVending()->create([
+        'body' => 'TEMPLATE VENDING {{business_name}} {{phone}}',
+        'is_active' => true,
+    ]);
+
     OperatorProfile::factory()->create([
         'phone' => '(713) 555-0100',
         'latitude' => 29.7604,
@@ -140,14 +147,26 @@ test('nearby operators within 100 miles receive twilio sms for a vending lead', 
         return $request->url() === 'https://api.twilio.com/2010-04-01/Accounts/ACtestsid/Messages.json'
             && $request['To'] === '+17135550100'
             && $request['From'] === '+15005550006'
-            && str_contains((string) $request['Body'], 'New vending lead near you: Riverside Logistics')
-            && str_contains((string) $request['Body'], 'Jane Doe');
+            && str_contains((string) $request['Body'], 'TEMPLATE VENDING Riverside Logistics')
+            && str_contains((string) $request['Body'], '(555) 555-5555');
     });
+
+    $lead = VendingRequest::query()->sole();
+
+    expect($lead->operator_sms_status)->toBe(OperatorSmsStatus::DONE->value)
+        ->and($lead->operator_sms_sent_count)->toBe(1)
+        ->and($lead->operator_sms_failed_count)->toBe(0)
+        ->and($lead->operator_sms_provider_status)->toBe('queued');
 });
 
 test('nearby operators within 100 miles receive twilio sms for a coffee lead', function () {
     Http::fake([
         'api.twilio.com/*' => Http::response(['sid' => 'SMyyyyyyyy', 'status' => 'queued'], 201),
+    ]);
+
+    SmsTemplate::factory()->autoCoffee()->create([
+        'body' => 'TEMPLATE COFFEE {{business_name}}',
+        'is_active' => true,
     ]);
 
     OperatorProfile::factory()->create([
@@ -164,8 +183,14 @@ test('nearby operators within 100 miles receive twilio sms for a coffee lead', f
 
     Http::assertSent(function ($request): bool {
         return $request['To'] === '+17135550101'
-            && str_contains((string) $request['Body'], 'New coffee service lead near you: Harbor Offices');
+            && str_contains((string) $request['Body'], 'TEMPLATE COFFEE Harbor Offices');
     });
+
+    $lead = CoffeeServiceRequest::query()->sole();
+
+    expect($lead->operator_sms_status)->toBe(OperatorSmsStatus::DONE->value)
+        ->and($lead->operator_sms_sent_count)->toBe(1)
+        ->and($lead->operator_sms_provider_status)->toBe('queued');
 });
 
 test('sms is skipped when twilio is disabled', function () {
@@ -184,4 +209,33 @@ test('sms is skipped when twilio is disabled', function () {
         ->assertRedirect('/#request-sec');
 
     Http::assertNothingSent();
+
+    expect(VendingRequest::query()->sole()->operator_sms_status)
+        ->toBe(OperatorSmsStatus::SKIPPED->value);
+});
+
+test('operator sms status is failed when twilio rejects the message', function () {
+    Http::fake([
+        'api.twilio.com/*' => Http::response([
+            'code' => 21608,
+            'message' => 'Unverified number',
+            'status' => 400,
+        ], 400),
+    ]);
+
+    OperatorProfile::factory()->create([
+        'phone' => '(713) 555-0100',
+        'latitude' => 29.7604,
+        'longitude' => -95.3698,
+    ]);
+
+    $this->from('/office-coffee')
+        ->post(route('coffee-service-requests.store'), nearbySmsCoffeePayload())
+        ->assertRedirect('/office-coffee#coffee-form');
+
+    $lead = CoffeeServiceRequest::query()->sole();
+
+    expect($lead->operator_sms_status)->toBe(OperatorSmsStatus::FAILED->value)
+        ->and($lead->operator_sms_failed_count)->toBe(1)
+        ->and($lead->operator_sms_sent_count)->toBe(0);
 });

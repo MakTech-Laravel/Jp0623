@@ -5,6 +5,11 @@ import { useEffect, useRef, useState } from 'react';
 import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { ConfirmDeleteDialog } from '@/components/admin/confirm-delete-dialog';
 import { DataPagination } from '@/components/admin/data-pagination';
+import {
+    OPERATOR_SMS_COLUMN_HINT,
+    OPERATOR_SMS_COLUMN_LABEL,
+    OperatorSmsStatusBadge,
+} from '@/components/admin/operator-sms-status-badge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -111,6 +116,12 @@ export default function VendingRequestsIndex({
                                     <TableHead className="hidden md:table-cell">
                                         Status
                                     </TableHead>
+                                    <TableHead
+                                        className="hidden md:table-cell"
+                                        title={OPERATOR_SMS_COLUMN_HINT}
+                                    >
+                                        {OPERATOR_SMS_COLUMN_LABEL}
+                                    </TableHead>
                                     <TableHead className="hidden lg:table-cell">
                                         Submitted
                                     </TableHead>
@@ -167,6 +178,22 @@ export default function VendingRequestsIndex({
                                                         : 'Reviewed'}
                                                 </Badge>
                                             </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                <OperatorSmsStatusBadge
+                                                    status={
+                                                        request.operator_sms_status
+                                                    }
+                                                    note={
+                                                        request.operator_sms_note
+                                                    }
+                                                    providerStatus={
+                                                        request.operator_sms_provider_status
+                                                    }
+                                                    sentCount={
+                                                        request.operator_sms_sent_count
+                                                    }
+                                                />
+                                            </TableCell>
                                             <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">
                                                 {new Date(
                                                     request.created_at,
@@ -185,9 +212,11 @@ export default function VendingRequestsIndex({
                                                             size="icon"
                                                         >
                                                             <Link
-                                                                href={vendingRequests.show(
-                                                                    request.id,
-                                                                ).url}
+                                                                href={
+                                                                    vendingRequests.show(
+                                                                        request.id,
+                                                                    ).url
+                                                                }
                                                                 title="View"
                                                             >
                                                                 <Eye className="h-4 w-4" />

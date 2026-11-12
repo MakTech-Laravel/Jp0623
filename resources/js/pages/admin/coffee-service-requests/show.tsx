@@ -4,6 +4,11 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { ConfirmDeleteDialog } from '@/components/admin/confirm-delete-dialog';
+import {
+    OPERATOR_SMS_COLUMN_HINT,
+    OPERATOR_SMS_COLUMN_LABEL,
+    OperatorSmsStatusBadge,
+} from '@/components/admin/operator-sms-status-badge';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -175,6 +180,43 @@ export default function ShowCoffeeServiceRequest({
                             />
                         </Section>
 
+                        <Section title={OPERATOR_SMS_COLUMN_LABEL}>
+                            <p className="text-sm text-muted-foreground sm:col-span-2">
+                                {OPERATOR_SMS_COLUMN_HINT}
+                            </p>
+                            <Detail
+                                label="Status"
+                                value={
+                                    <OperatorSmsStatusBadge
+                                        status={
+                                            coffeeServiceRequest.operator_sms_status
+                                        }
+                                        note={
+                                            coffeeServiceRequest.operator_sms_note
+                                        }
+                                        providerStatus={
+                                            coffeeServiceRequest.operator_sms_provider_status
+                                        }
+                                        sentCount={
+                                            coffeeServiceRequest.operator_sms_sent_count
+                                        }
+                                    />
+                                }
+                            />
+                            <Detail
+                                label="Sent / failed"
+                                value={`${coffeeServiceRequest.operator_sms_sent_count} / ${coffeeServiceRequest.operator_sms_failed_count}`}
+                            />
+                            <Detail
+                                label="Details"
+                                value={
+                                    coffeeServiceRequest.operator_sms_note ??
+                                    '—'
+                                }
+                                className="sm:col-span-2"
+                            />
+                        </Section>
+
                         <Section title="Notes">
                             <Detail
                                 label="Anything else"
@@ -189,13 +231,7 @@ export default function ShowCoffeeServiceRequest({
     );
 }
 
-function Section({
-    title,
-    children,
-}: {
-    title: string;
-    children: ReactNode;
-}) {
+function Section({ title, children }: { title: string; children: ReactNode }) {
     return (
         <div className="rounded-xl border bg-card p-6 shadow-sm">
             <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
@@ -212,7 +248,7 @@ function Detail({
     className,
 }: {
     label: string;
-    value: string;
+    value: ReactNode;
     className?: string;
 }) {
     return (
