@@ -34,7 +34,7 @@ export function PurchasedLeadDetailsDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
-                    <DialogTitle>{lead.name}</DialogTitle>
+                    <DialogTitle>{lead.name ?? lead.id}</DialogTitle>
                     <DialogDescription>
                         {lead.type} · {lead.id} · Purchased {lead.purchased_at}
                     </DialogDescription>
@@ -45,20 +45,26 @@ export function PurchasedLeadDetailsDialog({
                         label="City / state / ZIP"
                         value={`${lead.city}, ${lead.st} ${lead.zip}`}
                     />
-                    <Detail
-                        label="Price"
-                        value={money(lead.price)}
-                    />
+                    <Detail label="Price" value={money(lead.price)} />
                     <Detail
                         label="Address"
-                        value={lead.address}
+                        value={lead.address ?? '—'}
                         className="sm:col-span-2"
                     />
-                    <Detail label="Contact" value={lead.contact_name} />
-                    <Detail label="Phone" value={lead.contact_phone} />
+                    <Detail label="Contact" value={lead.contact_name ?? '—'} />
+                    <Detail label="Phone" value={lead.contact_phone ?? '—'} />
                     <Detail
                         label="Email"
-                        value={lead.email}
+                        value={lead.email ?? '—'}
+                        className="sm:col-span-2"
+                    />
+                    <Detail
+                        label="Payment"
+                        value={
+                            lead.card_brand && lead.card_last4
+                                ? `Paid with ${lead.card_brand} ending ${lead.card_last4}`
+                                : 'Paid'
+                        }
                         className="sm:col-span-2"
                     />
                     <Detail
@@ -72,9 +78,7 @@ export function PurchasedLeadDetailsDialog({
                     <Detail
                         label="Status"
                         value={
-                            lead.status === 'issue_open'
-                                ? 'Issue open'
-                                : 'OK'
+                            lead.status === 'issue_open' ? 'Issue open' : 'OK'
                         }
                     />
                 </dl>
@@ -86,6 +90,17 @@ export function PurchasedLeadDetailsDialog({
                     >
                         Close
                     </Button>
+                    {lead.receipt_url ? (
+                        <Button variant="outline" asChild>
+                            <a
+                                href={lead.receipt_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                View receipt
+                            </a>
+                        </Button>
+                    ) : null}
                     {lead.status === 'ok' && onReportIssue ? (
                         <Button
                             variant="outline"

@@ -24,9 +24,11 @@ class LeadService
     public const SOURCE_COFFEE = 'coffee';
 
     /**
+     * Request statuses that make a lead available for purchase.
+     *
      * @var list<string>
      */
-    private const LISTED_STATUSES = ['new', 'reviewed'];
+    public const LISTED_STATUSES = ['new', 'reviewed'];
 
     /**
      * Leads the operator has not bought yet, without any contact details.
@@ -51,7 +53,7 @@ class LeadService
     {
         $profile = $user->operatorProfile;
 
-        $leads = $this->listedModels($user)
+        $leads = $this->listedModels()
             ->sortByDesc(fn (Model $lead): int => $lead->created_at?->getTimestamp() ?? 0)
             ->take($limit)
             ->map(fn (Model $lead): array => $this->mapAvailable($lead, $profile))
@@ -62,30 +64,36 @@ class LeadService
     }
 
     /**
-     * Full details of the leads the operator bought.
+     * The operator's paid leads with full details, plus their pending
+     * (payment still processing) leads with masked details only.
      *
      * @return list<array{
      *     id: string,
+     *     payment_status: string,
      *     purchased_at: string,
-     *     name: string,
+     *     name: string|null,
      *     type: string,
      *     city: string,
      *     st: string,
      *     zip: string,
-     *     address: string,
-     *     contact_name: string,
-     *     contact_phone: string,
-     *     email: string,
+     *     address: string|null,
+     *     contact_name: string|null,
+     *     contact_phone: string|null,
+     *     email: string|null,
      *     price: int,
      *     credit_used: int|null,
-     *     status: string
+     *     status: string,
+     *     receipt_url: string|null,
+     *     card_brand: string|null,
+     *     card_last4: string|null
      * }>
      */
     public function purchasedBy(User $user): array
     {
         return $user->leadPurchases()
+            ->whereIn('status', [LeadPurchase::STATUS_PAID, LeadPurchase::STATUS_PENDING])
             ->with('leadable')
-            ->latest('purchased_at')
+            ->latest()
             ->get()
             ->filter(fn (LeadPurchase $purchase): bool => $purchase->leadable !== null)
             ->map(fn (LeadPurchase $purchase): array => $this->mapPurchased($purchase))
@@ -99,55 +107,31 @@ class LeadService
     public function counts(User $user): array
     {
         return [
-            'available' => $this->listedModels($user)->count(),
-            'purchased' => $user->leadPurchases()->count(),
+            'available' => $this->listedModels()->count(),
+            'purchased' => $user->leadPurchases()->paid()->count(),
         ];
     }
 
     /**
-     * Record a purchase and unlock the lead's details for the operator.
+     * Listed leads that nobody holds: leads are exclusive, so a lead with a
+     * pending or paid purchase (from any operator) is no longer available.
      *
-     * Payment is not wired up yet, so this only records the purchase.
-     */
-    public function purchase(User $user, string $source, int $id): LeadPurchase
-    {
-        $existing = $user->leadPurchases()
-            ->where('leadable_type', $source)
-            ->where('leadable_id', $id)
-            ->first();
-
-        if ($existing !== null) {
-            return $existing;
-        }
-
-        $lead = $this->modelClass($source)::query()
-            ->whereIn('status', self::LISTED_STATUSES)
-            ->findOrFail($id);
-
-        return $user->leadPurchases()->create([
-            'leadable_type' => $source,
-            'leadable_id' => $lead->getKey(),
-            'price' => (int) config('leads.price'),
-            'purchased_at' => now(),
-        ]);
-    }
-
-    /**
      * @return Collection<int, Model>
      */
-    private function listedModels(User $user): Collection
+    private function listedModels(): Collection
     {
         $leads = collect();
 
         foreach ([self::SOURCE_VENDING, self::SOURCE_COFFEE] as $source) {
-            $boughtIds = $user->leadPurchases()
+            $heldIds = LeadPurchase::query()
+                ->holdingLead()
                 ->where('leadable_type', $source)
                 ->pluck('leadable_id');
 
             $leads = $leads->concat(
                 $this->modelClass($source)::query()
                     ->whereIn('status', self::LISTED_STATUSES)
-                    ->whereNotIn('id', $boughtIds)
+                    ->whereNotIn('id', $heldIds)
                     ->latest()
                     ->limit(200)
                     ->get(),
@@ -160,12 +144,20 @@ class LeadService
     /**
      * @return class-string<Model>
      */
-    private function modelClass(string $source): string
+    public function modelClass(string $source): string
     {
         /** @var class-string<Model> $class */
         $class = Relation::getMorphedModel($source);
 
         return $class;
+    }
+
+    /**
+     * The public lead id shown to operators, e.g. "V-12" or "C-7".
+     */
+    public static function publicIdFor(string $source, int $id): string
+    {
+        return ($source === self::SOURCE_COFFEE ? 'C-' : 'V-').$id;
     }
 
     private function sourceOf(Model $lead): string
@@ -177,7 +169,7 @@ class LeadService
 
     private function publicId(Model $lead): string
     {
-        return ($lead instanceof CoffeeServiceRequest ? 'C-' : 'V-').$lead->getKey();
+        return self::publicIdFor($this->sourceOf($lead), (int) $lead->getKey());
     }
 
     /**
@@ -213,22 +205,31 @@ class LeadService
         /** @var VendingRequest|CoffeeServiceRequest $lead */
         $lead = $purchase->leadable;
         $isCoffee = $lead instanceof CoffeeServiceRequest;
+        $isPaid = $purchase->isPaid();
+        $postalCode = (string) ($lead->postal_code ?: ($isCoffee ? $lead->zip_code : ''));
 
+        // Contact details are only serialised once Square confirmed the payment.
         return [
             'id' => $this->publicId($lead),
-            'purchased_at' => $purchase->purchased_at->format('M j'),
-            'name' => $lead->business_name,
+            'payment_status' => $isPaid ? 'paid' : 'pending',
+            'purchased_at' => ($purchase->purchased_at ?? $purchase->created_at)->format('M j'),
+            'name' => $isPaid ? $lead->business_name : null,
             'type' => $isCoffee ? 'Office coffee' : $lead->location_type,
             'city' => (string) $lead->city,
             'st' => (string) $lead->state,
-            'zip' => (string) ($lead->postal_code ?: ($isCoffee ? $lead->zip_code : '')),
-            'address' => (string) ($lead->address ?: ($isCoffee ? $lead->zip_code : $lead->address_or_zip)),
-            'contact_name' => $lead->contact_name,
-            'contact_phone' => $lead->phone,
-            'email' => $lead->email,
+            'zip' => $isPaid ? $postalCode : Str::substr($postalCode, 0, 3),
+            'address' => $isPaid
+                ? (string) ($lead->address ?: ($isCoffee ? $lead->zip_code : $lead->address_or_zip))
+                : null,
+            'contact_name' => $isPaid ? $lead->contact_name : null,
+            'contact_phone' => $isPaid ? $lead->phone : null,
+            'email' => $isPaid ? $lead->email : null,
             'price' => $purchase->price,
             'credit_used' => null,
             'status' => 'ok',
+            'receipt_url' => $isPaid ? $purchase->square_receipt_url : null,
+            'card_brand' => $isPaid ? $purchase->card_brand : null,
+            'card_last4' => $isPaid ? $purchase->card_last4 : null,
         ];
     }
 

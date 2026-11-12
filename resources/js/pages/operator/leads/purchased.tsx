@@ -31,7 +31,9 @@ export default function PurchasedLeads({
     const [issueLead, setIssueLead] = useState<PurchasedLead | null>(null);
 
     const openDetails = (lead: PurchasedLead) => {
-        setDetailsLead(lead);
+        if (lead.payment_status === 'paid') {
+            setDetailsLead(lead);
+        }
     };
 
     const openIssue = (lead: PurchasedLead) => {
@@ -104,7 +106,8 @@ export default function PurchasedLeads({
                                                 }}
                                             >
                                                 <p className="font-medium hover:underline">
-                                                    {lead.name}
+                                                    {lead.name ??
+                                                        'Details unlock after payment'}
                                                 </p>
                                                 <p className="text-xs text-muted-foreground">
                                                     {lead.type} · {lead.id}
@@ -121,9 +124,11 @@ export default function PurchasedLeads({
                                                 .filter(Boolean)
                                                 .join(' ') || '—'}
                                         </TableCell>
-                                        <TableCell>{lead.address}</TableCell>
                                         <TableCell>
-                                            <p>{lead.contact_name}</p>
+                                            {lead.address ?? '—'}
+                                        </TableCell>
+                                        <TableCell>
+                                            <p>{lead.contact_name ?? '—'}</p>
                                             <p className="text-xs text-muted-foreground">
                                                 {lead.contact_phone}
                                             </p>
@@ -142,7 +147,16 @@ export default function PurchasedLeads({
                                                 event.stopPropagation()
                                             }
                                         >
-                                            {lead.status === 'issue_open' ? (
+                                            {lead.payment_status ===
+                                            'pending' ? (
+                                                <Badge
+                                                    variant="outline"
+                                                    data-test="payment-processing-badge"
+                                                    className="border-amber-500/40 bg-amber-500/10 text-amber-800 dark:text-amber-200"
+                                                >
+                                                    Payment processing
+                                                </Badge>
+                                            ) : lead.status === 'issue_open' ? (
                                                 <Badge
                                                     variant="outline"
                                                     className="border-amber-500/40 bg-amber-500/10 text-amber-800 dark:text-amber-200"

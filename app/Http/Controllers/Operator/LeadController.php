@@ -3,10 +3,16 @@
 namespace App\Http\Controllers\Operator;
 
 use App\Demo\OperatorDashboardData;
+use App\Exceptions\Payments\LeadUnavailableException;
+use App\Exceptions\Payments\PaymentFailedException;
+use App\Exceptions\Payments\SquareNotConfiguredException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Operator\PurchaseLeadRequest;
+use App\Services\LeadPurchaseService;
 use App\Services\LeadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -36,9 +42,33 @@ class LeadController extends Controller
         ]);
     }
 
-    public function purchase(Request $request, string $source, int $lead): RedirectResponse
-    {
-        $this->leads->purchase($request->user(), $source, $lead);
+    /**
+     * Buy a lead with the card token from Square's Web Payments SDK.
+     */
+    public function purchase(
+        PurchaseLeadRequest $request,
+        LeadPurchaseService $purchases,
+        string $source,
+        int $lead,
+    ): RedirectResponse {
+        try {
+            $purchase = $purchases->checkout(
+                $request->user(),
+                $source,
+                $lead,
+                (string) $request->validated('source_id'),
+            );
+        } catch (LeadUnavailableException|PaymentFailedException $exception) {
+            throw ValidationException::withMessages(['payment' => $exception->getMessage()]);
+        } catch (SquareNotConfiguredException $exception) {
+            throw ValidationException::withMessages(['payment' => $exception->userMessage()]);
+        }
+
+        if ($purchase->isPaid()) {
+            Inertia::flash('toast', ['type' => 'success', 'message' => 'Lead purchased. Contact details are unlocked.']);
+        } else {
+            Inertia::flash('toast', ['type' => 'warning', 'message' => 'Payment is processing. Details unlock as soon as it is confirmed.']);
+        }
 
         return redirect()->route('leads.purchased');
     }

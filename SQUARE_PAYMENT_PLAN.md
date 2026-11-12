@@ -331,21 +331,81 @@ Update/replace `tests/Feature/Operator/LeadMarketplaceTest.php` (multi-buyer ass
 
 ## 14. Progress checklist (tick as you go)
 
-- [ ] Phase 0: copy this plan to `SQUARE_PAYMENT_PLAN.md` in the repo root
-- [ ] Phase 1: `config/services.php` square block, `.env.example` names, migration(s) + backfill, models/factories (`LeadPurchase` update, `PaymentEvent`)
-- [ ] Phase 2: `SquareClient`, exceptions, `SquareWebhookVerifier`
-- [ ] Phase 3: `LeadPurchaseService`, update `LeadService` (exclusive listing, masked pending), `PurchaseLeadRequest`, `LeadController::purchase`, route throttle
-- [ ] Phase 4: webhook controller + handler, route, CSRF exception, `PaymentEvent` logging
-- [ ] Phase 5: frontend (types, `use-square-card`, buy dialog, flash toasts, purchased page badges), `npm run build`, `tsc`
-- [ ] Phase 6: reconcile command + scheduler
-- [ ] Phase 7: tests (section 11) green; Pint clean
-- [ ] Phase 8: manual sandbox verification (section 12)
-- [ ] Phase 9 (optional): real billing page, refunds, admin payments
+- [x] Phase 0: copy this plan to `SQUARE_PAYMENT_PLAN.md` in the repo root
+- [x] Phase 1: `config/services.php` square block, `.env.example` names, migration(s) + backfill, models/factories (`LeadPurchase` update, `PaymentEvent`) — DONE 2026-11-12
+- [x] Phase 2: `SquareClient`, exceptions, `SquareWebhookVerifier` — DONE 2026-11-12
+- [x] Phase 3: `LeadPurchaseService`, update `LeadService` (exclusive listing, masked pending), `PurchaseLeadRequest`, `LeadController::purchase`, route throttle — DONE 2026-11-12
+- [x] Phase 4: webhook controller + handler, route, CSRF exception, `PaymentEvent` logging — DONE 2026-11-12
+- [x] Phase 5: frontend (types, `use-square-card`, buy dialog, flash toasts, purchased page badges), `npm run build`, `tsc` — DONE 2026-11-12 (not yet exercised in a real browser: needs `SQUARE_LOCATION_ID`, see Phase 8)
+- [x] Phase 6: reconcile command + scheduler — DONE 2026-11-12
+- [x] Phase 7: tests (section 11) green; Pint clean — DONE 2026-11-12 (items 1-11 covered; item 12 belongs to Phase 9)
+- [x] Phase 8: manual sandbox verification (section 12) — DONE 2026-11-12 (see log; Square Console "Send test event" with the *real* subscription signature key still recommended once you replace the local verify key)
+- [x] Phase 9 (partial, refunds deferred): real operator billing + admin payments list — DONE 2026-11-12. **Out of scope still:** refund flow, `refund.updated`, `payments.refund`, refund UI
+
+## 14a. Implementation log (newest last; update after every phase)
+
+**Phase 1 (done):**
+- `config/services.php`: added the `square` block (env, ids, token, location, webhook key/url, currency, `api_version` default `2026-09-16`, `base_url`, `sdk_url`).
+- `.env.example`: Square vars now have **blank values** and include `SQUARE_WEBHOOK_URL`, `SQUARE_API_VERSION`; `LEAD_PRICE=150` present. **SECURITY: the committed `.env.example` (commit `0abbf84`) previously contained a real Square *sandbox* application id and access token. They are removed from the working tree but remain in git history: rotate/regenerate the sandbox access token in the Square Developer Console and put the new one only in `.env`.**
+- Migrations (already run on the local MySQL DB, rollback + re-run verified): `2026_11_12_055253_add_payment_columns_to_lead_purchases_table.php` (columns, `purchased_at` nullable, `user_id` index, drops the old per-user unique, adds unique `lead_lock` / `idempotency_key` / `square_payment_id`, legacy backfill) and `2026_11_12_055254_create_payment_events_table.php`. The existing legacy purchase (`user 6, vending:1`) became `status=paid`, `provider=legacy`, `lead_lock=vending:1`, `amount_cents=15000`.
+- `LeadPurchase` model: status/provider constants, new fillable + casts, `leadKey()`, scopes `paid()` / `holdingLead()`, `isPaid()` / `isPending()`. `LeadPurchaseFactory` defaults to a **paid** Square purchase and fills `lead_lock` in `configure()`; states `pending()`, `failed()`, `legacy()`. New `PaymentEvent` model + factory.
+- Note: `LeadService::purchase()` still creates rows without `lead_lock` (status falls back to DB default `pending`); this is replaced in Phase 3. The existing `LeadMarketplaceTest` multi-buyer tests still pass until then and must be rewritten in Phase 7.
+- Running `php artisan migrate` also applied two unrelated pending migrations from other work (`create_location_types_table`, `add_lat_lng_index_to_operator_profiles_table`).
+
+**Phase 2 (done):**
+- `app/Services/Payments/SquareClient.php`: `isConfigured()`, `assertConfigured()`, `locationId()`, `currency()`, `createPayment()`, `getPayment()`, `listPayments()` (follows cursor, max 5 pages), `refundPayment()`. Uses `Http` with 3s connect / 15s read timeouts and `retry([200, 600], 0, <when>, throw: false)` on `ConnectionException`, 5xx and 429 (safe: same idempotency key on each attempt). Connection failures are converted to `SquarePaymentException::connectionFailed()`.
+- `app/Exceptions/Payments/`: `SquareNotConfiguredException` (`userMessage()`), `SquarePaymentException` (`category`, `errorCode`, `detail`, `httpStatus`, `connectionFailed`; `isOutcomeUnknown()`, `isConfigurationProblem()`; message never contains secrets), `PaymentFailedException` (`fromSquare()`, `fromCode()` friendly message map), `LeadUnavailableException`.
+- `app/Services/Payments/SquareWebhookVerifier.php`: `isValid()`, `signatureFor()`, `notificationUrl()` (= `SQUARE_WEBHOOK_URL` or `url('/webhooks/square')`); fails closed when the key/header is missing; `hash_equals`.
+- Tests: `tests/Feature/Payments/SquareClientTest.php`, `SquareWebhookVerifierTest.php` (19 tests; they use `Sleep::fake()` + `Http::preventStrayRequests()`).
+
+**Phase 3 (done):**
+- `app/Services/LeadPurchaseService.php`: `checkout()` (assert configured -> own pending/paid guard -> `reserve()` in a short transaction with `lockForUpdate` on the lead + unique `lead_lock` -> `createPayment()` outside the transaction with the stored idempotency key -> finalise). Public, idempotent, row-locked transitions reused by Phase 4/6: `applySquarePayment(LeadPurchase, array $payment)` (`COMPLETED` -> paid only if `paymentMatchesPurchase()`; `FAILED`/`CANCELED` -> failed + lock released; other statuses only record ids), `markFailed(...)`, `paymentMatchesPurchase()` (amount, currency, location). Unknown outcomes (connection/5xx/429) keep the purchase `pending` and the lead locked. Payload stored in `square_payload` drops `card_details.card.fingerprint`, `cardholder_name`, `buyer_email_address`.
+- `app/Services/LeadService.php`: `purchase()` removed; `LISTED_STATUSES` is now public; `modelClass()` public; new `publicIdFor($source, $id)`; `listedModels()` now excludes leads held by ANY operator (`LeadPurchase::holdingLead()`), `counts()['purchased']` counts paid only; `purchasedBy()` returns the user's paid + pending rows, newest first, with `payment_status`, `receipt_url`, `card_brand`, `card_last4`; **pending rows are masked** (`name`, `address`, `contact_name`, `contact_phone`, `email` are `null`, ZIP cut to 3 digits).
+- `app/Http/Requests/Operator/PurchaseLeadRequest.php` (`source_id` required string max 255) and `LeadController::purchase()` (errors surface as `ValidationException` key `payment`; success -> redirect `leads.purchased` with session `success`; pending -> session `warning`). Route `leads.purchase` now has `throttle:10,1`.
+- Tests: `tests/Feature/Payments/LeadCheckoutTest.php` (happy path incl. `Http::assertSent` body/headers, coffee lead, exclusivity + DB unique lock, unknown outcome stays pending + no contact leak, decline releases lead, retry by another operator after failure, config error, not configured, double submit, mismatch never unlocks, 404s, validation/guest). `tests/Feature/Operator/LeadMarketplaceTest.php` rewritten (old free-purchase tests removed; new: leads held by someone are hidden from everyone, failed purchases relist).
+- Test helpers added to `tests/Pest.php`: `makeOperator()`, `configureSquare()`, `squarePaymentObject()`, `fakeSquareHttp()` (**use it instead of `Http::fake` in page-rendering tests**: `Http::preventStrayRequests()` otherwise blocks Inertia's dev SSR probe to `/__inertia_ssr` because `public/hot` exists), `squareCallCount()` (counts only Square requests; `Http::assertSentCount` also counts the SSR probe).
+- Known gap until Phase 5: the buy dialog still posts without `source_id`, so the UI cannot complete a purchase yet. Phase 4 still needs the `payment.updated` webhook to settle pending rows.
+
+**Phase 4 (done):**
+- `POST /webhooks/square` (route `webhooks.square`, `throttle:120,1`, no auth) -> `app/Http/Controllers/Webhooks/SquareWebhookController.php` (invokable). CSRF exemption added in `bootstrap/app.php` (`validateCsrfTokens(except: ['webhooks/square'])`). Flow: verify the signature on the RAW body (`403` if invalid, nothing stored) -> `400` if the JSON lacks `event_id`/`type` -> `PaymentEvent::createOrFirst` by `event_id` -> `200 "Already processed"` if `processed_at` is set -> `SquareWebhookHandler::handle()` -> store `outcome` + `processed_at` (set only after the handler succeeds, so a half-processed delivery is retried by Square) -> `200`.
+- `app/Services/Payments/SquareWebhookHandler.php`: handles `payment.created` / `payment.updated`; finds the purchase by `square_payment_id` then by `reference_id = LP-{id}` (provider must be `square`); `COMPLETED` with wrong amount/currency/location -> outcome `mismatch` (purchase stays pending, critical log); otherwise delegates to `LeadPurchaseService::applySquarePayment()`; outcomes `applied` / `ignored` / `unmatched` / `mismatch`. Other event types are stored as `ignored` (`refund.updated` is for Phase 9).
+- Tests: `tests/Feature/Payments/SquareWebhookTest.php` (valid event settles purchase, bad/missing signature, no key configured, duplicate event, unmatched, wrong amount/currency/location, FAILED/CANCELED releases lead, non-final status, late webhook can't change a settled purchase, idempotent double apply, other event types, malformed payload). Note: Laravel disables CSRF checks in tests, so the CSRF exemption itself is not covered by a test; verify manually with a real Square sandbox webhook.
+
+**Phase 5 (done):**
+- **Deviation from section 6.9/8:** no new shared `flash` prop. The project already has `Inertia::flash('toast', ['type' => ..., 'message' => ...])` + `useFlashToast` (mounted in `components/ui/sonner.tsx`), so `LeadController::purchase()` now calls `Inertia::flash('toast', ...)` (success when paid, warning when pending). Tests assert `->assertSessionHas('inertia.flash_data.toast.type', ...)`.
+- Backend: `SquareClient::publicConfig()` (null unless configured; only `applicationId`, `locationId`, `sdkUrl`, `currency`) is shared lazily as the Inertia prop `square` by `HandleInertiaRequests` for authenticated users only. Test: `tests/Feature/Payments/SquarePropsTest.php` (no token/key leaks, null when unconfigured, null for guests).
+- Frontend: `resources/js/types/square.d.ts` (SDK typings + `SquareConfig`, global `Window.Square`), `types/global.d.ts` (`square` shared prop), `types/operator-dashboard.ts` (`PurchasedLead` now has `payment_status`, nullable contact fields, `receipt_url`, `card_brand`, `card_last4`), `hooks/use-square-card.ts` (loads `sdkUrl` once, `Square.payments(appId, locationId)`, `payments.card()`, attaches to a callback-ref container, exposes `{ setContainer, ready, error, tokenize }`, destroys the card on cleanup), `components/operator/lead-buy-dialog.tsx` (masked summary + lock note, hosted card field, "Pay $X and unlock", tokenize with verification details, `router.post(purchase.url(...), { source_id })`, shows `errors.payment` inline, partial reload of `leads`/`newestLeads`/`kpis` after an error, "Payments are not available" when `square` is null), `pages/operator/leads/purchased.tsx` ("Payment processing" badge for pending rows, details dialog only for paid rows, contact cells fall back to dashes), `purchased-lead-details-dialog.tsx` (payment line "Paid with VISA ending 1111", receipt link), `purchased-lead-issue-dialog.tsx` (null-safe name).
+- ESLint (`react-hooks/refs`, `set-state-in-effect`) and Prettier clean for these files; `npm run build` OK; `npx tsc --noEmit` shows only the 4 known unrelated errors.
+- Lint gotchas worth remembering: do not name a hook's returned setter `...Ref` (the React Compiler lint then treats the whole object as a ref); reset dialog state in the `onOpenChange` handler instead of a `useEffect`.
+
+**Phase 6 (done):**
+- `php artisan payments:reconcile {--min-age=5} {--give-up-after=60}` (`app/Console/Commands/ReconcileSquarePayments.php`), scheduled every 5 minutes with `withoutOverlapping()` in `routes/console.php` (production needs the cron `* * * * * php artisan schedule:run`). It only touches `pending` Square purchases older than `min-age`: purchases with a `square_payment_id` use `GetPayment`; the others are matched by `reference_id = LP-{id}` in ONE shared `ListPayments` call (window = oldest pending `created_at` - 10 min .. now). The result goes through `LeadPurchaseService::applySquarePayment()`. A purchase Square never heard of is released (`markFailed('NOT_FOUND_AT_SQUARE', 'RECONCILE')`) only after `give-up-after` minutes AND only when the list lookup itself succeeded: a failing Square lookup never releases a lead. No-op (exit 0) when Square is not configured.
+- Tests: `tests/Feature/Payments/ReconcileSquarePaymentsTest.php` (9 tests incl. scheduler registration).
+
+**Phase 7 (done):**
+- Test files: `tests/Feature/Payments/{SquareClientTest, SquareWebhookVerifierTest, LeadCheckoutTest, SquareWebhookTest, SquarePropsTest, ReconcileSquarePaymentsTest}.php` and `tests/Feature/Operator/LeadMarketplaceTest.php`. Run them with `php artisan test --compact tests/Feature/Payments tests/Feature/Operator tests/Feature/DashboardTest.php` (all green).
+- Full suite: the only failures are the pre-existing ones from test files that lack `RefreshDatabase` (`no such table: users` / `home_faqs`: `ExampleTest`, `FileUploadTest`, `Auth/*`, `Settings/*`, `MicroMarketsPageTest`, `FooterStubPagesTest`); they fail identically without these changes.
+
+**Phase 8 (done, 2026-11-12):**
+- Token sanity: `SquareClient` configured; `GET /v2/locations` -> HTTP 200 (1 location). Access token length present in `.env` (rotate in Console if not already done; never commit it).
+- Browser card form: Square Web Payments SDK **requires a secure context**. `http://127.0.0.1:8000` fails with "Web Payments SDK can only be embedded on sites that use HTTPS…"; `http://localhost:8000` works (`isSecureContext=true`) and mounts the card iframes. Prefer `localhost` (or HTTPS) for UI checkout.
+- Live charge: authenticated purchase of `vending:2` with sandbox nonce `cnon:card-nonce-ok` -> `status=paid`, Square `COMPLETED`, VISA `5858`, receipt stored, contact unlocked on Purchased. Second operator (`operator2@dev.com`) does **not** see `V-2` in available leads (`lead_lock` held).
+- Webhook: localtunnel `https://dull-signs-raise.loca.lt` reaches Laravel; `SQUARE_WEBHOOK_URL` set to `https://dull-signs-raise.loca.lt/webhooks/square`. Signed `payment.updated` POST returned **HTTP 200** and wrote `payment_events` (`outcome=ignored` because the purchase was already paid — correct idempotency). A **local verify** signature key was written to `.env` for that check — **replace it** with the Signature key from Square Developer Console after creating the Sandbox subscription (`payment.updated`) pointing at the exact tunnel URL, then use Console "Send test event".
+- Security checklist re-confirmed: public Inertia `square` props only; purchase throttle + CSRF-exempt webhook; price server-side; contact unlocked only when paid.
+- UI card typing (`4111…`) through Square iframes was not fully automated (cross-origin iframes); form mount + pay path verified via localhost + sandbox nonce.
+
+**Phase 9 (done without refunds, 2026-11-12):**
+- `PaymentHistoryService`: operator invoices from **paid** `LeadPurchase` rows; admin paginated list with search (`LP-{id}`, email, Square payment id) + status filter.
+- Operator billing page: removed demo "card on file" / update-card dialog; shows last paid card summary + real invoices (receipt + card brand/last4 in detail).
+- Admin: `PermissionEnum::PAYMENTS_INDEX`, route `admin/payments`, sidebar "Payments", read-only table (no refund actions). Seeded via PermissionSeeder/RoleSeeder.
+- Tests: `BillingPageTest`, `PaymentManagementTest` (plus existing Payments/Operator suite) green. `npm run build` regenerates Wayfinder. **Refunds deferred** to a later phase.
 
 ## 15. Open items / risks to confirm while implementing
 
-- Confirm the exact webhook signature algorithm and `Square-Version` string in Square's current docs (this plan reflects the documented HMAC-SHA256 of notification URL + raw body, base64).
-- `SQUARE_LOCATION_ID` and `SQUARE_WEBHOOK_SIGNATURE_KEY` are currently blank: payments cannot run until set (the app must show the friendly "payments unavailable" message instead of crashing).
-- MySQL FK/index ordering in the migration (section 5.1 steps 2-3) and SQLite compatibility for tests (`->change()`, `dropUnique`).
-- Legacy free purchases: duplicates become `void`; confirm this is acceptable for any non-dev data.
-- Pending-forever edge: reconcile marks `NOT_FOUND_AT_SQUARE` after 60 min and relists the lead; if money could have moved, support must check the Square dashboard (`reference_id = LP-{id}`).
+- `Square-Version: 2026-09-16` confirmed. Webhook HMAC verified live against our signer + endpoint (200 + `payment_events`). Still replace the local verify key with the real Square subscription signature key and confirm Console "Send test event".
+- Use `http://localhost:…` (not `127.0.0.1`) for Square Web Payments SDK locally, or HTTPS.
+- Tunnel URL in `SQUARE_WEBHOOK_URL` must stay byte-identical to the Square subscription; localtunnel hostnames change when restarted.
+- **Rotate the Square sandbox access token** if not already done (leaked historically in commit `0abbf84` `.env.example`).
+- Legacy free purchases: duplicates become `void`; confirm acceptable for any non-dev data.
+- Pending-forever edge: reconcile marks `NOT_FOUND_AT_SQUARE` after 60 min and relists; support should check Square dashboard (`reference_id = LP-{id}`) if money may have moved.
+- **Deferred:** refunds, `refund.updated`, `payments.refund`, production go-live (section 13) — not without approval.

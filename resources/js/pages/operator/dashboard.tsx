@@ -12,8 +12,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { dashboard } from '@/routes';
 import { formatDistance, leadArea } from '@/lib/lead';
+import { dashboard } from '@/routes';
 import { index as leadsIndex } from '@/routes/leads';
 import type {
     OperatorDashboardProps,

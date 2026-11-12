@@ -16,21 +16,31 @@ export interface OperatorLead {
 
 export type PurchasedLeadStatus = 'ok' | 'issue_open';
 
+export type LeadPaymentStatus = 'paid' | 'pending';
+
+/**
+ * A purchased lead. While `payment_status` is `pending` the contact fields are
+ * null: they are only sent once Square confirmed the payment.
+ */
 export interface PurchasedLead {
     id: string;
+    payment_status: LeadPaymentStatus;
     purchased_at: string;
-    name: string;
+    name: string | null;
     type: string;
     city: string;
     st: string;
     zip: string;
-    address: string;
-    contact_name: string;
-    contact_phone: string;
-    email: string;
+    address: string | null;
+    contact_name: string | null;
+    contact_phone: string | null;
+    email: string | null;
     price: number;
     credit_used: number | null;
     status: PurchasedLeadStatus;
+    receipt_url: string | null;
+    card_brand: string | null;
+    card_last4: string | null;
 }
 
 export interface OperatorKpi {

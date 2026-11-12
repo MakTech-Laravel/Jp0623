@@ -1,6 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { useState, type FormEvent } from 'react';
-import { toast } from 'sonner';
+import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,8 +10,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
     Table,
     TableBody,
@@ -24,10 +21,9 @@ import {
 import { dashboard } from '@/routes';
 import { index as billingIndex } from '@/routes/billing';
 
-interface PaymentMethod {
+interface LastPaidCard {
     brand: string;
     last4: string;
-    expires: string;
 }
 
 interface Invoice {
@@ -38,6 +34,9 @@ interface Invoice {
     description: string;
     amount: number;
     qty: number;
+    receipt_url: string | null;
+    card_brand: string | null;
+    card_last4: string | null;
 }
 
 function money(value: number): string {
@@ -67,30 +66,13 @@ function statusBadge(status: string) {
 }
 
 export default function BillingIndex({
-    paymentMethod,
+    lastPaidCard,
     invoices,
 }: {
-    paymentMethod: PaymentMethod;
+    lastPaidCard: LastPaidCard | null;
     invoices: Invoice[];
 }) {
-    const [cardOpen, setCardOpen] = useState(false);
     const [invoice, setInvoice] = useState<Invoice | null>(null);
-    const [card, setCard] = useState(paymentMethod);
-
-    const handleUpdateCard = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const form = new FormData(event.currentTarget);
-        const last4 = String(form.get('number') ?? '').slice(-4) || card.last4;
-        const expires = String(form.get('expires') ?? card.expires);
-
-        setCard({
-            brand: 'Visa',
-            last4,
-            expires,
-        });
-        toast.success('Payment method updated (demo).');
-        setCardOpen(false);
-    };
 
     return (
         <>
@@ -102,27 +84,19 @@ export default function BillingIndex({
                         Billing &amp; invoices
                     </h1>
                     <p className="mt-1 max-w-3xl text-muted-foreground">
-                        Card on file: {card.brand} ending in {card.last4}{' '}
-                        (example).
+                        Paid location-lead purchases. Cards are entered per
+                        purchase — nothing is stored on file.
                     </p>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card px-4 py-4 shadow-sm">
-                    <p className="text-sm">
-                        Payment method:{' '}
+                {lastPaidCard ? (
+                    <div className="rounded-xl border bg-card px-4 py-4 text-sm shadow-sm">
+                        Last card used:{' '}
                         <strong>
-                            {card.brand} •••• {card.last4}
+                            {lastPaidCard.brand} ending {lastPaidCard.last4}
                         </strong>
-                        , expires {card.expires}
-                    </p>
-                    <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setCardOpen(true)}
-                    >
-                        Update payment method
-                    </Button>
-                </div>
+                    </div>
+                ) : null}
 
                 <div className="overflow-hidden rounded-xl border bg-card shadow-sm">
                     <div className="overflow-x-auto">
@@ -144,101 +118,58 @@ export default function BillingIndex({
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {invoices.map((row) => (
-                                    <TableRow key={row.id}>
-                                        <TableCell className="font-mono text-xs">
-                                            {row.id}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.location ?? '—'}
-                                        </TableCell>
-                                        <TableCell className="font-mono text-xs">
-                                            {row.date}
-                                        </TableCell>
-                                        <TableCell>
-                                            {statusBadge(row.status)}
-                                        </TableCell>
-                                        <TableCell>{row.description}</TableCell>
-                                        <TableCell className="text-right tabular-nums">
-                                            {money(row.amount)}
-                                        </TableCell>
-                                        <TableCell className="text-right tabular-nums">
-                                            {row.qty}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <Button
-                                                size="sm"
-                                                variant="outline"
-                                                onClick={() => setInvoice(row)}
-                                            >
-                                                View
-                                            </Button>
+                                {invoices.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell
+                                            colSpan={8}
+                                            className="py-10 text-center text-muted-foreground"
+                                        >
+                                            No paid purchases yet.
                                         </TableCell>
                                     </TableRow>
-                                ))}
+                                ) : (
+                                    invoices.map((row) => (
+                                        <TableRow key={row.id}>
+                                            <TableCell className="font-mono text-xs">
+                                                {row.id}
+                                            </TableCell>
+                                            <TableCell>
+                                                {row.location ?? '—'}
+                                            </TableCell>
+                                            <TableCell className="font-mono text-xs">
+                                                {row.date}
+                                            </TableCell>
+                                            <TableCell>
+                                                {statusBadge(row.status)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {row.description}
+                                            </TableCell>
+                                            <TableCell className="text-right tabular-nums">
+                                                {money(row.amount)}
+                                            </TableCell>
+                                            <TableCell className="text-right tabular-nums">
+                                                {row.qty}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    onClick={() =>
+                                                        setInvoice(row)
+                                                    }
+                                                >
+                                                    View
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
                             </TableBody>
                         </Table>
                     </div>
                 </div>
             </div>
-
-            <Dialog open={cardOpen} onOpenChange={setCardOpen}>
-                <DialogContent className="sm:max-w-md">
-                    <form onSubmit={handleUpdateCard} className="space-y-4">
-                        <DialogHeader>
-                            <DialogTitle>Update payment method</DialogTitle>
-                            <DialogDescription>
-                                Demo only — no card is charged.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-2">
-                            <Label htmlFor="card-number">Card number</Label>
-                            <Input
-                                id="card-number"
-                                name="number"
-                                required
-                                placeholder="4242 4242 4242 4242"
-                            />
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="space-y-2">
-                                <Label htmlFor="card-expires">Expires</Label>
-                                <Input
-                                    id="card-expires"
-                                    name="expires"
-                                    required
-                                    placeholder="08/28"
-                                    defaultValue={card.expires}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="card-cvc">CVC</Label>
-                                <Input
-                                    id="card-cvc"
-                                    name="cvc"
-                                    required
-                                    placeholder="123"
-                                />
-                            </div>
-                        </div>
-                        <DialogFooter>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setCardOpen(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                className="bg-brass text-brass-ink hover:bg-brass/90"
-                            >
-                                Save card
-                            </Button>
-                        </DialogFooter>
-                    </form>
-                </DialogContent>
-            </Dialog>
 
             <Dialog
                 open={invoice !== null}
@@ -280,12 +211,34 @@ export default function BillingIndex({
                                         {money(invoice.amount)}
                                     </dd>
                                 </div>
-                                <div className="flex justify-between gap-4">
-                                    <dt className="text-muted-foreground">
-                                        Qty
-                                    </dt>
-                                    <dd>{invoice.qty}</dd>
-                                </div>
+                                {invoice.card_brand && invoice.card_last4 ? (
+                                    <div className="flex justify-between gap-4">
+                                        <dt className="text-muted-foreground">
+                                            Paid with
+                                        </dt>
+                                        <dd>
+                                            {invoice.card_brand} ending{' '}
+                                            {invoice.card_last4}
+                                        </dd>
+                                    </div>
+                                ) : null}
+                                {invoice.receipt_url ? (
+                                    <div className="flex justify-between gap-4">
+                                        <dt className="text-muted-foreground">
+                                            Receipt
+                                        </dt>
+                                        <dd>
+                                            <a
+                                                href={invoice.receipt_url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="text-brass underline-offset-2 hover:underline"
+                                            >
+                                                View receipt
+                                            </a>
+                                        </dd>
+                                    </div>
+                                ) : null}
                             </dl>
                             <DialogFooter>
                                 <Button

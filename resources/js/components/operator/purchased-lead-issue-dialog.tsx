@@ -99,7 +99,7 @@ export function PurchasedLeadIssueDialog({
                             Report an issue with {lead.id}
                         </DialogTitle>
                         <DialogDescription>
-                            {lead.name} · {lead.type}. Misleading reports may
+                            {lead.name ?? lead.id} · {lead.type}. Misleading reports may
                             lead to account suspension.
                         </DialogDescription>
                     </DialogHeader>
