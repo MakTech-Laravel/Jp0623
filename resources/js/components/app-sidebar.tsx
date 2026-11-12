@@ -52,6 +52,7 @@ import adminOfficeCoffeeFaqs from '@/routes/admin/office-coffee-faqs';
 import adminProducts from '@/routes/admin/products';
 import adminUserManagement from '@/routes/admin/user-management';
 import adminCoffeeServiceRequests from '@/routes/admin/coffee-service-requests';
+import adminOperatorSms from '@/routes/admin/operator-sms';
 import adminVendingRequests from '@/routes/admin/vending-requests';
 import { index as billingIndex } from '@/routes/billing';
 // import { index as fileUploadDemo } from '@/routes/file-upload-demo'; // File Upload Demo — uncomment with nav item below
@@ -255,6 +256,12 @@ export function AppSidebar() {
                 href: adminCoffeeServiceRequests.index(),
                 icon: Coffee,
                 permissions: [PERMISSIONS.COFFEE_SERVICE_REQUESTS.INDEX],
+            },
+            {
+                title: 'Operator SMS',
+                href: adminOperatorSms.index(),
+                icon: Send,
+                permissions: [PERMISSIONS.OPERATOR_SMS.INDEX],
             },
             {
                 title: 'FAQ Management',

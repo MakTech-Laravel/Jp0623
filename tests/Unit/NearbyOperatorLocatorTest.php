@@ -43,3 +43,28 @@ test('haversine distance is roughly correct for houston to nearby suburb', funct
     expect($miles)->toBeGreaterThan(2)
         ->and($miles)->toBeLessThan(5);
 });
+
+test('locator can filter operators into a mile band', function () {
+    $inside = OperatorProfile::factory()->create([
+        'phone' => '(713) 555-0100',
+        'latitude' => 29.7604,
+        'longitude' => -95.3698,
+    ]);
+
+    OperatorProfile::factory()->create([
+        'phone' => '(212) 555-0100',
+        'latitude' => 40.7128,
+        'longitude' => -74.0060,
+    ]);
+
+    $matches = app(NearbyOperatorLocator::class)->betweenMiles(
+        29.7604,
+        -95.3698,
+        0,
+        100,
+    );
+
+    expect($matches)->toHaveCount(1)
+        ->and($matches->first()->id)->toBe($inside->id)
+        ->and($matches->first()->distance_miles)->toBe(0.0);
+});
