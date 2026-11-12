@@ -132,7 +132,7 @@ class MachineService
 
         $specs[] = [
             'label' => 'Payments',
-            'value' => 'Card, tap, Apple Pay, Google Pay, cash (optional)',
+            'value' => 'Card, tap, Apple Pay, Google Pay',
         ];
         $specs[] = [
             'label' => 'Power',
