@@ -87,13 +87,22 @@ class VendingRequestService
             $data['switch_reason'] = null;
         }
 
-        $data['price'] = max(1, (int) ($data['price'] ?? config('leads.price')));
+        $wasPricedOnCreate = array_key_exists('price', $data) && $data['price'] !== null && $data['price'] !== '';
+
+        if ($wasPricedOnCreate) {
+            $data['price'] = max(1, (int) $data['price']);
+        } else {
+            $data['price'] = null;
+            $data['operator_sms_note'] = 'Waiting for an admin to set a price before notifying operators.';
+        }
 
         $data = $this->normalizeLocation($data);
 
         $vendingRequest = VendingRequest::create($data);
 
-        NotifyNearbyOperatorsOfLead::dispatch('vending', $vendingRequest->id);
+        if ($wasPricedOnCreate) {
+            NotifyNearbyOperatorsOfLead::dispatch('vending', $vendingRequest->id);
+        }
 
         return $vendingRequest;
     }
@@ -104,6 +113,7 @@ class VendingRequestService
     public function update(VendingRequest $vendingRequest, array $data): VendingRequest
     {
         $updates = [];
+        $becamePriced = false;
 
         if (array_key_exists('status', $data)) {
             $updates['status'] = $data['status'];
@@ -116,11 +126,17 @@ class VendingRequestService
                 ]);
             }
 
+            $previousPrice = $vendingRequest->price;
             $updates['price'] = max(1, (int) $data['price']);
+            $becamePriced = $previousPrice === null || (int) $previousPrice < 1;
         }
 
         if ($updates !== []) {
             $vendingRequest->update($updates);
+        }
+
+        if ($becamePriced) {
+            NotifyNearbyOperatorsOfLead::dispatch('vending', $vendingRequest->id);
         }
 
         return $vendingRequest->refresh();

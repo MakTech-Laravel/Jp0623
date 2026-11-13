@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 type LeadPriceEditorProps = {
-    price: number;
+    price: number | null;
     locked: boolean;
     updateUrl: string;
 };
@@ -16,12 +16,13 @@ export function LeadPriceEditor({
     locked,
     updateUrl,
 }: LeadPriceEditorProps) {
-    const [value, setValue] = useState(String(price));
+    const [value, setValue] = useState(price !== null ? String(price) : '');
     const [error, setError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
+    const isUnpriced = price === null || price < 1;
 
     useEffect(() => {
-        setValue(String(price));
+        setValue(price !== null ? String(price) : '');
     }, [price]);
 
     function handleSave() {
@@ -55,7 +56,9 @@ export function LeadPriceEditor({
                 <p className="mt-1 text-xs text-muted-foreground">
                     {locked
                         ? 'Price is locked because this lead has already been sold.'
-                        : 'Operators pay this amount to unlock the lead.'}
+                        : isUnpriced
+                          ? 'Set a price to publish this lead to operators.'
+                          : 'Operators pay this amount to unlock the lead.'}
                 </p>
             </div>
             <div className="flex flex-wrap items-end gap-2">
@@ -64,6 +67,7 @@ export function LeadPriceEditor({
                     type="number"
                     min={1}
                     value={value}
+                    placeholder="e.g. 150"
                     disabled={locked || saving}
                     onChange={(e) => setValue(e.target.value)}
                     className="max-w-[10rem]"
@@ -71,10 +75,17 @@ export function LeadPriceEditor({
                 {!locked ? (
                     <Button
                         type="button"
-                        disabled={saving || Number(value) === price}
+                        disabled={
+                            saving ||
+                            (price !== null && Number(value) === price)
+                        }
                         onClick={handleSave}
                     >
-                        {saving ? 'Saving…' : 'Update price'}
+                        {saving
+                            ? 'Saving…'
+                            : isUnpriced
+                              ? 'Set price'
+                              : 'Update price'}
                     </Button>
                 ) : null}
             </div>

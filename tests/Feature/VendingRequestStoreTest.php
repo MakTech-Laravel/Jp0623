@@ -65,6 +65,7 @@ test('a guest can submit a vending request', function () {
         ->and($request->address_or_zip)->toBe('100 Main St, Houston, TX 77002')
         ->and($request->machine_interests)->toBe(['Snack', 'Drinks'])
         ->and($request->status)->toBe(VendingRequest::STATUS_NEW)
+        ->and($request->price)->toBeNull()
         ->and($request->terms_accepted)->toBeTrue();
 });
 

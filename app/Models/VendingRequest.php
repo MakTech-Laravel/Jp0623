@@ -34,7 +34,7 @@ use Illuminate\Support\Carbon;
  * @property string $email
  * @property string $phone
  * @property bool $terms_accepted
- * @property int $price
+ * @property int|null $price
  * @property string $status
  * @property string $operator_sms_status
  * @property int $operator_sms_sent_count

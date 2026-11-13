@@ -26,8 +26,10 @@ import payments from '@/routes/admin/payments';
 import type { Paginated } from '@/types/admin';
 
 interface AdminPayment {
-    id: number;
+    id: string;
     invoice_id: string;
+    source: 'lead' | 'membership';
+    source_label: string;
     operator_name: string | null;
     operator_email: string | null;
     lead_public_id: string;
@@ -47,7 +49,11 @@ interface AdminPayment {
 
 interface PaymentsIndexProps {
     payments: Paginated<AdminPayment>;
-    filters: { search: string; status: string | null };
+    filters: {
+        search: string;
+        status: string | null;
+        source: string | null;
+    };
 }
 
 function money(value: number): string {
@@ -104,6 +110,7 @@ export default function PaymentsIndex({
 }: PaymentsIndexProps) {
     const [search, setSearch] = useState(filters.search ?? '');
     const [status, setStatus] = useState(filters.status ?? 'all');
+    const [source, setSource] = useState(filters.source ?? 'all');
     const firstRender = useRef(true);
 
     useEffect(() => {
@@ -119,13 +126,14 @@ export default function PaymentsIndex({
                 {
                     search: search || undefined,
                     status: status === 'all' ? undefined : status,
+                    source: source === 'all' ? undefined : source,
                 },
                 { preserveState: true, preserveScroll: true, replace: true },
             );
         }, 350);
 
         return () => clearTimeout(timeout);
-    }, [search, status]);
+    }, [search, status, source]);
 
     return (
         <>
@@ -134,7 +142,7 @@ export default function PaymentsIndex({
             <div className="w-full space-y-6 px-4 py-6 sm:px-6 lg:px-8">
                 <AdminPageHeader
                     title="Payments"
-                    description="Lead purchase payments from Square and legacy unlocks."
+                    description="Lead purchases and membership charges from Square."
                     icon={Receipt}
                 />
 
@@ -144,10 +152,23 @@ export default function PaymentsIndex({
                         <Input
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search LP-id, email, payment id…"
+                            placeholder="Search LP-/MB-id, email, payment id…"
                             className="pl-9"
                         />
                     </div>
+
+                    <Select value={source} onValueChange={setSource}>
+                        <SelectTrigger className="w-full sm:w-44">
+                            <SelectValue placeholder="All sources" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All sources</SelectItem>
+                            <SelectItem value="lead">Lead purchase</SelectItem>
+                            <SelectItem value="membership">
+                                Membership
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
 
                     <Select value={status} onValueChange={setStatus}>
                         <SelectTrigger className="w-full sm:w-44">
@@ -170,9 +191,12 @@ export default function PaymentsIndex({
                             <TableHeader>
                                 <TableRow className="bg-muted/50 hover:bg-muted/50">
                                     <TableHead>Invoice</TableHead>
+                                    <TableHead className="hidden sm:table-cell">
+                                        Source
+                                    </TableHead>
                                     <TableHead>Operator</TableHead>
                                     <TableHead className="hidden md:table-cell">
-                                        Lead
+                                        Detail
                                     </TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead className="text-right">
@@ -194,7 +218,7 @@ export default function PaymentsIndex({
                                     {paginated.data.length === 0 ? (
                                         <TableRow>
                                             <TableCell
-                                                colSpan={8}
+                                                colSpan={9}
                                                 className="py-10 text-center text-muted-foreground"
                                             >
                                                 No payments found.
@@ -233,6 +257,11 @@ export default function PaymentsIndex({
                                                         </p>
                                                     )}
                                                 </TableCell>
+                                                <TableCell className="hidden sm:table-cell">
+                                                    <Badge variant="outline">
+                                                        {payment.source_label}
+                                                    </Badge>
+                                                </TableCell>
                                                 <TableCell>
                                                     <p className="text-sm font-medium">
                                                         {payment.operator_name ??
@@ -248,10 +277,22 @@ export default function PaymentsIndex({
                                                         {payment.lead_name ??
                                                             '—'}
                                                     </p>
-                                                    <p className="text-xs text-muted-foreground">
-                                                        {payment.lead_public_id}{' '}
-                                                        · {payment.lead_source}
-                                                    </p>
+                                                    {payment.source ===
+                                                    'lead' ? (
+                                                        <p className="text-xs text-muted-foreground">
+                                                            {
+                                                                payment.lead_public_id
+                                                            }{' '}
+                                                            ·{' '}
+                                                            {
+                                                                payment.lead_source
+                                                            }
+                                                        </p>
+                                                    ) : (
+                                                        <p className="text-xs text-muted-foreground">
+                                                            Membership charge
+                                                        </p>
+                                                    )}
                                                 </TableCell>
                                                 <TableCell>
                                                     {statusBadge(

@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\LocationTypeController;
 use App\Http\Controllers\Admin\MachineCategoryController;
 use App\Http\Controllers\Admin\MachineController;
 use App\Http\Controllers\Admin\MachineFaqController;
+use App\Http\Controllers\Admin\MembershipSettingController;
 use App\Http\Controllers\Admin\OfficeCoffeeFaqController;
 use App\Http\Controllers\Admin\OperatorSmsController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
@@ -40,6 +41,7 @@ use App\Http\Controllers\Frontend\VendingRequestController;
 use App\Http\Controllers\Operator\AccountController;
 use App\Http\Controllers\Operator\BillingController;
 use App\Http\Controllers\Operator\LeadController;
+use App\Http\Controllers\Operator\MembershipCheckoutController;
 use App\Http\Controllers\Operator\RouteController;
 use App\Http\Controllers\Operator\SubscriptionController;
 use App\Http\Controllers\PostAttachmentController;
@@ -94,20 +96,25 @@ Route::middleware(['auth', 'throttle:5,1'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('leads', [LeadController::class, 'index'])->name('leads.index');
+    Route::get('leads', [LeadController::class, 'index'])
+        ->middleware('membership.active')
+        ->name('leads.index');
     Route::get('leads/purchased', [LeadController::class, 'purchased'])->name('leads.purchased');
     Route::get('leads/tickets', [LeadController::class, 'tickets'])->name('leads.tickets');
     Route::get('leads/faq', [LeadController::class, 'faq'])->name('leads.faq');
     Route::post('leads/{source}/{lead}/purchase', [LeadController::class, 'purchase'])
         ->whereIn('source', ['vending', 'coffee'])
         ->whereNumber('lead')
-        ->middleware('throttle:10,1')
+        ->middleware(['membership.active', 'throttle:10,1'])
         ->name('leads.purchase');
     Route::get('routes', [RouteController::class, 'index'])->name('routes.index');
     Route::get('routes/sell', [RouteController::class, 'sell'])->name('routes.sell');
     Route::get('account', [AccountController::class, 'index'])->name('account.index');
     Route::get('account/location', [AccountController::class, 'location'])->name('account.location');
     Route::get('subscription', [SubscriptionController::class, 'index'])->name('subscription.index');
+    Route::post('subscription/checkout', [MembershipCheckoutController::class, 'store'])
+        ->middleware('throttle:10,1')
+        ->name('subscription.checkout');
     Route::get('billing', [BillingController::class, 'index'])->name('billing.index');
 
     // ── Demo landing page ─────────────────────────────────────────────────────
@@ -282,10 +289,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('permission:'.PermissionEnum::OPERATOR_SMS_SEND->value);
         });
 
-        // Lead payments — read-only purchase history (refunds deferred).
+        // Lead + membership payments — read-only history (refunds deferred).
         Route::controller(AdminPaymentController::class)->group(function () {
             Route::get('payments', 'index')->name('payments.index')
                 ->middleware('permission:'.PermissionEnum::PAYMENTS_INDEX->value);
+        });
+
+        Route::controller(MembershipSettingController::class)->group(function () {
+            Route::get('membership-settings', 'edit')->name('membership-settings.edit')
+                ->middleware('permission:'.PermissionEnum::MEMBERSHIP_SETTINGS_EDIT->value);
+            Route::put('membership-settings', 'update')->name('membership-settings.update')
+                ->middleware(['permission:'.PermissionEnum::MEMBERSHIP_SETTINGS_EDIT->value, HandlePrecognitiveRequests::class]);
         });
 
         Route::controller(SmsTemplateController::class)->group(function () {

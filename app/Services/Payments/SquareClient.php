@@ -82,6 +82,44 @@ class SquareClient
     }
 
     /**
+     * @param  array<string, mixed>  $payload  Must contain `idempotency_key`.
+     * @return string The Square customer id.
+     *
+     * @throws SquarePaymentException
+     */
+    public function createCustomer(array $payload): string
+    {
+        $customer = $this->send(
+            fn (PendingRequest $request): Response => $request->post('/v2/customers', $payload),
+        )['customer'] ?? [];
+
+        $id = (string) ($customer['id'] ?? '');
+
+        if ($id === '') {
+            throw new SquarePaymentException(
+                category: 'INVALID_REQUEST_ERROR',
+                errorCode: 'CUSTOMER_CREATE_FAILED',
+                detail: 'Square did not return a customer id.',
+            );
+        }
+
+        return $id;
+    }
+
+    /**
+     * Save a card on file for recurring membership charges.
+     *
+     * @param  array<string, mixed>  $payload  Must contain `idempotency_key`, `source_id`, and `card.customer_id`.
+     * @return array<string, mixed> The Square `card` object.
+     *
+     * @throws SquarePaymentException
+     */
+    public function createCard(array $payload): array
+    {
+        return $this->send(fn (PendingRequest $request): Response => $request->post('/v2/cards', $payload))['card'] ?? [];
+    }
+
+    /**
      * @return array<string, mixed> The Square `payment` object.
      *
      * @throws SquarePaymentException

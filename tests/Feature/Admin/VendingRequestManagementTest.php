@@ -194,7 +194,9 @@ test('admin can create a vending request with a custom price', function () {
 });
 
 test('admin can update lead price until the lead is sold', function () {
-    $request = VendingRequest::factory()->create(['price' => 150]);
+    Queue::fake();
+
+    $request = VendingRequest::factory()->unpriced()->create();
 
     $this->actingAs($this->admin)
         ->put(route('admin.vending-requests.update', $request), [
@@ -203,6 +205,16 @@ test('admin can update lead price until the lead is sold', function () {
         ->assertRedirect();
 
     expect($request->fresh()->price)->toBe(199);
+    Queue::assertPushed(NotifyNearbyOperatorsOfLead::class);
+
+    $this->actingAs($this->admin)
+        ->put(route('admin.vending-requests.update', $request), [
+            'price' => 210,
+        ])
+        ->assertRedirect();
+
+    // Repricing an already-priced lead does not re-notify.
+    Queue::assertPushed(NotifyNearbyOperatorsOfLead::class, 1);
 
     LeadPurchase::factory()->create([
         'user_id' => makeOperator()->id,
@@ -216,5 +228,5 @@ test('admin can update lead price until the lead is sold', function () {
         ])
         ->assertSessionHasErrors('price');
 
-    expect($request->fresh()->price)->toBe(199);
+    expect($request->fresh()->price)->toBe(210);
 });

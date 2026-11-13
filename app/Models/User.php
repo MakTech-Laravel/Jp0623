@@ -53,6 +53,22 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * @return HasOne<OperatorMembership, $this>
+     */
+    public function membership(): HasOne
+    {
+        return $this->hasOne(OperatorMembership::class);
+    }
+
+    /**
+     * @return HasMany<MembershipPayment, $this>
+     */
+    public function membershipPayments(): HasMany
+    {
+        return $this->hasMany(MembershipPayment::class);
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

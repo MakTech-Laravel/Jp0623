@@ -19,12 +19,17 @@ class PaymentController extends Controller
         $status = is_string($status) && $status !== '' && $status !== 'all'
             ? $status
             : null;
+        $source = $request->query('source');
+        $source = is_string($source) && $source !== '' && $source !== 'all'
+            ? $source
+            : null;
 
         return Inertia::render('admin/payments/index', [
-            'payments' => $this->payments->paginateForAdmin($search, $status),
+            'payments' => $this->payments->paginateForAdmin($search, $status, $source),
             'filters' => [
                 'search' => $search,
                 'status' => $status,
+                'source' => $source,
             ],
         ]);
     }

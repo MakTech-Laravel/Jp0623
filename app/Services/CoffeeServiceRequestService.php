@@ -76,12 +76,23 @@ class CoffeeServiceRequestService
         $data['operator_sms_note'] = 'Waiting to notify nearby operators.';
         $data['operator_sms_notified_at'] = null;
         $data['notes'] = filled($data['notes'] ?? null) ? trim((string) $data['notes']) : null;
-        $data['price'] = max(1, (int) ($data['price'] ?? config('leads.price')));
+
+        $wasPricedOnCreate = array_key_exists('price', $data) && $data['price'] !== null && $data['price'] !== '';
+
+        if ($wasPricedOnCreate) {
+            $data['price'] = max(1, (int) $data['price']);
+        } else {
+            $data['price'] = null;
+            $data['operator_sms_note'] = 'Waiting for an admin to set a price before notifying operators.';
+        }
+
         $data = $this->normalizeLocation($data);
 
         $coffeeServiceRequest = CoffeeServiceRequest::create($data);
 
-        NotifyNearbyOperatorsOfLead::dispatch('coffee', $coffeeServiceRequest->id);
+        if ($wasPricedOnCreate) {
+            NotifyNearbyOperatorsOfLead::dispatch('coffee', $coffeeServiceRequest->id);
+        }
 
         return $coffeeServiceRequest;
     }
@@ -92,6 +103,7 @@ class CoffeeServiceRequestService
     public function update(CoffeeServiceRequest $coffeeServiceRequest, array $data): CoffeeServiceRequest
     {
         $updates = [];
+        $becamePriced = false;
 
         if (array_key_exists('status', $data)) {
             $updates['status'] = $data['status'];
@@ -104,11 +116,17 @@ class CoffeeServiceRequestService
                 ]);
             }
 
+            $previousPrice = $coffeeServiceRequest->price;
             $updates['price'] = max(1, (int) $data['price']);
+            $becamePriced = $previousPrice === null || (int) $previousPrice < 1;
         }
 
         if ($updates !== []) {
             $coffeeServiceRequest->update($updates);
+        }
+
+        if ($becamePriced) {
+            NotifyNearbyOperatorsOfLead::dispatch('coffee', $coffeeServiceRequest->id);
         }
 
         return $coffeeServiceRequest->refresh();

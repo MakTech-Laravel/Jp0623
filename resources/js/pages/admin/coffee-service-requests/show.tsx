@@ -171,7 +171,9 @@ export default function ShowCoffeeServiceRequest({
                         <div className="rounded-lg border p-4 text-sm">
                             Lead price:{' '}
                             <span className="font-medium">
-                                ${coffeeServiceRequest.price}
+                                {coffeeServiceRequest.price !== null
+                                    ? `$${coffeeServiceRequest.price}`
+                                    : 'Not set — hidden from operators'}
                             </span>
                         </div>
                     )}

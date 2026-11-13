@@ -28,6 +28,7 @@ interface LastPaidCard {
 
 interface Invoice {
     id: string;
+    source?: 'lead' | 'membership';
     location: string | null;
     date: string;
     status: string;
@@ -84,8 +85,8 @@ export default function BillingIndex({
                         Billing &amp; invoices
                     </h1>
                     <p className="mt-1 max-w-3xl text-muted-foreground">
-                        Paid location-lead purchases. Cards are entered per
-                        purchase — nothing is stored on file.
+                        Lead purchases and membership charges. Membership cards
+                        stay on file for renewals; lead checkouts are one-time.
                     </p>
                 </div>
 
@@ -124,7 +125,7 @@ export default function BillingIndex({
                                             colSpan={8}
                                             className="py-10 text-center text-muted-foreground"
                                         >
-                                            No paid purchases yet.
+                                            No paid invoices yet.
                                         </TableCell>
                                     </TableRow>
                                 ) : (

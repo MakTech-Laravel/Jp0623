@@ -1,12 +1,16 @@
 <?php
 
 use App\Enums\OperatorSmsStatus;
+use App\Enums\RoleEnum;
 use App\Jobs\NotifyNearbyOperatorsOfLead;
 use App\Models\CoffeeServiceRequest;
 use App\Models\LocationType;
 use App\Models\OperatorProfile;
 use App\Models\SmsTemplate;
+use App\Models\User;
 use App\Models\VendingRequest;
+use Database\Seeders\PermissionSeeder;
+use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
@@ -87,7 +91,7 @@ function nearbySmsCoffeePayload(array $overrides = []): array
     ];
 }
 
-test('vending request submission dispatches nearby operator sms job', function () {
+test('public vending request submission does not notify operators until priced', function () {
     Queue::fake();
 
     $this->from('/')
@@ -96,12 +100,11 @@ test('vending request submission dispatches nearby operator sms job', function (
 
     $request = VendingRequest::query()->sole();
 
-    Queue::assertPushed(NotifyNearbyOperatorsOfLead::class, function (NotifyNearbyOperatorsOfLead $job) use ($request): bool {
-        return $job->leadType === 'vending' && $job->leadId === $request->id;
-    });
+    expect($request->price)->toBeNull();
+    Queue::assertNotPushed(NotifyNearbyOperatorsOfLead::class);
 });
 
-test('coffee request submission dispatches nearby operator sms job', function () {
+test('public coffee request submission does not notify operators until priced', function () {
     Queue::fake();
 
     $this->from('/office-coffee')
@@ -110,8 +113,25 @@ test('coffee request submission dispatches nearby operator sms job', function ()
 
     $request = CoffeeServiceRequest::query()->sole();
 
+    expect($request->price)->toBeNull();
+    Queue::assertNotPushed(NotifyNearbyOperatorsOfLead::class);
+});
+
+test('setting a price on an unpriced vending lead dispatches nearby operator sms job', function () {
+    Queue::fake();
+
+    $this->seed([PermissionSeeder::class, RoleSeeder::class]);
+    $admin = User::factory()->create();
+    $admin->assignRole(RoleEnum::SUPER_ADMIN->value);
+
+    $request = VendingRequest::factory()->unpriced()->create();
+
+    $this->actingAs($admin)
+        ->put(route('admin.vending-requests.update', $request), ['price' => 150])
+        ->assertRedirect();
+
     Queue::assertPushed(NotifyNearbyOperatorsOfLead::class, function (NotifyNearbyOperatorsOfLead $job) use ($request): bool {
-        return $job->leadType === 'coffee' && $job->leadId === $request->id;
+        return $job->leadType === 'vending' && $job->leadId === $request->id;
     });
 });
 
@@ -137,9 +157,17 @@ test('nearby operators within 100 miles receive twilio sms for a vending lead', 
         'longitude' => -74.0060,
     ]);
 
-    $this->from('/')
-        ->post(route('vending-requests.store'), nearbySmsVendingPayload())
-        ->assertRedirect('/#request-sec');
+    $lead = VendingRequest::factory()->create([
+        'business_name' => 'Riverside Logistics',
+        'phone' => '(555) 555-5555',
+        'city' => 'Houston',
+        'state' => 'TX',
+        'latitude' => 29.7604,
+        'longitude' => -95.3698,
+        'price' => 150,
+    ]);
+
+    NotifyNearbyOperatorsOfLead::dispatchSync('vending', $lead->id);
 
     Http::assertSentCount(1);
 
@@ -151,7 +179,7 @@ test('nearby operators within 100 miles receive twilio sms for a vending lead', 
             && str_contains((string) $request['Body'], '(555) 555-5555');
     });
 
-    $lead = VendingRequest::query()->sole();
+    $lead->refresh();
 
     expect($lead->operator_sms_status)->toBe(OperatorSmsStatus::DONE->value)
         ->and($lead->operator_sms_sent_count)->toBe(1)
@@ -175,9 +203,16 @@ test('nearby operators within 100 miles receive twilio sms for a coffee lead', f
         'longitude' => -95.3580,
     ]);
 
-    $this->from('/office-coffee')
-        ->post(route('coffee-service-requests.store'), nearbySmsCoffeePayload())
-        ->assertRedirect('/office-coffee#coffee-form');
+    $lead = CoffeeServiceRequest::factory()->create([
+        'business_name' => 'Harbor Offices',
+        'city' => 'Houston',
+        'state' => 'TX',
+        'latitude' => 29.7604,
+        'longitude' => -95.3698,
+        'price' => 150,
+    ]);
+
+    NotifyNearbyOperatorsOfLead::dispatchSync('coffee', $lead->id);
 
     Http::assertSentCount(1);
 
@@ -186,7 +221,7 @@ test('nearby operators within 100 miles receive twilio sms for a coffee lead', f
             && str_contains((string) $request['Body'], 'TEMPLATE COFFEE Harbor Offices');
     });
 
-    $lead = CoffeeServiceRequest::query()->sole();
+    $lead->refresh();
 
     expect($lead->operator_sms_status)->toBe(OperatorSmsStatus::DONE->value)
         ->and($lead->operator_sms_sent_count)->toBe(1)
@@ -204,13 +239,17 @@ test('sms is skipped when twilio is disabled', function () {
         'longitude' => -95.3698,
     ]);
 
-    $this->from('/')
-        ->post(route('vending-requests.store'), nearbySmsVendingPayload())
-        ->assertRedirect('/#request-sec');
+    $lead = VendingRequest::factory()->create([
+        'latitude' => 29.7604,
+        'longitude' => -95.3698,
+        'price' => 150,
+    ]);
+
+    NotifyNearbyOperatorsOfLead::dispatchSync('vending', $lead->id);
 
     Http::assertNothingSent();
 
-    expect(VendingRequest::query()->sole()->operator_sms_status)
+    expect($lead->fresh()->operator_sms_status)
         ->toBe(OperatorSmsStatus::SKIPPED->value);
 });
 
@@ -229,11 +268,15 @@ test('operator sms status is failed when twilio rejects the message', function (
         'longitude' => -95.3698,
     ]);
 
-    $this->from('/office-coffee')
-        ->post(route('coffee-service-requests.store'), nearbySmsCoffeePayload())
-        ->assertRedirect('/office-coffee#coffee-form');
+    $lead = CoffeeServiceRequest::factory()->create([
+        'latitude' => 29.7604,
+        'longitude' => -95.3698,
+        'price' => 150,
+    ]);
 
-    $lead = CoffeeServiceRequest::query()->sole();
+    NotifyNearbyOperatorsOfLead::dispatchSync('coffee', $lead->id);
+
+    $lead->refresh();
 
     expect($lead->operator_sms_status)->toBe(OperatorSmsStatus::FAILED->value)
         ->and($lead->operator_sms_failed_count)->toBe(1)

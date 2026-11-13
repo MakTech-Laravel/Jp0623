@@ -216,7 +216,7 @@ export interface AdminVendingRequest {
     email: string;
     phone: string;
     terms_accepted: boolean;
-    price: number;
+    price: number | null;
     status: 'new' | 'reviewed';
     operator_sms_status: OperatorSmsStatus;
     operator_sms_sent_count: number;
@@ -247,7 +247,7 @@ export interface AdminCoffeeServiceRequest {
     email: string;
     notes: string | null;
     terms_accepted: boolean;
-    price: number;
+    price: number | null;
     status: 'new' | 'reviewed' | 'closed';
     operator_sms_status: OperatorSmsStatus;
     operator_sms_sent_count: number;

@@ -154,6 +154,12 @@ class LeadPurchaseService
                     ->lockForUpdate()
                     ->findOrFail($leadId);
 
+                if ($lead->price === null || (int) $lead->price < 1) {
+                    throw new LeadUnavailableException(
+                        'This lead is not available for purchase until a price is set.',
+                    );
+                }
+
                 $price = max(1, (int) $lead->price);
 
                 if (LeadPurchase::query()->where('lead_lock', $leadKey)->exists()) {
