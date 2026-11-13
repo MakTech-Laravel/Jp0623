@@ -46,6 +46,7 @@ test('a guest can submit a coffee service request', function () {
         ->and($request->email)->toBe('jane@example.com')
         ->and($request->notes)->toBe('Prefer morning delivery.')
         ->and($request->status)->toBe(CoffeeServiceRequest::STATUS_NEW)
+        ->and($request->price)->toBeNull()
         ->and($request->terms_accepted)->toBeTrue();
 });
 

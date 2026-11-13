@@ -153,7 +153,9 @@ export default function ShowVendingRequest({
                         <div className="rounded-lg border p-4 text-sm">
                             Lead price:{' '}
                             <span className="font-medium">
-                                ${vendingRequest.price}
+                                {vendingRequest.price !== null
+                                    ? `$${vendingRequest.price}`
+                                    : 'Not set — hidden from operators'}
                             </span>
                         </div>
                     )}

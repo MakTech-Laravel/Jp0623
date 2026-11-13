@@ -22,6 +22,7 @@ test('operators see new and reviewed vending and coffee requests as leads', func
     CoffeeServiceRequest::factory()->create(['status' => 'new']);
     CoffeeServiceRequest::factory()->reviewed()->create();
     CoffeeServiceRequest::factory()->create(['status' => 'closed']);
+    VendingRequest::factory()->unpriced()->create(['status' => 'new']);
 
     $this->actingAs(makeOperator())
         ->get(route('leads.index'))
@@ -30,6 +31,27 @@ test('operators see new and reviewed vending and coffee requests as leads', func
             ->component('operator/leads/index')
             ->has('leads', 4)
             ->where('leads.0.price', (int) config('leads.price'))
+        );
+});
+
+test('unpriced leads stay hidden until an admin sets a price', function () {
+    $lead = VendingRequest::factory()->unpriced()->create(['status' => 'new']);
+
+    $operator = makeOperator();
+
+    $this->actingAs($operator)
+        ->get(route('leads.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page->has('leads', 0));
+
+    $lead->update(['price' => 175]);
+
+    $this->actingAs($operator)
+        ->get(route('leads.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('leads', 1)
+            ->where('leads.0.price', 175)
         );
 });
 

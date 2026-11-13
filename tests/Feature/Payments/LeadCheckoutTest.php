@@ -352,6 +352,21 @@ test('closed and unknown leads return 404 and make no charge', function () {
     Http::assertNothingSent();
 });
 
+test('unpriced leads cannot be purchased', function () {
+    fakeSquareCompleted();
+
+    $lead = VendingRequest::factory()->unpriced()->create();
+
+    $this->actingAs(makeOperator())
+        ->from(route('leads.index'))
+        ->post(purchaseUrl('vending', $lead->id), ['source_id' => 'cnon:card-nonce'])
+        ->assertRedirect(route('leads.index'))
+        ->assertSessionHasErrors('payment');
+
+    expect(LeadPurchase::query()->count())->toBe(0);
+    expect(squareCallCount())->toBe(0);
+});
+
 test('the card token is required and guests are redirected to log in', function () {
     $lead = VendingRequest::factory()->create();
 

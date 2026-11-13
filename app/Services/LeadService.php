@@ -131,6 +131,8 @@ class LeadService
             $leads = $leads->concat(
                 $this->modelClass($source)::query()
                     ->whereIn('status', self::LISTED_STATUSES)
+                    ->whereNotNull('price')
+                    ->where('price', '>=', 1)
                     ->whereNotIn('id', $heldIds)
                     ->latest()
                     ->limit(200)

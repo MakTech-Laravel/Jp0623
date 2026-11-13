@@ -62,6 +62,13 @@ class VendingRequestFactory extends Factory
         ];
     }
 
+    public function unpriced(): static
+    {
+        return $this->state(fn (array $attributes): array => [
+            'price' => null,
+        ]);
+    }
+
     public function reviewed(): static
     {
         return $this->state(fn (array $attributes): array => [
