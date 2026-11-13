@@ -60,6 +60,9 @@ export interface OperatorDashboardProps {
     subscription: {
         status: string;
         label: string;
+        needs_payment: boolean;
+        is_paid_mode: boolean;
+        monthly_price: number;
     };
     kpis: OperatorKpi[];
     leads: OperatorLead[];

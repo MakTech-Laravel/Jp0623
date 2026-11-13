@@ -53,6 +53,7 @@ import adminProducts from '@/routes/admin/products';
 import adminUserManagement from '@/routes/admin/user-management';
 import adminCoffeeServiceRequests from '@/routes/admin/coffee-service-requests';
 import adminOperatorSms from '@/routes/admin/operator-sms';
+import adminMembershipSettings from '@/routes/admin/membership-settings';
 import adminPayments from '@/routes/admin/payments';
 import adminVendingRequests from '@/routes/admin/vending-requests';
 import { index as billingIndex } from '@/routes/billing';
@@ -269,6 +270,12 @@ export function AppSidebar() {
                 href: adminPayments.index(),
                 icon: Receipt,
                 permissions: [PERMISSIONS.PAYMENTS.INDEX],
+            },
+            {
+                title: 'Membership settings',
+                href: adminMembershipSettings.edit(),
+                icon: CreditCard,
+                permissions: [PERMISSIONS.MEMBERSHIP_SETTINGS.EDIT],
             },
             {
                 title: 'FAQ Management',

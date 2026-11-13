@@ -2,6 +2,8 @@
 
 namespace App\Demo;
 
+use App\Services\MembershipSettingsService;
+
 class OperatorsPageData
 {
     /**
@@ -32,17 +34,25 @@ class OperatorsPageData
      */
     public static function hero(): array
     {
+        $settings = app(MembershipSettingsService::class)->current();
+        $isPaid = $settings->isPaid();
+        $price = (int) $settings->monthly_price;
+
         return [
             'eyebrow' => 'For vending operators',
             'title' => 'Join the largest network of independent vending operators.',
             'lead' => 'See verified location leads in your area: businesses that asked for vending and confirmed their details with our team.',
             'primaryCta' => [
-                'label' => 'Join free',
+                'label' => $isPaid ? 'Create account' : 'Join free',
                 'href' => '/register',
             ],
             'secondaryCta' => [
                 'label' => 'Operator login',
                 'href' => '/login',
+            ],
+            'membership' => [
+                'mode' => $settings->mode,
+                'monthly_price' => $price,
             ],
         ];
     }
@@ -52,6 +62,23 @@ class OperatorsPageData
      */
     public static function pricing(): array
     {
+        $settings = app(MembershipSettingsService::class)->current();
+        $isPaid = $settings->isPaid();
+        $price = (int) $settings->monthly_price;
+
+        if ($isPaid) {
+            return [
+                'eyebrow' => 'Operator membership',
+                'price' => '$'.$price,
+                'period' => '/mo',
+                'text' => "Membership is \${$price}/month and unlocks the lead marketplace. You still pay per lead when you buy one.",
+                'cta' => [
+                    'label' => 'Create account',
+                    'href' => '/register',
+                ],
+            ];
+        }
+
         return [
             'eyebrow' => 'Operator membership',
             'price' => 'Free',
@@ -123,13 +150,21 @@ class OperatorsPageData
      */
     public static function faqs(): array
     {
+        $settings = app(MembershipSettingsService::class)->current();
+        $isPaid = $settings->isPaid();
+        $price = (int) $settings->monthly_price;
+
+        $costAnswer = $isPaid
+            ? "Membership is \${$price}/month and includes access to verified location leads in your area plus alerts when new ones are added. You also pay when you buy a lead."
+            : 'Membership is free. You get access to verified location leads in your area and alerts when new ones are added.';
+
         return [
             'eyebrow' => 'FAQ',
             'title' => 'Operator questions.',
             'items' => [
                 [
                     'q' => "How much does it cost and what's included?",
-                    'a' => 'Membership is free. You get access to verified location leads in your area and alerts when new ones are added.',
+                    'a' => $costAnswer,
                 ],
                 [
                     'q' => 'What are qualified location leads?',

@@ -15,6 +15,7 @@ import {
 import { formatDistance, leadArea } from '@/lib/lead';
 import { dashboard } from '@/routes';
 import { index as leadsIndex } from '@/routes/leads';
+import { index as subscriptionIndex } from '@/routes/subscription';
 import type {
     OperatorDashboardProps,
     OperatorLead,
@@ -27,6 +28,7 @@ function money(value: number): string {
 export default function OperatorDashboard({
     firstName,
     primaryCity,
+    subscription,
     kpis,
     newestLeads,
     activity,
@@ -48,6 +50,25 @@ export default function OperatorDashboard({
                         routes and account.
                     </p>
                 </div>
+
+                {subscription.needs_payment ? (
+                    <div className="flex flex-col gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <p className="font-medium text-amber-950 dark:text-amber-100">
+                                Membership required
+                            </p>
+                            <p className="mt-1 text-sm text-amber-900/80 dark:text-amber-100/80">
+                                Pay ${subscription.monthly_price}/month to buy
+                                leads in the marketplace.
+                            </p>
+                        </div>
+                        <Button asChild>
+                            <Link href={subscriptionIndex()}>
+                                Activate membership
+                            </Link>
+                        </Button>
+                    </div>
+                ) : null}
 
                 <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                     {kpis.map((kpi) => (

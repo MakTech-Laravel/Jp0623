@@ -7,6 +7,7 @@ use App\Concerns\ProfileValidationRules;
 use App\Enums\RoleEnum;
 use App\Mail\RegisterOtpMail;
 use App\Models\User;
+use App\Services\MembershipService;
 use App\Support\RegisterOtp;
 use Closure;
 use Illuminate\Support\Facades\Auth;
@@ -83,6 +84,8 @@ class CreateOperatorAccount
             ]);
 
             $user->assignRole(RoleEnum::USER->value);
+
+            app(MembershipService::class)->ensureFor($user);
 
             return $user;
         });

@@ -6,9 +6,17 @@ import { login } from '@/routes';
 
 type Props = {
     passwordRules: string;
+    membership?: {
+        mode: 'free' | 'paid';
+        monthly_price: number;
+        is_paid: boolean;
+    };
 };
 
-export default function Register({ passwordRules }: Props) {
+export default function Register({ passwordRules, membership }: Props) {
+    const isPaid = membership?.is_paid ?? false;
+    const monthlyPrice = membership?.monthly_price ?? 29;
+
     return (
         <>
             <Head title="Join as an Operator" />
@@ -23,7 +31,9 @@ export default function Register({ passwordRules }: Props) {
                             Join Vending Machine Locations For Sale
                         </h1>
                         <p className="mt-3 text-brand-muted">
-                            Free to join. No membership fees.
+                            {isPaid
+                                ? `Membership is $${monthlyPrice}/month after you create your account.`
+                                : 'Free to join. No membership fees.'}
                         </p>
                         <ul className="mt-5 flex list-none flex-col gap-2 p-0 text-sm text-brand-ink">
                             <li className="before:mr-2 before:font-bold before:text-good before:content-['✓']">

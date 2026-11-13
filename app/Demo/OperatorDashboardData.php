@@ -2,8 +2,11 @@
 
 namespace App\Demo;
 
+use App\Models\OperatorMembership;
 use App\Models\User;
 use App\Services\LeadService;
+use App\Services\MembershipService;
+use App\Services\MembershipSettingsService;
 
 class OperatorDashboardData
 {
@@ -21,6 +24,16 @@ class OperatorDashboardData
         $leads = $leadService->availableFor($user);
         $counts = $leadService->counts($user);
 
+        $settings = app(MembershipSettingsService::class)->current();
+        $membership = app(MembershipService::class)->ensureFor($user);
+        $membershipLabel = match ($membership->status) {
+            OperatorMembership::STATUS_ACTIVE => '$'.(int) ($membership->monthly_price ?: $settings->monthly_price).'/mo',
+            OperatorMembership::STATUS_REQUIRED => 'Required',
+            OperatorMembership::STATUS_PAST_DUE => 'Past due',
+            OperatorMembership::STATUS_CANCELED => 'Canceled',
+            default => 'Free',
+        };
+
         $activity = array_map(
             fn (array $lead): array => [
                 'text' => "New lead listed: {$lead['type']}".($lead['city'] !== '' ? " in {$lead['city']}" : ''),
@@ -33,8 +46,11 @@ class OperatorDashboardData
             'firstName' => $firstName,
             'primaryCity' => $profile?->primary_city ?: 'Not set',
             'subscription' => [
-                'status' => 'free',
-                'label' => 'Free',
+                'status' => $membership->status,
+                'label' => $membershipLabel,
+                'needs_payment' => $settings->isPaid() && $membership->needsPayment(),
+                'is_paid_mode' => $settings->isPaid(),
+                'monthly_price' => (int) $settings->monthly_price,
             ],
             'kpis' => [
                 [
@@ -49,8 +65,10 @@ class OperatorDashboardData
                 ],
                 [
                     'label' => 'Membership',
-                    'value' => 'Free',
-                    'hint' => null,
+                    'value' => $membershipLabel,
+                    'hint' => $settings->isPaid() && $membership->needsPayment()
+                        ? 'Subscribe to buy leads'
+                        : null,
                 ],
             ],
             'leads' => $leads,

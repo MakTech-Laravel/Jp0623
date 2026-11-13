@@ -112,8 +112,11 @@ enum PermissionEnum: string
     case OPERATOR_SMS_INDEX = 'operator-sms.index';
     case OPERATOR_SMS_SEND = 'operator-sms.send';
 
-    // PAYMENTS (lead purchase history; refunds deferred)
+    // PAYMENTS (lead + membership history; refunds deferred)
     case PAYMENTS_INDEX = 'payments.index';
+
+    // MEMBERSHIP SETTINGS
+    case MEMBERSHIP_SETTINGS_EDIT = 'membership-settings.edit';
 
     // -------------------------------------------------------------------------
     // group() — returns the display group for the `group` DB column.
@@ -214,6 +217,8 @@ enum PermissionEnum: string
             self::OPERATOR_SMS_SEND => 'Operator SMS',
 
             self::PAYMENTS_INDEX => 'Payments',
+
+            self::MEMBERSHIP_SETTINGS_EDIT => 'Membership Settings',
         };
     }
 

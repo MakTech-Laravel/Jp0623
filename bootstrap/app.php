@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureOperatorMembershipActive;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
@@ -33,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'membership.active' => EnsureOperatorMembershipActive::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

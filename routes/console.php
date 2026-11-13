@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // Settle lead purchases whose Square outcome was unknown (needs the scheduler cron).
 Schedule::command('payments:reconcile')->everyFiveMinutes()->withoutOverlapping();
+
+// Charge due operator memberships (card on file).
+Schedule::command('memberships:bill')->daily()->withoutOverlapping();

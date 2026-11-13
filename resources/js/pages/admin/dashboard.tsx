@@ -1,9 +1,11 @@
 import { Head, Link } from '@inertiajs/react';
 import {
     Coffee,
+    CreditCard,
     FolderTree,
     Inbox,
     Package,
+    Receipt,
     ShoppingBasket,
     UserCog,
     Users,
@@ -16,6 +18,8 @@ import adminAdminManagement from '@/routes/admin/admin-management';
 import adminCoffeeServiceRequests from '@/routes/admin/coffee-service-requests';
 import adminMachineCategories from '@/routes/admin/machine-categories';
 import adminMachines from '@/routes/admin/machines';
+import adminMembershipSettings from '@/routes/admin/membership-settings';
+import adminPayments from '@/routes/admin/payments';
 import adminProducts from '@/routes/admin/products';
 import adminUserManagement from '@/routes/admin/user-management';
 import adminVendingRequests from '@/routes/admin/vending-requests';
@@ -37,9 +41,29 @@ type AdminDashboardProps = {
         vendingRequests: { total: number; new: number };
         coffeeRequests: { total: number; new: number };
     };
+    revenue: {
+        lead_mtd: number;
+        lead_all: number;
+        membership_mtd: number;
+        membership_all: number;
+        total_mtd: number;
+    };
+    membership: {
+        mode: 'free' | 'paid';
+        monthly_price: number;
+        required: number;
+        past_due: number;
+    };
     recentVendingRequests: RequestSummary[];
     recentCoffeeRequests: RequestSummary[];
 };
+
+function money(value: number): string {
+    return `$${value.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    })}`;
+}
 
 function formatDate(value: string): string {
     return new Date(value).toLocaleDateString(undefined, {
@@ -65,6 +89,8 @@ function statusLabel(status: string): string {
 
 export default function AdminDashboard({
     stats,
+    revenue,
+    membership,
     recentVendingRequests,
     recentCoffeeRequests,
 }: AdminDashboardProps) {
@@ -209,6 +235,58 @@ export default function AdminDashboard({
                             </Link>
                         );
                     })}
+                </div>
+
+                <div className="grid gap-3 lg:grid-cols-3">
+                    <Link
+                        href={adminPayments.index({ query: { source: 'lead' } }).url}
+                        className="rounded-xl border bg-card p-5 shadow-sm transition-colors hover:bg-muted/40"
+                    >
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Receipt className="h-4 w-4" /> Lead revenue
+                        </div>
+                        <p className="mt-2 text-2xl font-bold tabular-nums">
+                            {money(revenue.lead_mtd)}
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            MTD · All-time {money(revenue.lead_all)}
+                        </p>
+                    </Link>
+                    <Link
+                        href={adminPayments.index({
+                            query: { source: 'membership' },
+                        }).url}
+                        className="rounded-xl border bg-card p-5 shadow-sm transition-colors hover:bg-muted/40"
+                    >
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <CreditCard className="h-4 w-4" /> Membership
+                            revenue
+                        </div>
+                        <p className="mt-2 text-2xl font-bold tabular-nums">
+                            {money(revenue.membership_mtd)}
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            MTD · All-time {money(revenue.membership_all)}
+                        </p>
+                    </Link>
+                    <Link
+                        href={adminMembershipSettings.edit().url}
+                        className="rounded-xl border bg-card p-5 shadow-sm transition-colors hover:bg-muted/40"
+                    >
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <CreditCard className="h-4 w-4" /> Membership mode
+                        </div>
+                        <p className="mt-2 text-2xl font-bold">
+                            {membership.mode === 'paid'
+                                ? `Paid · $${membership.monthly_price}/mo`
+                                : 'Free'}
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            Required {membership.required} · Past due{' '}
+                            {membership.past_due} · Total MTD{' '}
+                            {money(revenue.total_mtd)}
+                        </p>
+                    </Link>
                 </div>
 
                 <div>

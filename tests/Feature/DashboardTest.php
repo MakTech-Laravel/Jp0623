@@ -53,6 +53,11 @@ test('admins see the admin dashboard overview', function () {
                 ->has('stats.vendingRequests.new')
                 ->has('stats.coffeeRequests.total')
                 ->has('stats.coffeeRequests.new')
+                ->has('revenue.lead_mtd')
+                ->has('revenue.membership_mtd')
+                ->has('revenue.total_mtd')
+                ->has('membership.mode')
+                ->has('membership.required')
                 ->has('recentVendingRequests')
                 ->has('recentCoffeeRequests')
         );
@@ -69,6 +74,8 @@ test('super admins see the admin dashboard overview', function () {
             fn (Assert $page) => $page
                 ->component('admin/dashboard')
                 ->has('stats')
+                ->has('revenue')
+                ->has('membership')
                 ->has('recentVendingRequests')
                 ->has('recentCoffeeRequests')
         );
@@ -88,7 +95,7 @@ test('operators can open the leads stub page', function () {
         );
 });
 
-test('operators can open the subscription stub page', function () {
+test('operators can open the subscription page', function () {
     $user = User::factory()->create();
     $user->assignRole(RoleEnum::USER->value);
 
@@ -98,7 +105,9 @@ test('operators can open the subscription stub page', function () {
         ->assertInertia(
             fn (Assert $page) => $page
                 ->component('operator/subscription/index')
-                ->has('subscription')
+                ->has('settings')
+                ->has('membership')
+                ->has('square')
         );
 });
 
@@ -142,7 +151,7 @@ test('operators can open remaining portal pages', function (string $route, strin
     'sell route' => ['routes.sell', 'operator/routes/sell', []],
     'account' => ['account.index', 'operator/account/index', ['account']],
     'location' => ['account.location', 'operator/account/location', ['primaryCity', 'changesRemaining', 'changesTotal']],
-    'billing' => ['billing.index', 'operator/billing/index', ['paymentMethod', 'invoices']],
+    'billing' => ['billing.index', 'operator/billing/index', ['lastPaidCard', 'invoices']],
 ]);
 
 test('guests are redirected from remaining portal pages', function (string $route) {

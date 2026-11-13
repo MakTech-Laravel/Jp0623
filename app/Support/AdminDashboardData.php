@@ -6,29 +6,23 @@ use App\Enums\RoleEnum;
 use App\Models\CoffeeServiceRequest;
 use App\Models\Machine;
 use App\Models\MachineCategory;
+use App\Models\OperatorMembership;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\VendingRequest;
+use App\Services\MembershipSettingsService;
+use App\Services\PaymentHistoryService;
 
 class AdminDashboardData
 {
     /**
-     * @return array{
-     *     stats: array{
-     *         operators: int,
-     *         admins: int,
-     *         machines: int,
-     *         categories: int,
-     *         products: int,
-     *         vendingRequests: array{total: int, new: int},
-     *         coffeeRequests: array{total: int, new: int}
-     *     },
-     *     recentVendingRequests: list<array{id: int, business_name: string, status: string, created_at: string}>,
-     *     recentCoffeeRequests: list<array{id: int, business_name: string, status: string, created_at: string}>
-     * }
+     * @return array<string, mixed>
      */
     public static function make(): array
     {
+        $settings = app(MembershipSettingsService::class)->current();
+        $revenue = app(PaymentHistoryService::class)->revenueSummary();
+
         return [
             'stats' => [
                 'operators' => User::role(RoleEnum::USER->value)->count(),
@@ -48,6 +42,17 @@ class AdminDashboardData
                         ->where('status', CoffeeServiceRequest::STATUS_NEW)
                         ->count(),
                 ],
+            ],
+            'revenue' => $revenue,
+            'membership' => [
+                'mode' => $settings->mode,
+                'monthly_price' => (int) $settings->monthly_price,
+                'required' => OperatorMembership::query()
+                    ->where('status', OperatorMembership::STATUS_REQUIRED)
+                    ->count(),
+                'past_due' => OperatorMembership::query()
+                    ->where('status', OperatorMembership::STATUS_PAST_DUE)
+                    ->count(),
             ],
             'recentVendingRequests' => VendingRequest::query()
                 ->latest()

@@ -51,7 +51,10 @@ test('super admin can view the payments list', function () {
             ->where('payments.data.0.invoice_id', 'LP-'.$purchase->id)
             ->where('payments.data.0.lead_name', 'Site One')
             ->where('payments.data.0.square_payment_id', 'sqpay_admin_list_1')
-            ->has('filters')
+            ->where('payments.data.0.source', 'lead')
+            ->has('filters.search')
+            ->has('filters.status')
+            ->has('filters.source')
         );
 });
 
