@@ -192,7 +192,7 @@ class LeadService
             'people' => $isCoffee ? null : $lead->employees_on_site,
             'wants' => $isCoffee ? 'Office coffee' : implode(', ', $lead->machine_interests ?? []),
             'io' => $isCoffee ? null : $lead->placement,
-            'price' => (int) config('leads.price'),
+            'price' => (int) $lead->price,
             'listed' => $this->listedLabel($lead),
         ];
     }

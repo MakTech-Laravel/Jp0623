@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { ConfirmDeleteDialog } from '@/components/admin/confirm-delete-dialog';
+import { LeadPriceEditor } from '@/components/admin/lead-price-editor';
 import {
     LeadBuyerNote,
     LeadSaleBadge,
@@ -139,6 +140,23 @@ export default function ShowVendingRequest({
                             buyer={leadBuyer}
                         />
                     </div>
+
+                    {can(PERMISSIONS.VENDING_REQUESTS.EDIT) ? (
+                        <LeadPriceEditor
+                            price={vendingRequest.price}
+                            locked={vendingRequest.is_sold}
+                            updateUrl={
+                                vendingRequests.update(vendingRequest.id).url
+                            }
+                        />
+                    ) : (
+                        <div className="rounded-lg border p-4 text-sm">
+                            Lead price:{' '}
+                            <span className="font-medium">
+                                ${vendingRequest.price}
+                            </span>
+                        </div>
+                    )}
 
                     <div className="grid gap-6 lg:grid-cols-2">
                         <Section title="Location">

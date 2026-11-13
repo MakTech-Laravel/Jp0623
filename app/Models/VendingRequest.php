@@ -34,6 +34,7 @@ use Illuminate\Support\Carbon;
  * @property string $email
  * @property string $phone
  * @property bool $terms_accepted
+ * @property int $price
  * @property string $status
  * @property string $operator_sms_status
  * @property int $operator_sms_sent_count
@@ -102,6 +103,7 @@ class VendingRequest extends Model
         'email',
         'phone',
         'terms_accepted',
+        'price',
         'status',
         'operator_sms_status',
         'operator_sms_sent_count',
@@ -129,6 +131,7 @@ class VendingRequest extends Model
         return [
             'machine_interests' => 'array',
             'terms_accepted' => 'boolean',
+            'price' => 'integer',
             'employees_on_site' => 'integer',
             'daily_visitors' => 'integer',
             'latitude' => 'decimal:7',

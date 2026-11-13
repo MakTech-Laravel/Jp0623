@@ -4,9 +4,11 @@ namespace App\Services;
 
 use App\Enums\OperatorSmsStatus;
 use App\Jobs\NotifyNearbyOperatorsOfLead;
+use App\Models\LeadPurchase;
 use App\Models\VendingRequest;
 use App\Services\Concerns\FiltersLeadSaleStatus;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Validation\ValidationException;
 
 class VendingRequestService
 {
@@ -85,6 +87,8 @@ class VendingRequestService
             $data['switch_reason'] = null;
         }
 
+        $data['price'] = max(1, (int) ($data['price'] ?? config('leads.price')));
+
         $data = $this->normalizeLocation($data);
 
         $vendingRequest = VendingRequest::create($data);
@@ -94,11 +98,44 @@ class VendingRequestService
         return $vendingRequest;
     }
 
-    public function updateStatus(VendingRequest $vendingRequest, string $status): VendingRequest
+    /**
+     * @param  array{status?: string, price?: int}  $data
+     */
+    public function update(VendingRequest $vendingRequest, array $data): VendingRequest
     {
-        $vendingRequest->update(['status' => $status]);
+        $updates = [];
+
+        if (array_key_exists('status', $data)) {
+            $updates['status'] = $data['status'];
+        }
+
+        if (array_key_exists('price', $data)) {
+            if ($this->hasPaidPurchase($vendingRequest)) {
+                throw ValidationException::withMessages([
+                    'price' => 'Price cannot be changed after this lead has been sold.',
+                ]);
+            }
+
+            $updates['price'] = max(1, (int) $data['price']);
+        }
+
+        if ($updates !== []) {
+            $vendingRequest->update($updates);
+        }
 
         return $vendingRequest->refresh();
+    }
+
+    public function updateStatus(VendingRequest $vendingRequest, string $status): VendingRequest
+    {
+        return $this->update($vendingRequest, ['status' => $status]);
+    }
+
+    public function hasPaidPurchase(VendingRequest $vendingRequest): bool
+    {
+        return $vendingRequest->leadPurchases()
+            ->where('status', LeadPurchase::STATUS_PAID)
+            ->exists();
     }
 
     public function delete(VendingRequest $vendingRequest): void

@@ -23,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property string $email
  * @property string|null $notes
  * @property bool $terms_accepted
+ * @property int $price
  * @property string $status
  * @property string $operator_sms_status
  * @property int $operator_sms_sent_count
@@ -64,6 +65,7 @@ class CoffeeServiceRequest extends Model
         'email',
         'notes',
         'terms_accepted',
+        'price',
         'status',
         'operator_sms_status',
         'operator_sms_sent_count',
@@ -90,6 +92,7 @@ class CoffeeServiceRequest extends Model
     {
         return [
             'terms_accepted' => 'boolean',
+            'price' => 'integer',
             'latitude' => 'decimal:7',
             'longitude' => 'decimal:7',
             'operator_sms_sent_count' => 'integer',

@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 import { AdminPageHeader } from '@/components/admin/admin-page-header';
 import { ConfirmDeleteDialog } from '@/components/admin/confirm-delete-dialog';
+import { LeadPriceEditor } from '@/components/admin/lead-price-editor';
 import {
     LeadBuyerNote,
     LeadSaleBadge,
@@ -155,6 +156,25 @@ export default function ShowCoffeeServiceRequest({
                             buyer={leadBuyer}
                         />
                     </div>
+
+                    {can(PERMISSIONS.COFFEE_SERVICE_REQUESTS.EDIT) ? (
+                        <LeadPriceEditor
+                            price={coffeeServiceRequest.price}
+                            locked={coffeeServiceRequest.is_sold}
+                            updateUrl={
+                                coffeeServiceRequests.update(
+                                    coffeeServiceRequest.id,
+                                ).url
+                            }
+                        />
+                    ) : (
+                        <div className="rounded-lg border p-4 text-sm">
+                            Lead price:{' '}
+                            <span className="font-medium">
+                                ${coffeeServiceRequest.price}
+                            </span>
+                        </div>
+                    )}
 
                     <div className="grid gap-6 lg:grid-cols-2">
                         <Section title="Business">

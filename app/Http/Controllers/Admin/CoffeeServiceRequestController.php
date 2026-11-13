@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CoffeeServiceRequest\StoreCoffeeServiceRequestRequest;
 use App\Http\Requests\CoffeeServiceRequest\UpdateCoffeeServiceRequestRequest;
 use App\Models\CoffeeServiceRequest;
 use App\Services\CoffeeServiceRequestService;
@@ -37,6 +38,22 @@ class CoffeeServiceRequestController extends Controller
         ]);
     }
 
+    public function create(): Response
+    {
+        return Inertia::render('admin/coffee-service-requests/create', [
+            'defaultPrice' => (int) config('leads.price'),
+        ]);
+    }
+
+    public function store(StoreCoffeeServiceRequestRequest $request): RedirectResponse
+    {
+        $coffeeServiceRequest = $this->coffeeServiceRequests->create($request->validated());
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Coffee service request created.']);
+
+        return redirect()->route('admin.coffee-service-requests.show', $coffeeServiceRequest);
+    }
+
     public function show(CoffeeServiceRequest $coffeeServiceRequest): Response
     {
         $leadBuyer = $this->coffeeServiceRequests->prepareForAdminShow($coffeeServiceRequest);
@@ -51,12 +68,13 @@ class CoffeeServiceRequestController extends Controller
         UpdateCoffeeServiceRequestRequest $request,
         CoffeeServiceRequest $coffeeServiceRequest,
     ): RedirectResponse {
-        $this->coffeeServiceRequests->updateStatus(
-            $coffeeServiceRequest,
-            $request->validated('status'),
-        );
+        $this->coffeeServiceRequests->update($coffeeServiceRequest, $request->validated());
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Request status updated.']);
+        $message = $request->exists('price') && ! $request->exists('status')
+            ? 'Lead price updated.'
+            : 'Request updated.';
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => $message]);
 
         return redirect()->back();
     }

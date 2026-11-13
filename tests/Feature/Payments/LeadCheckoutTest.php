@@ -45,6 +45,25 @@ function fakeSquareCompleted(): void
     ]);
 }
 
+test('checkout charges the lead price instead of the global default', function () {
+    fakeSquareCompleted();
+
+    $lead = VendingRequest::factory()->create([
+        'business_name' => 'Custom Price Corp',
+        'price' => 225,
+    ]);
+    $operator = makeOperator();
+
+    $this->actingAs($operator)
+        ->post(purchaseUrl('vending', $lead->id), ['source_id' => 'cnon:card-nonce'])
+        ->assertRedirect(route('leads.purchased'));
+
+    $purchase = LeadPurchase::query()->sole();
+
+    expect($purchase->price)->toBe(225)
+        ->and($purchase->amount_cents)->toBe(22500);
+});
+
 test('a successful payment unlocks the lead and stores the payment details', function () {
     fakeSquareCompleted();
 

@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { Eye, Inbox, Search, Trash2 } from 'lucide-react';
+import { Eye, Inbox, Plus, Search, Trash2 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { AdminPageHeader } from '@/components/admin/admin-page-header';
@@ -82,7 +82,15 @@ export default function VendingRequestsIndex({
                     title="Vending requests"
                     description="Inbound free vending requests from the public site."
                     icon={Inbox}
-                />
+                >
+                    {can(PERMISSIONS.VENDING_REQUESTS.CREATE) && (
+                        <Button asChild>
+                            <Link href={vendingRequests.create().url}>
+                                <Plus className="h-4 w-4" /> Add request
+                            </Link>
+                        </Button>
+                    )}
+                </AdminPageHeader>
 
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                     <div className="relative w-full sm:max-w-xs">
@@ -135,6 +143,9 @@ export default function VendingRequestsIndex({
                                     </TableHead>
                                     <TableHead className="hidden md:table-cell">
                                         Sale
+                                    </TableHead>
+                                    <TableHead className="hidden md:table-cell">
+                                        Price
                                     </TableHead>
                                     <TableHead
                                         className="hidden md:table-cell"
@@ -203,6 +214,9 @@ export default function VendingRequestsIndex({
                                                     is_sold={request.is_sold}
                                                     is_held={request.is_held}
                                                 />
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                ${request.price}
                                             </TableCell>
                                             <TableCell className="hidden md:table-cell">
                                                 <OperatorSmsStatusBadge

@@ -1,12 +1,15 @@
 <?php
 
 use App\Enums\RoleEnum;
+use App\Jobs\NotifyNearbyOperatorsOfLead;
 use App\Models\LeadPurchase;
+use App\Models\LocationType;
 use App\Models\User;
 use App\Models\VendingRequest;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
@@ -146,4 +149,72 @@ test('a vending request can be deleted', function () {
         ->assertRedirect(route('admin.vending-requests.index'));
 
     expect(VendingRequest::query()->whereKey($request->id)->exists())->toBeFalse();
+});
+
+test('admin can create a vending request with a custom price', function () {
+    Queue::fake();
+    LocationType::factory()->create(['name' => 'Business / office', 'is_active' => true]);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.vending-requests.store'), [
+            'location_type' => 'Business / office',
+            'business_name' => 'Manual Lead Co',
+            'address_or_zip' => '100 Main St, Houston, TX 77002',
+            'address' => '100 Main St',
+            'city' => 'Houston',
+            'state' => 'TX',
+            'postal_code' => '77002',
+            'latitude' => 29.7604,
+            'longitude' => -95.3698,
+            'employees_on_site' => 40,
+            'daily_visitors' => 100,
+            'placement' => 'Inside',
+            'space_notes' => 'Break room',
+            'food_on_site' => 'No',
+            'comparing_quotes' => 'Yes',
+            'machine_interests' => ['Snack', 'Drinks'],
+            'machine_count' => '2',
+            'existing_vending' => 'No',
+            'contact_name' => 'Alex Admin',
+            'job_title' => 'Facilities',
+            'email' => 'alex@example.com',
+            'phone' => '555-0100',
+            'price' => 225,
+        ])
+        ->assertRedirect();
+
+    $request = VendingRequest::query()->where('business_name', 'Manual Lead Co')->sole();
+
+    expect($request->price)->toBe(225)
+        ->and($request->city)->toBe('Houston')
+        ->and($request->contact_name)->toBe('Alex Admin')
+        ->and($request->terms_accepted)->toBeTrue();
+
+    Queue::assertPushed(NotifyNearbyOperatorsOfLead::class);
+});
+
+test('admin can update lead price until the lead is sold', function () {
+    $request = VendingRequest::factory()->create(['price' => 150]);
+
+    $this->actingAs($this->admin)
+        ->put(route('admin.vending-requests.update', $request), [
+            'price' => 199,
+        ])
+        ->assertRedirect();
+
+    expect($request->fresh()->price)->toBe(199);
+
+    LeadPurchase::factory()->create([
+        'user_id' => makeOperator()->id,
+        'leadable_type' => 'vending',
+        'leadable_id' => $request->id,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->put(route('admin.vending-requests.update', $request), [
+            'price' => 250,
+        ])
+        ->assertSessionHasErrors('price');
+
+    expect($request->fresh()->price)->toBe(199);
 });
