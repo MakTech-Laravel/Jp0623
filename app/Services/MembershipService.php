@@ -24,7 +24,11 @@ class MembershipService
         $existing = $user->membership;
 
         if ($existing !== null) {
-            return $existing;
+            if ($this->settings->isPaid()) {
+                $existing->markExpiredPaidPeriodIfNeeded();
+            }
+
+            return $existing->refresh();
         }
 
         return OperatorMembership::query()->create([
@@ -42,9 +46,7 @@ class MembershipService
             return true;
         }
 
-        $membership = $this->ensureFor($user);
-
-        return $membership->allowsMarketplaceAccess();
+        return $this->ensureFor($user)->hasValidPaidPeriod();
     }
 
     /**
@@ -54,6 +56,7 @@ class MembershipService
     {
         $settings = $this->settings->current();
         $membership = $this->ensureFor($user);
+        $allowsAccess = $this->userCanAccessMarketplace($user);
 
         return [
             'settings' => [
@@ -69,7 +72,7 @@ class MembershipService
                 'current_period_end' => $membership->current_period_end?->toIso8601String(),
                 'next_billing_at' => $membership->next_billing_at?->toIso8601String(),
                 'needs_payment' => $settings->isPaid() && $membership->needsPayment(),
-                'allows_access' => $this->userCanAccessMarketplace($user),
+                'allows_access' => $allowsAccess,
             ],
             'square' => $settings->isPaid() ? $this->square->publicConfig() : null,
         ];
@@ -213,7 +216,7 @@ class MembershipService
 
             $cardDetails = $squarePayment['card_details']['card'] ?? [];
             $periodStart = now();
-            $periodEnd = $periodStart->copy()->addMonth();
+            $periodEnd = $periodStart->copy()->addDays(30);
 
             $lockedPayment->forceFill([
                 'status' => MembershipPayment::STATUS_PAID,

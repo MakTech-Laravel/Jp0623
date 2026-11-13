@@ -68,7 +68,7 @@ test('super admin can view and update membership settings', function () {
         ->and($settings->monthly_price)->toBe(39);
 });
 
-test('switching free to paid marks non-active memberships required', function () {
+test('mode flips do not rewrite operator membership statuses or billing dates', function () {
     $freeOperator = makeOperator();
     $paidOperator = makeOperator();
 
@@ -77,32 +77,62 @@ test('switching free to paid marks non-active memberships required', function ()
         'status' => OperatorMembership::STATUS_ACTIVE_FREE,
     ]);
 
-    OperatorMembership::factory()->active()->create([
+    $paidMembership = OperatorMembership::factory()->active()->create([
         'user_id' => $paidOperator->id,
     ]);
+    $nextBillingAt = $paidMembership->next_billing_at?->toIso8601String();
 
+    setMembershipMode(MembershipSetting::MODE_PAID, 29);
+    setMembershipMode(MembershipSetting::MODE_FREE, 29);
     setMembershipMode(MembershipSetting::MODE_PAID, 29);
 
     expect($freeOperator->membership()->first()->status)
-        ->toBe(OperatorMembership::STATUS_REQUIRED)
+        ->toBe(OperatorMembership::STATUS_ACTIVE_FREE)
         ->and($paidOperator->membership()->first()->status)
-        ->toBe(OperatorMembership::STATUS_ACTIVE);
+        ->toBe(OperatorMembership::STATUS_ACTIVE)
+        ->and($paidOperator->membership()->first()->next_billing_at?->toIso8601String())
+        ->toBe($nextBillingAt);
 });
 
-test('switching paid to free sets memberships to active free', function () {
+test('paid then free then paid preserves remaining paid period access', function () {
     setMembershipMode(MembershipSetting::MODE_PAID, 29);
 
     $operator = makeOperator();
-    OperatorMembership::factory()->required()->create([
+    OperatorMembership::factory()->active()->create([
         'user_id' => $operator->id,
+        'current_period_end' => now()->addDays(20),
+        'next_billing_at' => now()->addDays(20),
     ]);
 
     setMembershipMode(MembershipSetting::MODE_FREE, 29);
+    setMembershipMode(MembershipSetting::MODE_PAID, 29);
 
-    expect($operator->membership()->first()->status)
-        ->toBe(OperatorMembership::STATUS_ACTIVE_FREE)
-        ->and($operator->membership()->first()->next_billing_at)
-        ->toBeNull();
+    $this->actingAs($operator)
+        ->get(route('leads.index'))
+        ->assertOk();
+
+    $this->actingAs($operator)
+        ->get(route('subscription.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('membership.status', OperatorMembership::STATUS_ACTIVE)
+            ->where('membership.needs_payment', false)
+            ->where('membership.allows_access', true)
+        );
+});
+
+test('never-paid operators remain gated when mode is paid', function () {
+    $operator = makeOperator();
+    OperatorMembership::factory()->create([
+        'user_id' => $operator->id,
+        'status' => OperatorMembership::STATUS_ACTIVE_FREE,
+    ]);
+
+    setMembershipMode(MembershipSetting::MODE_PAID, 29);
+
+    $this->actingAs($operator)
+        ->get(route('leads.index'))
+        ->assertRedirect(route('subscription.index'));
 });
 
 test('corrupt membership settings cache recovers to a MembershipSetting', function () {

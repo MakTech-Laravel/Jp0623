@@ -141,7 +141,7 @@ class MembershipBillingService
 
             $card = $squarePayment['card_details']['card'] ?? [];
             $periodStart = $lockedMembership->current_period_end?->copy() ?? now();
-            $periodEnd = $periodStart->copy()->addMonth();
+            $periodEnd = $periodStart->copy()->addDays(30);
 
             $lockedPayment->forceFill([
                 'status' => MembershipPayment::STATUS_PAID,

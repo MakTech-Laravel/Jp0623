@@ -70,14 +70,40 @@ class OperatorMembership extends Model
         return $this->hasMany(MembershipPayment::class);
     }
 
+    public function hasValidPaidPeriod(): bool
+    {
+        return $this->status === self::STATUS_ACTIVE
+            && $this->current_period_end !== null
+            && $this->current_period_end->isFuture();
+    }
+
     public function allowsMarketplaceAccess(): bool
     {
-        return in_array($this->status, [self::STATUS_ACTIVE_FREE, self::STATUS_ACTIVE], true);
+        return $this->status === self::STATUS_ACTIVE_FREE
+            || $this->hasValidPaidPeriod();
     }
 
     public function needsPayment(): bool
     {
-        return in_array($this->status, [self::STATUS_REQUIRED, self::STATUS_PAST_DUE], true);
+        return ! $this->hasValidPaidPeriod();
+    }
+
+    /**
+     * When an active paid period has ended, mark past_due without touching other rows.
+     */
+    public function markExpiredPaidPeriodIfNeeded(): void
+    {
+        if ($this->status !== self::STATUS_ACTIVE) {
+            return;
+        }
+
+        if ($this->current_period_end === null || $this->current_period_end->isFuture()) {
+            return;
+        }
+
+        $this->forceFill([
+            'status' => self::STATUS_PAST_DUE,
+        ])->save();
     }
 
     /**

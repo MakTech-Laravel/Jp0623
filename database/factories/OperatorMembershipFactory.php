@@ -41,7 +41,7 @@ class OperatorMembershipFactory extends Factory
     public function active(): static
     {
         $start = now()->subDays(5);
-        $end = $start->copy()->addMonth();
+        $end = $start->copy()->addDays(30);
 
         return $this->state(fn (): array => [
             'status' => OperatorMembership::STATUS_ACTIVE,

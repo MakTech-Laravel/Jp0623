@@ -77,3 +77,36 @@ test('paid mode blocks lead purchase without active membership', function () {
         ])
         ->assertRedirect(route('subscription.index'));
 });
+
+test('paid mode blocks never-paid active_free operators', function () {
+    enablePaidMembership();
+
+    $operator = makeOperator();
+    OperatorMembership::factory()->create([
+        'user_id' => $operator->id,
+        'status' => OperatorMembership::STATUS_ACTIVE_FREE,
+    ]);
+
+    $this->actingAs($operator)
+        ->get(route('leads.index'))
+        ->assertRedirect(route('subscription.index'));
+});
+
+test('expired active period is marked past_due and gated in paid mode', function () {
+    enablePaidMembership();
+
+    $operator = makeOperator();
+    OperatorMembership::factory()->active()->create([
+        'user_id' => $operator->id,
+        'current_period_start' => now()->subDays(40),
+        'current_period_end' => now()->subDay(),
+        'next_billing_at' => now()->subDay(),
+    ]);
+
+    $this->actingAs($operator)
+        ->get(route('leads.index'))
+        ->assertRedirect(route('subscription.index'));
+
+    expect($operator->membership()->first()->status)
+        ->toBe(OperatorMembership::STATUS_PAST_DUE);
+});

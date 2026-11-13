@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\MembershipSetting;
-use App\Models\OperatorMembership;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -69,17 +68,14 @@ class MembershipSettingsService
                     'grace_days' => 0,
                 ]);
 
-            $previousMode = $settings->mode;
-
             $settings->fill([
                 'mode' => $data['mode'],
                 'monthly_price' => max(1, (int) $data['monthly_price']),
                 'grace_days' => max(0, (int) ($data['grace_days'] ?? $settings->grace_days)),
             ])->save();
 
-            if ($previousMode !== $settings->mode) {
-                $this->syncMembershipsForMode($settings->mode);
-            }
+            // Mode flips update settings only — operator membership statuses and
+            // paid periods are preserved so paying operators are not re-billed early.
 
             Cache::forget(self::CACHE_KEY);
 
@@ -90,32 +86,5 @@ class MembershipSettingsService
     public function forgetCache(): void
     {
         Cache::forget(self::CACHE_KEY);
-    }
-
-    private function syncMembershipsForMode(string $mode): void
-    {
-        if ($mode === MembershipSetting::MODE_FREE) {
-            OperatorMembership::query()->update([
-                'status' => OperatorMembership::STATUS_ACTIVE_FREE,
-                'next_billing_at' => null,
-                'canceled_at' => null,
-            ]);
-
-            return;
-        }
-
-        OperatorMembership::query()
-            ->where('status', '!=', OperatorMembership::STATUS_ACTIVE)
-            ->update([
-                'status' => OperatorMembership::STATUS_REQUIRED,
-                'next_billing_at' => null,
-            ]);
-
-        OperatorMembership::query()
-            ->where('status', OperatorMembership::STATUS_ACTIVE)
-            ->whereNull('next_billing_at')
-            ->update([
-                'status' => OperatorMembership::STATUS_REQUIRED,
-            ]);
     }
 }

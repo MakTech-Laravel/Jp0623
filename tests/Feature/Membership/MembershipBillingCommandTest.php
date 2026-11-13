@@ -38,10 +38,12 @@ test('memberships bill charges due memberships using current settings price', fu
     ]);
 
     $operator = makeOperator();
+    $periodEnd = now()->subHour();
     $membership = OperatorMembership::factory()->active()->create([
         'user_id' => $operator->id,
         'monthly_price' => 29,
-        'next_billing_at' => now()->subHour(),
+        'current_period_end' => $periodEnd,
+        'next_billing_at' => $periodEnd,
         'square_customer_id' => 'CUST-DUE-1',
         'square_card_id' => 'CARD-DUE-1',
     ]);
@@ -57,6 +59,8 @@ test('memberships bill charges due memberships using current settings price', fu
         ->and($payment->amount_cents)->toBe(3500)
         ->and($membership->status)->toBe(OperatorMembership::STATUS_ACTIVE)
         ->and($membership->monthly_price)->toBe(35)
+        ->and($membership->current_period_end?->toDateTimeString())
+        ->toBe($periodEnd->copy()->addDays(30)->toDateTimeString())
         ->and($membership->next_billing_at->isAfter(now()))->toBeTrue();
 });
 
