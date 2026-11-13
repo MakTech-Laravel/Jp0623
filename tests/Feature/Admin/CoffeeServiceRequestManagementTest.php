@@ -1,12 +1,14 @@
 <?php
 
 use App\Enums\RoleEnum;
+use App\Jobs\NotifyNearbyOperatorsOfLead;
 use App\Models\CoffeeServiceRequest;
 use App\Models\LeadPurchase;
 use App\Models\User;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
@@ -150,4 +152,60 @@ test('a coffee service request can be deleted', function () {
         ->assertRedirect(route('admin.coffee-service-requests.index'));
 
     expect(CoffeeServiceRequest::query()->whereKey($request->id)->exists())->toBeFalse();
+});
+
+test('admin can create a coffee service request with a custom price', function () {
+    Queue::fake();
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.coffee-service-requests.store'), [
+            'business_name' => 'Manual Coffee Co',
+            'zip_code' => '77002',
+            'address' => '100 Main St',
+            'city' => 'Houston',
+            'state' => 'TX',
+            'postal_code' => '77002',
+            'latitude' => 29.7604,
+            'longitude' => -95.3698,
+            'contact_name' => 'Casey Admin',
+            'phone' => '555-0200',
+            'email' => 'casey@example.com',
+            'notes' => 'Prefer morning delivery',
+            'price' => 175,
+        ])
+        ->assertRedirect();
+
+    $request = CoffeeServiceRequest::query()->where('business_name', 'Manual Coffee Co')->sole();
+
+    expect($request->price)->toBe(175)
+        ->and($request->city)->toBe('Houston')
+        ->and($request->terms_accepted)->toBeTrue();
+
+    Queue::assertPushed(NotifyNearbyOperatorsOfLead::class);
+});
+
+test('admin can update coffee lead price until the lead is sold', function () {
+    $request = CoffeeServiceRequest::factory()->create(['price' => 150]);
+
+    $this->actingAs($this->admin)
+        ->put(route('admin.coffee-service-requests.update', $request), [
+            'price' => 180,
+        ])
+        ->assertRedirect();
+
+    expect($request->fresh()->price)->toBe(180);
+
+    LeadPurchase::factory()->create([
+        'user_id' => makeOperator()->id,
+        'leadable_type' => 'coffee',
+        'leadable_id' => $request->id,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->put(route('admin.coffee-service-requests.update', $request), [
+            'price' => 200,
+        ])
+        ->assertSessionHasErrors('price');
+
+    expect($request->fresh()->price)->toBe(180);
 });

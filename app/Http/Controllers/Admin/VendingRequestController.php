@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\VendingRequest\StoreVendingRequestRequest;
 use App\Http\Requests\VendingRequest\UpdateVendingRequestRequest;
+use App\Models\LocationType;
 use App\Models\VendingRequest;
 use App\Services\VendingRequestService;
 use Illuminate\Http\RedirectResponse;
@@ -37,6 +39,34 @@ class VendingRequestController extends Controller
         ]);
     }
 
+    public function create(): Response
+    {
+        return Inertia::render('admin/vending-requests/create', [
+            'defaultPrice' => (int) config('leads.price'),
+            'locationTypes' => LocationType::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->pluck('name')
+                ->values()
+                ->all(),
+            'placements' => VendingRequest::PLACEMENTS,
+            'machineInterests' => VendingRequest::MACHINE_INTERESTS,
+            'machineCounts' => VendingRequest::MACHINE_COUNTS,
+            'existingVending' => VendingRequest::EXISTING_VENDING,
+            'yesNoOptions' => VendingRequest::YES_NO,
+        ]);
+    }
+
+    public function store(StoreVendingRequestRequest $request): RedirectResponse
+    {
+        $vendingRequest = $this->vendingRequests->create($request->validated());
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Vending request created.']);
+
+        return redirect()->route('admin.vending-requests.show', $vendingRequest);
+    }
+
     public function show(VendingRequest $vendingRequest): Response
     {
         $leadBuyer = $this->vendingRequests->prepareForAdminShow($vendingRequest);
@@ -51,12 +81,13 @@ class VendingRequestController extends Controller
         UpdateVendingRequestRequest $request,
         VendingRequest $vendingRequest,
     ): RedirectResponse {
-        $this->vendingRequests->updateStatus(
-            $vendingRequest,
-            $request->validated('status'),
-        );
+        $this->vendingRequests->update($vendingRequest, $request->validated());
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Request status updated.']);
+        $message = $request->exists('price') && ! $request->exists('status')
+            ? 'Lead price updated.'
+            : 'Request updated.';
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => $message]);
 
         return redirect()->back();
     }

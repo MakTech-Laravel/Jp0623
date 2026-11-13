@@ -73,12 +73,14 @@ enum PermissionEnum: string
     // VENDING REQUESTS
     case VENDING_REQUESTS_INDEX = 'vending-requests.index';
     case VENDING_REQUESTS_VIEW = 'vending-requests.view';
+    case VENDING_REQUESTS_CREATE = 'vending-requests.create';
     case VENDING_REQUESTS_EDIT = 'vending-requests.edit';
     case VENDING_REQUESTS_DELETE = 'vending-requests.delete';
 
     // COFFEE SERVICE REQUESTS
     case COFFEE_SERVICE_REQUESTS_INDEX = 'coffee-service-requests.index';
     case COFFEE_SERVICE_REQUESTS_VIEW = 'coffee-service-requests.view';
+    case COFFEE_SERVICE_REQUESTS_CREATE = 'coffee-service-requests.create';
     case COFFEE_SERVICE_REQUESTS_EDIT = 'coffee-service-requests.edit';
     case COFFEE_SERVICE_REQUESTS_DELETE = 'coffee-service-requests.delete';
 
@@ -178,11 +180,13 @@ enum PermissionEnum: string
 
             self::VENDING_REQUESTS_INDEX,
             self::VENDING_REQUESTS_VIEW,
+            self::VENDING_REQUESTS_CREATE,
             self::VENDING_REQUESTS_EDIT,
             self::VENDING_REQUESTS_DELETE => 'Vending Requests',
 
             self::COFFEE_SERVICE_REQUESTS_INDEX,
             self::COFFEE_SERVICE_REQUESTS_VIEW,
+            self::COFFEE_SERVICE_REQUESTS_CREATE,
             self::COFFEE_SERVICE_REQUESTS_EDIT,
             self::COFFEE_SERVICE_REQUESTS_DELETE => 'Coffee Service Requests',
 

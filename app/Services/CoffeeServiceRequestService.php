@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Enums\OperatorSmsStatus;
 use App\Jobs\NotifyNearbyOperatorsOfLead;
 use App\Models\CoffeeServiceRequest;
+use App\Models\LeadPurchase;
 use App\Services\Concerns\FiltersLeadSaleStatus;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Validation\ValidationException;
 
 class CoffeeServiceRequestService
 {
@@ -74,6 +76,7 @@ class CoffeeServiceRequestService
         $data['operator_sms_note'] = 'Waiting to notify nearby operators.';
         $data['operator_sms_notified_at'] = null;
         $data['notes'] = filled($data['notes'] ?? null) ? trim((string) $data['notes']) : null;
+        $data['price'] = max(1, (int) ($data['price'] ?? config('leads.price')));
         $data = $this->normalizeLocation($data);
 
         $coffeeServiceRequest = CoffeeServiceRequest::create($data);
@@ -83,11 +86,44 @@ class CoffeeServiceRequestService
         return $coffeeServiceRequest;
     }
 
-    public function updateStatus(CoffeeServiceRequest $coffeeServiceRequest, string $status): CoffeeServiceRequest
+    /**
+     * @param  array{status?: string, price?: int}  $data
+     */
+    public function update(CoffeeServiceRequest $coffeeServiceRequest, array $data): CoffeeServiceRequest
     {
-        $coffeeServiceRequest->update(['status' => $status]);
+        $updates = [];
+
+        if (array_key_exists('status', $data)) {
+            $updates['status'] = $data['status'];
+        }
+
+        if (array_key_exists('price', $data)) {
+            if ($this->hasPaidPurchase($coffeeServiceRequest)) {
+                throw ValidationException::withMessages([
+                    'price' => 'Price cannot be changed after this lead has been sold.',
+                ]);
+            }
+
+            $updates['price'] = max(1, (int) $data['price']);
+        }
+
+        if ($updates !== []) {
+            $coffeeServiceRequest->update($updates);
+        }
 
         return $coffeeServiceRequest->refresh();
+    }
+
+    public function updateStatus(CoffeeServiceRequest $coffeeServiceRequest, string $status): CoffeeServiceRequest
+    {
+        return $this->update($coffeeServiceRequest, ['status' => $status]);
+    }
+
+    public function hasPaidPurchase(CoffeeServiceRequest $coffeeServiceRequest): bool
+    {
+        return $coffeeServiceRequest->leadPurchases()
+            ->where('status', LeadPurchase::STATUS_PAID)
+            ->exists();
     }
 
     public function delete(CoffeeServiceRequest $coffeeServiceRequest): void

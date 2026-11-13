@@ -146,14 +146,15 @@ class LeadPurchaseService
     private function reserve(User $user, string $source, int $leadId): LeadPurchase
     {
         $leadKey = LeadPurchase::leadKey($source, $leadId);
-        $price = (int) config('leads.price');
 
         try {
-            return DB::transaction(function () use ($user, $source, $leadId, $leadKey, $price): LeadPurchase {
-                $this->leads->modelClass($source)::query()
+            return DB::transaction(function () use ($user, $source, $leadId, $leadKey): LeadPurchase {
+                $lead = $this->leads->modelClass($source)::query()
                     ->whereIn('status', LeadService::LISTED_STATUSES)
                     ->lockForUpdate()
                     ->findOrFail($leadId);
+
+                $price = max(1, (int) $lead->price);
 
                 if (LeadPurchase::query()->where('lead_lock', $leadKey)->exists()) {
                     throw new LeadUnavailableException;

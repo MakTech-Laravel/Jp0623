@@ -51,6 +51,7 @@ class VendingRequestFactory extends Factory
             'email' => fake()->safeEmail(),
             'phone' => fake()->phoneNumber(),
             'terms_accepted' => true,
+            'price' => (int) config('leads.price', 150),
             'status' => VendingRequest::STATUS_NEW,
             'operator_sms_status' => OperatorSmsStatus::PENDING->value,
             'operator_sms_sent_count' => 0,

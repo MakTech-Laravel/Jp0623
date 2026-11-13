@@ -242,10 +242,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('permission:'.PermissionEnum::PRODUCTS_DELETE->value);
         });
 
-        // Vending requests — public form inbox.
+        // Vending requests — public form inbox + manual admin create.
         Route::controller(AdminVendingRequestController::class)->group(function () {
             Route::get('vending-requests', 'index')->name('vending-requests.index')
                 ->middleware('permission:'.PermissionEnum::VENDING_REQUESTS_INDEX->value);
+            Route::get('vending-requests/create', 'create')->name('vending-requests.create')
+                ->middleware('permission:'.PermissionEnum::VENDING_REQUESTS_CREATE->value);
+            Route::post('vending-requests', 'store')->name('vending-requests.store')
+                ->middleware(['permission:'.PermissionEnum::VENDING_REQUESTS_CREATE->value, HandlePrecognitiveRequests::class]);
             Route::get('vending-requests/{vending_request}', 'show')->name('vending-requests.show')
                 ->middleware('permission:'.PermissionEnum::VENDING_REQUESTS_VIEW->value);
             Route::put('vending-requests/{vending_request}', 'update')->name('vending-requests.update')
@@ -254,10 +258,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('permission:'.PermissionEnum::VENDING_REQUESTS_DELETE->value);
         });
 
-        // Coffee service requests — office coffee form inbox.
+        // Coffee service requests — office coffee form inbox + manual admin create.
         Route::controller(AdminCoffeeServiceRequestController::class)->group(function () {
             Route::get('coffee-service-requests', 'index')->name('coffee-service-requests.index')
                 ->middleware('permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_INDEX->value);
+            Route::get('coffee-service-requests/create', 'create')->name('coffee-service-requests.create')
+                ->middleware('permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_CREATE->value);
+            Route::post('coffee-service-requests', 'store')->name('coffee-service-requests.store')
+                ->middleware(['permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_CREATE->value, HandlePrecognitiveRequests::class]);
             Route::get('coffee-service-requests/{coffee_service_request}', 'show')->name('coffee-service-requests.show')
                 ->middleware('permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_VIEW->value);
             Route::put('coffee-service-requests/{coffee_service_request}', 'update')->name('coffee-service-requests.update')
@@ -282,13 +290,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::controller(SmsTemplateController::class)->group(function () {
             Route::get('operator-sms/templates', 'index')->name('operator-sms.templates.index')
-                ->middleware('permission:' . PermissionEnum::OPERATOR_SMS_INDEX->value);
+                ->middleware('permission:'.PermissionEnum::OPERATOR_SMS_INDEX->value);
             Route::post('operator-sms/templates', 'store')->name('operator-sms.templates.store')
-                ->middleware('permission:' . PermissionEnum::OPERATOR_SMS_SEND->value);
+                ->middleware('permission:'.PermissionEnum::OPERATOR_SMS_SEND->value);
             Route::put('operator-sms/templates/{sms_template}', 'update')->name('operator-sms.templates.update')
-                ->middleware('permission:' . PermissionEnum::OPERATOR_SMS_SEND->value);
+                ->middleware('permission:'.PermissionEnum::OPERATOR_SMS_SEND->value);
             Route::delete('operator-sms/templates/{sms_template}', 'destroy')->name('operator-sms.templates.destroy')
-                ->middleware('permission:' . PermissionEnum::OPERATOR_SMS_SEND->value);
+                ->middleware('permission:'.PermissionEnum::OPERATOR_SMS_SEND->value);
         });
 
         // Home FAQs — public homepage FAQ items.

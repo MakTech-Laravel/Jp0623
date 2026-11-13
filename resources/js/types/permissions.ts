@@ -78,12 +78,14 @@ export const PERMISSIONS = {
     VENDING_REQUESTS: {
         INDEX: 'vending-requests.index',
         VIEW: 'vending-requests.view',
+        CREATE: 'vending-requests.create',
         EDIT: 'vending-requests.edit',
         DELETE: 'vending-requests.delete',
     },
     COFFEE_SERVICE_REQUESTS: {
         INDEX: 'coffee-service-requests.index',
         VIEW: 'coffee-service-requests.view',
+        CREATE: 'coffee-service-requests.create',
         EDIT: 'coffee-service-requests.edit',
         DELETE: 'coffee-service-requests.delete',
     },
