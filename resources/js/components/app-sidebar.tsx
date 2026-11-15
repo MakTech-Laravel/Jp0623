@@ -115,12 +115,12 @@ export function AppSidebar() {
                             icon: MapPin,
                             permissions: [PERMISSIONS.DASHBOARD.VIEW],
                         },
-                        {
-                            title: 'Lead issues & tickets',
-                            href: leadsTickets(),
-                            icon: Ticket,
-                            permissions: [PERMISSIONS.DASHBOARD.VIEW],
-                        },
+                        // {
+                        //     title: 'Lead issues & tickets',
+                        //     href: leadsTickets(),
+                        //     icon: Ticket,
+                        //     permissions: [PERMISSIONS.DASHBOARD.VIEW],
+                        // },
                         {
                             title: 'FAQ',
                             href: leadsFaq(),

@@ -96,7 +96,6 @@ class HomePageData
                         ['label' => 'Join the network', 'href' => '/operators'],
                         ['label' => 'Operator login', 'href' => '/login'],
                         ['label' => 'Create account', 'href' => '/register'],
-                        ['label' => 'Routes for sale', 'href' => '/login'],
                     ],
                 ],
             ],
@@ -104,8 +103,6 @@ class HomePageData
                 ['label' => 'Privacy policy', 'href' => '/legal/privacy'],
                 ['label' => 'Terms & conditions', 'href' => '/legal/terms'],
                 ['label' => 'Operator terms', 'href' => '/legal/operator-terms'],
-                ['label' => 'Cookie policy', 'href' => '/legal/cookies'],
-                ['label' => 'Do not sell my info', 'href' => '/legal/cookies'],
             ],
         ];
     }
