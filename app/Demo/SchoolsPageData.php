@@ -70,24 +70,8 @@ class SchoolsPageData
         return [
             'eyebrow' => 'Products',
             'title' => 'School-friendly picks.',
-            'items' => [
-                [
-                    'title' => 'Healthy choices',
-                    'image' => '/images/products/Healthy-choices.jpg',
-                ],
-                [
-                    'title' => 'Nuts & bars',
-                    'image' => '/images/products/nuts-and-snack-bars.jpg',
-                ],
-                [
-                    'title' => 'Drinks',
-                    'image' => '/images/products/drinks.jpg',
-                ],
-                [
-                    'title' => 'Fresh food',
-                    'image' => '/images/products/fresh-food.jpg',
-                ],
-            ],
+            // Populated from Product records in SchoolsController.
+            'items' => [],
         ];
     }
 

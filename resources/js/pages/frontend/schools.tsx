@@ -87,6 +87,7 @@ export default function SchoolsPage({
                 </div>
             </Band>
 
+            {products.items.length > 0 && (
             <Band alt>
                 <SectionHead
                     eyebrow={products.eyebrow}
@@ -114,6 +115,7 @@ export default function SchoolsPage({
                     ))}
                 </div>
             </Band>
+            )}
 
             <Band>
                 <SectionHead eyebrow={guide.eyebrow} title={guide.title} />
