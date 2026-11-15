@@ -15,7 +15,7 @@ export function ServicesSection({ data }: { data: ServicesData }) {
     return (
         <Band alt>
             <SectionHead eyebrow={data.eyebrow} title={data.title} />
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {data.items.map((item, index) => (
                     <Reveal key={item.title} delay={index * 0.05}>
                         <a

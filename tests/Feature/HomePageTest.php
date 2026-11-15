@@ -22,7 +22,7 @@ test('home page renders the frontend homepage with demo props', function () {
                 ->has('site.footerColumns')
                 ->has('hero')
                 ->has('howItWorks.steps', 3)
-                ->has('services.items', 4)
+                ->has('services.items', 3)
                 ->has('featuredMachines.items', 3)
                 ->has('products.items', 5)
                 ->has('requestForm')

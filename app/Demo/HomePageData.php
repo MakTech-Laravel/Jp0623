@@ -204,12 +204,6 @@ class HomePageData
                     'image' => '/images/machines/micro-market.jpg',
                 ],
                 [
-                    'title' => 'Vendera smart coolers',
-                    'text' => 'Tap, open the door, take what you want.',
-                    'href' => '/machines/ai-cooler',
-                    'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
-                ],
-                [
                     'title' => 'Office coffee',
                     'text' => 'Brewers and supplies delivered on schedule.',
                     'href' => '/office-coffee',
