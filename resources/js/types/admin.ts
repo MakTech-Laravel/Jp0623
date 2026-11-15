@@ -171,6 +171,28 @@ export interface AdminMachine {
     category?: MachineCategoryOption & { slug?: string };
 }
 
+export interface AdminCoffeeType {
+    id: number;
+    label: string;
+    sort_order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AdminCoffeeMachine {
+    id: number;
+    title: string;
+    text: string | null;
+    tag: string | null;
+    image: string | null;
+    image_url: string | null;
+    sort_order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface AdminProduct {
     id: number;
     name: string;

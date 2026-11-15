@@ -8,6 +8,10 @@ export function OfficeCoffeeTypesSection({
 }: {
     data: OfficeCoffeeTypesData;
 }) {
+    if (data.items.length === 0) {
+        return null;
+    }
+
     return (
         <Band alt>
             <SectionHead eyebrow={data.eyebrow} title={data.title} />

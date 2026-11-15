@@ -3,6 +3,8 @@
 use App\Enums\PermissionEnum;
 use App\Http\Controllers\Admin\CoffeeServiceRequestController as AdminCoffeeServiceRequestController;
 use App\Http\Controllers\Admin\HomeFaqController;
+use App\Http\Controllers\Admin\CoffeeMachineController;
+use App\Http\Controllers\Admin\CoffeeTypeController;
 use App\Http\Controllers\Admin\LocationTypeController;
 use App\Http\Controllers\Admin\MachineCategoryController;
 use App\Http\Controllers\Admin\MachineController;
@@ -359,6 +361,38 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware(['permission:'.PermissionEnum::OFFICE_COFFEE_FAQS_EDIT->value, HandlePrecognitiveRequests::class]);
             Route::delete('office-coffee-faqs/{office_coffee_faq}', 'destroy')->name('office-coffee-faqs.destroy')
                 ->middleware('permission:'.PermissionEnum::OFFICE_COFFEE_FAQS_DELETE->value);
+        });
+
+        // Coffee machines — equipment cards on the public office coffee page.
+        Route::controller(CoffeeMachineController::class)->group(function () {
+            Route::get('coffee-machines', 'index')->name('coffee-machines.index')
+                ->middleware('permission:'.PermissionEnum::COFFEE_MACHINES_INDEX->value);
+            Route::get('coffee-machines/create', 'create')->name('coffee-machines.create')
+                ->middleware('permission:'.PermissionEnum::COFFEE_MACHINES_CREATE->value);
+            Route::post('coffee-machines', 'store')->name('coffee-machines.store')
+                ->middleware(['permission:'.PermissionEnum::COFFEE_MACHINES_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('coffee-machines/{coffee_machine}/edit', 'edit')->name('coffee-machines.edit')
+                ->middleware('permission:'.PermissionEnum::COFFEE_MACHINES_EDIT->value);
+            Route::put('coffee-machines/{coffee_machine}', 'update')->name('coffee-machines.update')
+                ->middleware(['permission:'.PermissionEnum::COFFEE_MACHINES_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('coffee-machines/{coffee_machine}', 'destroy')->name('coffee-machines.destroy')
+                ->middleware('permission:'.PermissionEnum::COFFEE_MACHINES_DELETE->value);
+        });
+
+        // Coffee types — "What we stock." chips on the public office coffee page.
+        Route::controller(CoffeeTypeController::class)->group(function () {
+            Route::get('coffee-types', 'index')->name('coffee-types.index')
+                ->middleware('permission:'.PermissionEnum::COFFEE_TYPES_INDEX->value);
+            Route::get('coffee-types/create', 'create')->name('coffee-types.create')
+                ->middleware('permission:'.PermissionEnum::COFFEE_TYPES_CREATE->value);
+            Route::post('coffee-types', 'store')->name('coffee-types.store')
+                ->middleware(['permission:'.PermissionEnum::COFFEE_TYPES_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('coffee-types/{coffee_type}/edit', 'edit')->name('coffee-types.edit')
+                ->middleware('permission:'.PermissionEnum::COFFEE_TYPES_EDIT->value);
+            Route::put('coffee-types/{coffee_type}', 'update')->name('coffee-types.update')
+                ->middleware(['permission:'.PermissionEnum::COFFEE_TYPES_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('coffee-types/{coffee_type}', 'destroy')->name('coffee-types.destroy')
+                ->middleware('permission:'.PermissionEnum::COFFEE_TYPES_DELETE->value);
         });
 
         // Location types — chips on the public vending request form.

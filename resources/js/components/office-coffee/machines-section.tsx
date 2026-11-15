@@ -6,6 +6,10 @@ export function OfficeCoffeeMachinesSection({
 }: {
     data: OfficeCoffeeMachinesData;
 }) {
+    if (data.items.length === 0) {
+        return null;
+    }
+
     return (
         <LinkImageCardGrid
             eyebrow={data.eyebrow}

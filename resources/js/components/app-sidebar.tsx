@@ -43,6 +43,8 @@ import {
     location as accountLocation,
 } from '@/routes/account';
 import adminAdminManagement from '@/routes/admin/admin-management';
+import adminCoffeeMachines from '@/routes/admin/coffee-machines';
+import adminCoffeeTypes from '@/routes/admin/coffee-types';
 import adminHomeFaqs from '@/routes/admin/home-faqs';
 import adminLocationTypes from '@/routes/admin/location-types';
 import adminMachineCategories from '@/routes/admin/machine-categories';
@@ -252,6 +254,18 @@ export function AppSidebar() {
                 href: adminLocationTypes.index(),
                 icon: MapPin,
                 permissions: [PERMISSIONS.LOCATION_TYPES.INDEX],
+            },
+            {
+                title: 'Coffee Machines',
+                href: adminCoffeeMachines.index(),
+                icon: Coffee,
+                permissions: [PERMISSIONS.COFFEE_MACHINES.INDEX],
+            },
+            {
+                title: 'Coffee Types',
+                href: adminCoffeeTypes.index(),
+                icon: Coffee,
+                permissions: [PERMISSIONS.COFFEE_TYPES.INDEX],
             },
             {
                 title: 'Coffee Requests',

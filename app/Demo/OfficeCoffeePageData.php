@@ -60,29 +60,8 @@ class OfficeCoffeePageData
         return [
             'eyebrow' => 'Coffee machines',
             'title' => 'Equipment for every office.',
-            'items' => [
-                [
-                    'title' => 'Single-cup brewer',
-                    'text' => 'Fast, no-mess cups for small teams.',
-                    'tag' => 'Up to 25 people',
-                    'image' => '/images/machines/single-cup.jpg',
-                    'href' => '#coffee-form',
-                ],
-                [
-                    'title' => 'Bean-to-cup machine',
-                    'text' => 'Fresh-ground espresso, lattes and drip at the touch of a button.',
-                    'tag' => '25–150 people',
-                    'image' => '/images/machines/bean-to-cup.jpg',
-                    'href' => '#coffee-form',
-                ],
-                [
-                    'title' => 'Batch brewer',
-                    'text' => 'Large pots for meetings and busy kitchens.',
-                    'tag' => '50+ people',
-                    'image' => '/images/machines/batch-brewer.jpg',
-                    'href' => '#coffee-form',
-                ],
-            ],
+            // Populated from active CoffeeMachine records in OfficeCoffeeController.
+            'items' => [],
         ];
     }
 
@@ -91,28 +70,11 @@ class OfficeCoffeePageData
      */
     public static function types(): array
     {
-        $labels = [
-            'Medium roast',
-            'Dark roast',
-            'Decaf',
-            'Espresso',
-            'Cold brew',
-            'Flavored coffee',
-            'Green & black tea',
-            'Hot cocoa',
-            'Creamers & sweeteners',
-        ];
-
         return [
             'eyebrow' => 'Coffee types',
             'title' => 'What we stock.',
-            'items' => array_map(
-                fn (string $label): array => [
-                    'label' => $label,
-                    'href' => '#coffee-form',
-                ],
-                $labels,
-            ),
+            // Populated from active CoffeeType records in OfficeCoffeeController.
+            'items' => [],
         ];
     }
 
