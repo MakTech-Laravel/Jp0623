@@ -13,6 +13,10 @@ import type { ProductsData } from '@/types/frontend';
 import { cn } from '@/lib/utils';
 
 export function ProductsTeaserSection({ data }: { data: ProductsData }) {
+    if (data.items.length === 0) {
+        return null;
+    }
+
     return (
         <Band alt>
             <SectionHead

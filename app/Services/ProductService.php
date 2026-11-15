@@ -61,6 +61,30 @@ class ProductService
             ->all();
     }
 
+    /**
+     * Active products flagged as featured in admin, for the home page teaser.
+     *
+     * @return list<array{kind: string, name: string, href: string, image: string|null}>
+     */
+    public function listFeaturedForFrontend(int $limit = 5): array
+    {
+        return Product::query()
+            ->where('is_active', true)
+            ->where('is_featured', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->limit($limit)
+            ->get()
+            ->map(fn (Product $product): array => [
+                'kind' => $product->kind,
+                'name' => $product->name,
+                'href' => '/products',
+                'image' => $product->image_url,
+            ])
+            ->values()
+            ->all();
+    }
+
     public function nextSortOrder(): int
     {
         return (int) Product::query()->max('sort_order') + 1;

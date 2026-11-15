@@ -204,12 +204,6 @@ class HomePageData
                     'image' => '/images/machines/micro-market.jpg',
                 ],
                 [
-                    'title' => 'Vendera smart coolers',
-                    'text' => 'Tap, open the door, take what you want.',
-                    'href' => '/machines/ai-cooler',
-                    'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
-                ],
-                [
                     'title' => 'Office coffee',
                     'text' => 'Brewers and supplies delivered on schedule.',
                     'href' => '/office-coffee',
@@ -224,19 +218,15 @@ class HomePageData
      */
     public static function featuredMachines(): array
     {
-        $ids = ['combo', 'snack', 'ai-cooler'];
-
         return [
             'eyebrow' => 'Featured machines',
             'title' => 'Popular machines for new placements.',
             'link' => [
-                'label' => 'See all 6 machines →',
+                'label' => 'See all machines →',
                 'href' => '/machines',
             ],
-            'items' => array_values(array_filter(
-                self::machines(),
-                fn(array $machine): bool => in_array($machine['id'], $ids, true),
-            )),
+            // Populated from featured machines in HomeController.
+            'items' => [],
         ];
     }
 
@@ -321,15 +311,8 @@ class HomePageData
                 'label' => 'Browse all products →',
                 'href' => '/products',
             ],
-            'items' => array_map(
-                fn(array $item): array => [
-                    'kind' => $item['kind'],
-                    'name' => $item['name'],
-                    'href' => '/products',
-                    'image' => $item['image'],
-                ],
-                array_slice(self::productCatalog(), 0, 5),
-            ),
+            // Populated from featured products in HomeController.
+            'items' => [],
         ];
     }
 
