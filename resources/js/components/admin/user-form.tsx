@@ -183,7 +183,6 @@ export function UserForm({
                     placeholder="Drag & drop an avatar, or click to browse"
                     hint="PNG, JPG or WEBP"
                     error={form.errors.avatar}
-                    classNames={{ wrapper: 'sm:max-w-md' }}
                 />
             </div>
 
@@ -339,7 +338,7 @@ export function UserForm({
                         <InputError message={form.errors.machine_types} />
                     </div>
 
-                    <div className="grid gap-2 sm:max-w-sm">
+                    <div className="grid gap-2">
                         <Label htmlFor="machines_needed">
                             Machines needed
                         </Label>
@@ -400,7 +399,7 @@ export function UserForm({
                 </div>
             )}
 
-            <div className="grid gap-2 sm:max-w-sm">
+            <div className="grid gap-2">
                 <Label htmlFor="password">
                     Password
                     {isEdit && (
