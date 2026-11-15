@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\User;
+use App\Services\MachineCategoryService;
 use App\Support\SuperAdmin;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -72,6 +73,9 @@ class UserController extends Controller
 
         return Inertia::render('admin/users/create', [
             'scope' => $scope,
+            'machineTypes' => $scope === self::SCOPE_USER
+                ? app(MachineCategoryService::class)->activeNames()
+                : [],
         ]);
     }
 
@@ -151,6 +155,9 @@ class UserController extends Controller
             'operatorProfile' => $scope === self::SCOPE_USER
                 ? $user->operatorProfile
                 : null,
+            'machineTypes' => $scope === self::SCOPE_USER
+                ? app(MachineCategoryService::class)->activeNames()
+                : [],
         ]);
     }
 

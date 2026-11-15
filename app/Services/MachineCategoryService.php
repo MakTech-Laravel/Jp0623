@@ -31,6 +31,22 @@ class MachineCategoryService
     }
 
     /**
+     * Active category names for operator registration / admin user forms.
+     *
+     * @return list<string>
+     */
+    public function activeNames(): array
+    {
+        return MachineCategory::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->pluck('name')
+            ->values()
+            ->all();
+    }
+
+    /**
      * @param  array<string, mixed>  $data
      */
     public function create(array $data): MachineCategory

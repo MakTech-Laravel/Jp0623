@@ -10,7 +10,13 @@ import {
 } from '@/lib/user-management';
 import { dashboard } from '@/routes';
 
-export default function CreateUser({ scope }: { scope: UserManagementScope }) {
+export default function CreateUser({
+    scope,
+    machineTypes = [],
+}: {
+    scope: UserManagementScope;
+    machineTypes?: string[];
+}) {
     const routes = managementRoutes(scope);
     const labels = managementLabels(scope);
     const showOperatorProfile = scope === 'user';
@@ -37,6 +43,7 @@ export default function CreateUser({ scope }: { scope: UserManagementScope }) {
                         action={routes.store()}
                         hideRoles
                         showOperatorProfile={showOperatorProfile}
+                        machineTypes={machineTypes}
                         onCancel={() => router.visit(routes.index().url)}
                     />
                 </div>

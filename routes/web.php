@@ -376,6 +376,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::delete('location-types/{location_type}', 'destroy')->name('location-types.destroy')
                 ->middleware('permission:'.PermissionEnum::LOCATION_TYPES_DELETE->value);
         });
+
     });
 });
 

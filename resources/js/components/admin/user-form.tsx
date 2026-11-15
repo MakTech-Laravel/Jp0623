@@ -18,10 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import {
-    OPERATOR_MACHINE_TYPES,
-    OPERATOR_MACHINES_NEEDED,
-} from '@/lib/operator-profile';
+import { OPERATOR_MACHINES_NEEDED } from '@/lib/operator-profile';
 import { cn } from '@/lib/utils';
 import { avatarUrl, SUPER_ADMIN_ROLE } from '@/types/admin';
 import type { AdminOperatorProfile, RoleRef } from '@/types/admin';
@@ -49,6 +46,7 @@ interface UserFormProps {
     /** When true, collect operator registration profile fields. */
     showOperatorProfile?: boolean;
     operatorProfile?: AdminOperatorProfile | null;
+    machineTypes?: string[];
     defaults?: UserFormDefaults;
     onCancel?: () => void;
 }
@@ -62,6 +60,7 @@ export function UserForm({
     hideRoles = false,
     showOperatorProfile = false,
     operatorProfile = null,
+    machineTypes = [],
     defaults,
     onCancel,
 }: UserFormProps) {
@@ -311,7 +310,7 @@ export function UserForm({
                     <div className="grid gap-2">
                         <Label>Machine types</Label>
                         <div className="mt-1 flex flex-wrap gap-2">
-                            {OPERATOR_MACHINE_TYPES.map((type) => {
+                            {machineTypes.map((type) => {
                                 const checked =
                                     form.data.machine_types.includes(type);
 

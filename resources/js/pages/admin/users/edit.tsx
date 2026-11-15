@@ -17,6 +17,7 @@ interface EditUserProps {
     userRoles: string[];
     isLastSuperAdmin: boolean;
     operatorProfile: AdminOperatorProfile | null;
+    machineTypes?: string[];
 }
 
 export default function EditUser({
@@ -25,6 +26,7 @@ export default function EditUser({
     userRoles,
     isLastSuperAdmin,
     operatorProfile,
+    machineTypes = [],
 }: EditUserProps) {
     const routes = managementRoutes(scope);
     const labels = managementLabels(scope);
@@ -56,6 +58,7 @@ export default function EditUser({
                         isLastSuperAdmin={isLastSuperAdmin}
                         showOperatorProfile={showOperatorProfile}
                         operatorProfile={operatorProfile}
+                        machineTypes={machineTypes}
                         defaults={{
                             name: user.name,
                             email: user.email,

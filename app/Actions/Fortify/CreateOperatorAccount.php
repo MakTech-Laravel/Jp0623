@@ -7,6 +7,7 @@ use App\Concerns\ProfileValidationRules;
 use App\Enums\RoleEnum;
 use App\Mail\RegisterOtpMail;
 use App\Models\User;
+use App\Services\MachineCategoryService;
 use App\Services\MembershipService;
 use App\Support\RegisterOtp;
 use Closure;
@@ -34,7 +35,7 @@ class CreateOperatorAccount
             'phone' => $this->phoneRules(),
             'owns_machines' => ['required', 'boolean'],
             'machine_types' => ['required', 'array', 'min:1'],
-            'machine_types.*' => ['string', 'max:100'],
+            'machine_types.*' => ['string', 'max:100', Rule::in(app(MachineCategoryService::class)->activeNames())],
             'machines_needed' => ['required', 'string', Rule::in(['1', '2', '3', '4', '5', '6+'])],
             'primary_city' => ['required', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:500'],

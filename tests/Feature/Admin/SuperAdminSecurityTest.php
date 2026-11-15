@@ -2,6 +2,7 @@
 
 use App\Enums\RoleEnum;
 use App\Models\User;
+use Database\Seeders\MachineCategorySeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -9,7 +10,11 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed([PermissionSeeder::class, RoleSeeder::class]);
+    $this->seed([
+        PermissionSeeder::class,
+        RoleSeeder::class,
+        MachineCategorySeeder::class,
+    ]);
 
     $this->admin = User::factory()->create();
     $this->admin->assignRole(RoleEnum::ADMIN->value);

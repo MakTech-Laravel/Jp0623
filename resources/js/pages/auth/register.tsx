@@ -11,9 +11,14 @@ type Props = {
         monthly_price: number;
         is_paid: boolean;
     };
+    machineTypes?: string[];
 };
 
-export default function Register({ passwordRules, membership }: Props) {
+export default function Register({
+    passwordRules,
+    membership,
+    machineTypes = [],
+}: Props) {
     const isPaid = membership?.is_paid ?? false;
     const monthlyPrice = membership?.monthly_price ?? 29;
 
@@ -58,7 +63,10 @@ export default function Register({ passwordRules, membership }: Props) {
                     </div>
 
                     <div className="min-w-0 rounded-2xl border border-brand-line bg-brand-surface p-6 md:p-7">
-                        <RegisterStepper passwordRules={passwordRules} />
+                        <RegisterStepper
+                            passwordRules={passwordRules}
+                            availableMachineTypes={machineTypes}
+                        />
                     </div>
                 </div>
             </Band>
