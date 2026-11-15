@@ -120,6 +120,20 @@ export interface AdminHomeFaq {
     updated_at: string;
 }
 
+export interface AdminContactMessage {
+    id: number;
+    name: string;
+    company: string | null;
+    email: string;
+    phone: string | null;
+    topic: string;
+    message: string;
+    terms_accepted: boolean;
+    status: 'new' | 'reviewed';
+    created_at: string;
+    updated_at: string;
+}
+
 export interface AdminLocationType {
     id: number;
     name: string;
