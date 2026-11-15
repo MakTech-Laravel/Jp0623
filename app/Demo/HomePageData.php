@@ -72,11 +72,10 @@ class HomePageData
                 [
                     'title' => 'Industries',
                     'links' => [
-                        ['label' => 'Offices', 'href' => '/industries/offices'],
-                        ['label' => 'Warehouses', 'href' => '/industries/warehouses'],
-                        ['label' => 'Manufacturing', 'href' => '/industries/manufacturing'],
-                        ['label' => 'Apartments', 'href' => '/industries/apartments'],
-                        ['label' => 'Hospitals', 'href' => '/industries/hospitals'],
+                        ['label' => 'Business / office', 'href' => '/industries/business-office'],
+                        ['label' => 'Warehouse / factory', 'href' => '/industries/warehouse-factory'],
+                        ['label' => 'Apartment / hotel', 'href' => '/industries/apartment-hotel'],
+                        ['label' => 'Medical', 'href' => '/industries/medical'],
                         ['label' => 'All industries', 'href' => '/industries'],
                     ],
                 ],
@@ -492,18 +491,8 @@ class HomePageData
             'eyebrow' => 'Who we serve',
             'title' => 'Vending for every kind of workplace.',
             'text' => 'If people spend their day at your location, we can set up a machine that fits it.',
-            'items' => [
-                ['slug' => 'offices', 'label' => 'Offices', 'href' => '/industries/offices'],
-                ['slug' => 'warehouses', 'label' => 'Warehouses', 'href' => '/industries/warehouses'],
-                ['slug' => 'manufacturing', 'label' => 'Manufacturing', 'href' => '/industries/manufacturing'],
-                ['slug' => 'schools', 'label' => 'Schools', 'href' => '/industries/schools'],
-                ['slug' => 'colleges', 'label' => 'Colleges & universities', 'href' => '/industries/colleges'],
-                ['slug' => 'hospitals', 'label' => 'Hospitals & medical', 'href' => '/industries/hospitals'],
-                ['slug' => 'apartments', 'label' => 'Apartments', 'href' => '/industries/apartments'],
-                ['slug' => 'hotels', 'label' => 'Hotels & motels', 'href' => '/industries/hotels'],
-                ['slug' => 'gyms', 'label' => 'Gyms & fitness', 'href' => '/industries/gyms'],
-                ['slug' => 'retail', 'label' => 'Retail & dealerships', 'href' => '/industries/retail'],
-            ],
+            // Populated from active, public LocationType records in HomeController.
+            'items' => [],
         ];
     }
 

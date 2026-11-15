@@ -6,6 +6,10 @@ export function MicroMarketsCompareSection({
 }: {
     data: MicroMarketsCompareData;
 }) {
+    if (data.items.length === 0) {
+        return null;
+    }
+
     return (
         <LinkImageCardGrid
             title={data.title}
@@ -16,6 +20,7 @@ export function MicroMarketsCompareSection({
                 text: item.text,
                 image: item.image,
                 href: item.href,
+                tag: item.tag ?? undefined,
             }))}
         />
     );

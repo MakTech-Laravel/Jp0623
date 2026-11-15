@@ -39,14 +39,12 @@ export function SiteFooter({ site }: SiteFooterProps) {
             <Wrap className="py-12">
                 <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
                     <div>
-                        <Link
-                            href="/"
-                            className="font-display text-lg font-extrabold text-on-petrol no-underline"
-                        >
-                            {site.name}
-                            <small className="mt-0.5 block font-mono text-xs font-medium tracking-wide text-on-petrol/70 uppercase">
-                                {site.tagline}
-                            </small>
+                        <Link href="/" className="inline-block no-underline">
+                            <img
+                                src="/images/logo.png"
+                                alt={`${site.name} ${site.tagline}`}
+                                className="h-20 w-auto"
+                            />
                         </Link>
                         <p className="mt-3 max-w-lg text-sm text-on-petrol/80">
                             {site.footerBlurb}

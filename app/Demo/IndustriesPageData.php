@@ -2,71 +2,75 @@
 
 namespace App\Demo;
 
+use App\Models\LocationType;
+
 class IndustriesPageData
 {
     /**
+     * @param  list<LocationType>  $industries
      * @return array<string, mixed>
      */
-    public static function index(): array
+    public static function index(array $industries): array
     {
         return [
             'site' => self::site(),
             'hero' => self::hero(),
-            'items' => array_values(array_map(
-                fn (array $industry): array => [
-                    'title' => $industry['label'],
-                    'text' => $industry['text'],
-                    'image' => $industry['image'],
-                    'href' => '/industries/'.$industry['slug'],
-                    'slug' => $industry['slug'],
+            'items' => array_map(
+                fn (LocationType $industry): array => [
+                    'title' => $industry->name,
+                    'text' => $industry->description ?? '',
+                    'image' => $industry->image_url ?? '',
+                    'href' => '/industries/'.$industry->slug,
+                    'slug' => (string) $industry->slug,
                 ],
-                self::catalog(),
-            )),
+                $industries,
+            ),
         ];
     }
 
     /**
-     * @return array<string, mixed>|null
+     * @param  list<array<string, mixed>>  $allMachines  Active machines from MachineService::listForFrontend()
+     * @return array<string, mixed>
      */
-    public static function show(string $slug): ?array
+    public static function show(LocationType $industry, array $allMachines): array
     {
-        $industry = self::catalog()[$slug] ?? null;
+        $kind = $industry->kind;
 
-        if ($industry === null) {
-            return null;
-        }
-
-        $machines = collect(HomePageData::machines())
-            ->filter(function (array $machine) use ($industry): bool {
-                return in_array($machine['kind'], [$industry['kind'], 'combo', 'cooler'], true)
-                    || $machine['id'] === $industry['kind'];
+        $machines = collect($allMachines)
+            ->filter(function (array $machine) use ($kind): bool {
+                return $kind !== null && (
+                    in_array($machine['kind'], [$kind, 'combo', 'cooler'], true)
+                    || $machine['id'] === $kind
+                );
             })
             ->take(3)
             ->values();
 
         if ($machines->isEmpty()) {
-            $machines = collect(HomePageData::machines())->take(3)->values();
+            $machines = collect($allMachines)->take(3)->values();
         }
+
+        $text = $industry->description ?? '';
 
         return [
             'site' => self::site(),
             'hero' => [
-                'title' => 'Vending for '.strtolower($industry['label']),
-                'lead' => $industry['text'].' Free equipment, install and service.',
+                'title' => 'Vending for '.strtolower($industry->name),
+                'lead' => trim($text.' Free equipment, install and service.'),
                 'cta' => [
                     'label' => 'Request a free machine',
                     'href' => '#industry-request',
                 ],
-                'image' => $industry['image'],
+                'image' => $industry->image_url ?? '',
             ],
             'crumb' => [
                 ['label' => 'Home', 'href' => '/'],
                 ['label' => 'Industries', 'href' => '/industries'],
-                ['label' => $industry['label'], 'href' => '/industries/'.$industry['slug']],
+                ['label' => $industry->name, 'href' => '/industries/'.$industry->slug],
             ],
             'industry' => [
-                'slug' => $industry['slug'],
-                'label' => $industry['label'],
+                'slug' => (string) $industry->slug,
+                'label' => $industry->name,
             ],
             'benefits' => [
                 'title' => 'What your location gets.',
@@ -90,7 +94,7 @@ class IndustriesPageData
                 'items' => $machines->all(),
             ],
             'requestForm' => [
-                'title' => 'Request vending for your '.rtrim(strtolower($industry['label']), 's').'.',
+                'title' => 'Request vending for your location.',
                 'text' => 'Tell us about your location and we\'ll match you with the right setup.',
                 'successMessage' => 'Thanks! We\'ll follow up within one business day.',
                 'submitLabel' => 'Send request',
@@ -130,92 +134,5 @@ class IndustriesPageData
             'title' => 'Industries we serve',
             'lead' => 'Vending, coffee and micro markets set up for how your location works.',
         ];
-    }
-
-    /**
-     * @return array<string, array<string, string>>
-     */
-    public static function catalog(): array
-    {
-        $items = [
-            [
-                'slug' => 'offices',
-                'label' => 'Offices',
-                'text' => 'Quiet machines, healthy options and coffee for daytime teams.',
-                'kind' => 'combo',
-                'image' => '/images/machines/Alpine-ST5000.png',
-            ],
-            [
-                'slug' => 'warehouses',
-                'label' => 'Warehouses',
-                'text' => 'Durable, high-capacity machines for large crews and long shifts.',
-                'kind' => 'snack',
-                'image' => '/images/machines/tradational-vending.png',
-            ],
-            [
-                'slug' => 'manufacturing',
-                'label' => 'Manufacturing',
-                'text' => 'Around-the-clock vending that covers every shift on the floor.',
-                'kind' => 'food',
-                'image' => '/images/machines/Alpine-ST5000.png',
-            ],
-            [
-                'slug' => 'schools',
-                'label' => 'Schools',
-                'text' => 'Machines and products that follow school nutrition rules.',
-                'kind' => 'healthy',
-                'image' => '/images/machines/healthy-vending.png',
-            ],
-            [
-                'slug' => 'colleges',
-                'label' => 'Colleges & universities',
-                'text' => 'Dorms, libraries and student centers with card and phone pay.',
-                'kind' => 'touch',
-                'image' => '/images/machines/micro-market.jpg',
-            ],
-            [
-                'slug' => 'hospitals',
-                'label' => 'Hospitals & medical',
-                'text' => '24/7 food and drinks for staff, patients and visitors.',
-                'kind' => 'food',
-                'image' => '/images/machines/coffee1.jpg',
-            ],
-            [
-                'slug' => 'apartments',
-                'label' => 'Apartments',
-                'text' => 'Lobby and clubhouse vending residents can use any time.',
-                'kind' => 'cooler',
-                'image' => '/images/machines/ai-cooler.png',
-            ],
-            [
-                'slug' => 'hotels',
-                'label' => 'Hotels & motels',
-                'text' => 'Guest-floor drink machines and lobby markets.',
-                'kind' => 'drink',
-                'image' => '/images/machines/ai-cooler.png',
-            ],
-            [
-                'slug' => 'gyms',
-                'label' => 'Gyms & fitness',
-                'text' => 'Protein, electrolytes and recovery drinks for members.',
-                'kind' => 'healthy',
-                'image' => '/images/machines/healthy-vending.png',
-            ],
-            [
-                'slug' => 'retail',
-                'label' => 'Retail & dealerships',
-                'text' => 'Snacks and drinks for customers while they wait.',
-                'kind' => 'slim',
-                'image' => '/images/machines/Alpine-ST5000.png',
-            ],
-        ];
-
-        $catalog = [];
-
-        foreach ($items as $item) {
-            $catalog[$item['slug']] = $item;
-        }
-
-        return $catalog;
     }
 }

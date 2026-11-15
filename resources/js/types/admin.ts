@@ -123,8 +123,14 @@ export interface AdminHomeFaq {
 export interface AdminLocationType {
     id: number;
     name: string;
+    slug: string | null;
+    description: string | null;
+    image: string | null;
+    image_url: string | null;
+    kind: string | null;
     sort_order: number;
     is_active: boolean;
+    show_on_industries: boolean;
     created_at: string;
     updated_at: string;
 }

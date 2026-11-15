@@ -12,6 +12,10 @@ export function MachinesIndustriesSection({
 }: {
     data: MachineIndustriesData;
 }) {
+    if (data.items.length === 0) {
+        return null;
+    }
+
     return (
         <Band>
             <SectionHead eyebrow={data.eyebrow} title={data.title} />

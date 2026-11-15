@@ -6,6 +6,8 @@ use App\Models\User;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
@@ -56,6 +58,56 @@ test('a location type can be created', function () {
 
     expect($locationType->is_active)->toBeTrue()
         ->and($locationType->sort_order)->toBe(1);
+});
+
+test('a location type gets an auto generated unique slug', function () {
+    $this->actingAs($this->admin)
+        ->post(route('admin.location-types.store'), ['name' => 'Car dealers'])
+        ->assertRedirect(route('admin.location-types.index'));
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.location-types.store'), ['name' => 'Car dealers!'])
+        ->assertRedirect(route('admin.location-types.index'));
+
+    $slugs = LocationType::query()->orderBy('id')->pluck('slug')->all();
+
+    expect($slugs)->toBe(['car-dealers', 'car-dealers-1']);
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.location-types.store'), ['name' => 'Dealers again', 'slug' => 'car-dealers'])
+        ->assertSessionHasErrors(['slug']);
+});
+
+test('a location type can be created with industry content and an image', function () {
+    Storage::fake('public');
+
+    $this->actingAs($this->admin)
+        ->post(route('admin.location-types.store'), [
+            'name' => 'Libraries',
+            'description' => 'Quiet vending for readers.',
+            'kind' => 'drink',
+            'show_on_industries' => false,
+            'image' => UploadedFile::fake()->image('library.jpg'),
+        ])
+        ->assertRedirect(route('admin.location-types.index'));
+
+    $type = LocationType::query()->where('name', 'Libraries')->sole();
+
+    expect($type->description)->toBe('Quiet vending for readers.')
+        ->and($type->kind)->toBe('drink')
+        ->and($type->show_on_industries)->toBeFalse()
+        ->and($type->image)->not->toBeNull();
+    Storage::disk('public')->assertExists($type->image);
+});
+
+test('renaming a location type keeps its slug', function () {
+    $type = LocationType::factory()->create(['name' => 'Old name', 'slug' => 'old-name']);
+
+    $this->actingAs($this->admin)
+        ->put(route('admin.location-types.update', $type), ['name' => 'New name'])
+        ->assertRedirect(route('admin.location-types.index'));
+
+    expect($type->refresh()->slug)->toBe('old-name');
 });
 
 test('creating a location type validates required fields', function () {

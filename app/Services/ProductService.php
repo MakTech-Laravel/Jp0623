@@ -38,6 +38,29 @@ class ProductService
         ];
     }
 
+    /**
+     * Active products of the given kinds, in admin sort order.
+     *
+     * @param  list<string>  $kinds
+     * @return list<array{kind: string, name: string, image: string|null}>
+     */
+    public function listForKinds(array $kinds): array
+    {
+        return Product::query()
+            ->where('is_active', true)
+            ->whereIn('kind', $kinds)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (Product $product): array => [
+                'kind' => $product->kind,
+                'name' => $product->name,
+                'image' => $product->image_url,
+            ])
+            ->values()
+            ->all();
+    }
+
     public function nextSortOrder(): int
     {
         return (int) Product::query()->max('sort_order') + 1;

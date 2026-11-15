@@ -30,12 +30,16 @@ class LocationTypeController extends Controller
     {
         return Inertia::render('admin/location-types/create', [
             'defaultSortOrder' => $this->locationTypes->nextSortOrder(),
+            'kindOptions' => $this->locationTypes->machineKindOptions(),
         ]);
     }
 
     public function store(StoreLocationTypeRequest $request): RedirectResponse
     {
-        $this->locationTypes->create($request->validated());
+        $this->locationTypes->create(
+            $request->safe()->except(['image']),
+            $request->hasFile('image') ? $request->file('image') : null,
+        );
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Location type created successfully.']);
 
@@ -46,12 +50,17 @@ class LocationTypeController extends Controller
     {
         return Inertia::render('admin/location-types/edit', [
             'locationType' => $locationType,
+            'kindOptions' => $this->locationTypes->machineKindOptions(),
         ]);
     }
 
     public function update(UpdateLocationTypeRequest $request, LocationType $locationType): RedirectResponse
     {
-        $this->locationTypes->update($locationType, $request->validated());
+        $this->locationTypes->update(
+            $locationType,
+            $request->safe()->except(['image']),
+            $request->hasFile('image') ? $request->file('image') : null,
+        );
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Location type updated successfully.']);
 

@@ -114,25 +114,58 @@ export default function LocationTypesIndex({
                                             className="border-b transition-colors hover:bg-muted/30"
                                         >
                                             <TableCell>
-                                                <p className="font-medium">
-                                                    {locationType.name}
-                                                </p>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted/40">
+                                                        {locationType.image_url ? (
+                                                            <img
+                                                                src={
+                                                                    locationType.image_url
+                                                                }
+                                                                alt={
+                                                                    locationType.name
+                                                                }
+                                                                className="h-full w-full object-contain"
+                                                            />
+                                                        ) : (
+                                                            <MapPin className="h-4 w-4 text-muted-foreground" />
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium">
+                                                            {locationType.name}
+                                                        </p>
+                                                        {locationType.slug && (
+                                                            <p className="font-mono text-xs text-foreground/70">
+                                                                {
+                                                                    locationType.slug
+                                                                }
+                                                            </p>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </TableCell>
                                             <TableCell className="hidden md:table-cell">
                                                 {locationType.sort_order}
                                             </TableCell>
                                             <TableCell>
-                                                <Badge
-                                                    variant={
-                                                        locationType.is_active
-                                                            ? 'secondary'
-                                                            : 'outline'
-                                                    }
-                                                >
-                                                    {locationType.is_active
-                                                        ? 'Active'
-                                                        : 'Inactive'}
-                                                </Badge>
+                                                <div className="flex flex-wrap gap-1">
+                                                    <Badge
+                                                        variant={
+                                                            locationType.is_active
+                                                                ? 'secondary'
+                                                                : 'outline'
+                                                        }
+                                                    >
+                                                        {locationType.is_active
+                                                            ? 'Active'
+                                                            : 'Inactive'}
+                                                    </Badge>
+                                                    {!locationType.show_on_industries && (
+                                                        <Badge variant="outline">
+                                                            Form only
+                                                        </Badge>
+                                                    )}
+                                                </div>
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <div className="flex items-center justify-end gap-1">

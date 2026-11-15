@@ -202,6 +202,7 @@ export type MicroMarketsCompareItem = {
     text: string;
     image: string;
     href: string;
+    tag?: string | null;
 };
 
 export type MicroMarketsCompareData = {

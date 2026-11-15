@@ -3,6 +3,7 @@
 use App\Models\Machine;
 use App\Models\MachineCategory;
 use App\Models\MachineFaq;
+use Database\Seeders\LocationTypeSeeder;
 use Database\Seeders\MachineFaqSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -10,7 +11,7 @@ use Inertia\Testing\AssertableInertia as Assert;
 uses(RefreshDatabase::class);
 
 test('machines page renders with database lineup', function () {
-    $this->seed(MachineFaqSeeder::class);
+    $this->seed([MachineFaqSeeder::class, LocationTypeSeeder::class]);
 
     $category = MachineCategory::factory()->create([
         'name' => 'Combo',
@@ -52,7 +53,7 @@ test('machines page renders with database lineup', function () {
             ->where('lineup.items.0.id', 'combo')
             ->where('lineup.items.0.type', 'Combo')
             ->has('tech.items', 4)
-            ->has('industries.items', 10)
+            ->has('industries.items', 6)
             ->has('faqs.items', 4)
             ->where('faqs.items.0.q', 'Are the machines really free?')
         );

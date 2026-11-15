@@ -3,6 +3,10 @@ import { Band } from '@/components/frontend/wrap';
 import type { IndustriesData } from '@/types/frontend';
 
 export function IndustriesSection({ data }: { data: IndustriesData }) {
+    if (data.items.length === 0) {
+        return null;
+    }
+
     return (
         <Band>
             <SectionHead

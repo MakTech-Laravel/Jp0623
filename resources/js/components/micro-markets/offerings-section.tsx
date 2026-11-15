@@ -17,6 +17,10 @@ export function MicroMarketsOfferingsSection({
 }: {
     data: MicroMarketsOfferingsData;
 }) {
+    if (data.items.length === 0) {
+        return null;
+    }
+
     return (
         <Band>
             <SectionHead eyebrow={data.eyebrow} title={data.title} />

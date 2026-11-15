@@ -9,8 +9,10 @@ import type { AdminLocationType } from '@/types/admin';
 
 export default function EditLocationType({
     locationType,
+    kindOptions,
 }: {
     locationType: AdminLocationType;
+    kindOptions: string[];
 }) {
     return (
         <>
@@ -34,10 +36,16 @@ export default function EditLocationType({
                     <LocationTypeForm
                         action={locationTypes.update(locationType.id)}
                         isEdit
+                        currentImageUrl={locationType.image_url}
+                        kindOptions={kindOptions}
                         defaults={{
                             name: locationType.name,
+                            slug: locationType.slug ?? '',
+                            description: locationType.description ?? '',
+                            kind: locationType.kind ?? '',
                             sort_order: locationType.sort_order,
                             is_active: locationType.is_active,
+                            show_on_industries: locationType.show_on_industries,
                         }}
                         onCancel={() => router.visit(locationTypes.index().url)}
                     />
