@@ -3,14 +3,26 @@
 use App\Models\HomeFaq;
 use App\Models\LocationType;
 use Database\Seeders\HomeFaqSeeder;
+use App\Models\Machine;
+use App\Models\MachineCategory;
 use Database\Seeders\LocationTypeSeeder;
+use Database\Seeders\MachineCategorySeeder;
+use Database\Seeders\MachineSeeder;
+use Database\Seeders\ProductSeeder;
+use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
 
 test('home page renders the frontend homepage with demo props', function () {
-    $this->seed([HomeFaqSeeder::class, LocationTypeSeeder::class]);
+    $this->seed([
+        HomeFaqSeeder::class,
+        LocationTypeSeeder::class,
+        MachineCategorySeeder::class,
+        MachineSeeder::class,
+        ProductSeeder::class,
+    ]);
 
     $this->get(route('home'))
         ->assertOk()
@@ -61,6 +73,59 @@ test('home page location types come from the database and hide inactive items', 
             fn(Assert $page) => $page
                 ->has('requestForm.locationTypes', 1)
                 ->where('requestForm.locationTypes.0', 'Active location')
+        );
+});
+
+test('home page featured machines come from featured active machines', function () {
+    $category = MachineCategory::factory()->create();
+
+    Machine::factory()->featured()->create([
+        'machine_category_id' => $category->id,
+        'name' => 'Featured One',
+        'slug' => 'featured-one',
+        'sort_order' => 1,
+    ]);
+    Machine::factory()->create([
+        'machine_category_id' => $category->id,
+        'name' => 'Not Featured',
+        'slug' => 'not-featured',
+        'sort_order' => 2,
+    ]);
+    Machine::factory()->featured()->inactive()->create([
+        'machine_category_id' => $category->id,
+        'slug' => 'featured-hidden',
+        'sort_order' => 3,
+    ]);
+    Machine::factory()->featured()->count(3)->sequence(
+        ['slug' => 'f-a', 'sort_order' => 4],
+        ['slug' => 'f-b', 'sort_order' => 5],
+        ['slug' => 'f-c', 'sort_order' => 6],
+    )->create(['machine_category_id' => $category->id]);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(
+            fn (Assert $page) => $page
+                ->has('featuredMachines.items', 3)
+                ->where('featuredMachines.items.0.id', 'featured-one')
+                ->where('featuredMachines.items.1.id', 'f-a')
+                ->where('featuredMachines.link.label', 'See all 5 machines →')
+        );
+});
+
+test('home page products teaser comes from featured active products', function () {
+    Product::factory()->featured()->create(['name' => 'Chips', 'kind' => 'chips', 'slug' => 'chips', 'sort_order' => 2]);
+    Product::factory()->featured()->create(['name' => 'Drinks', 'kind' => 'drink', 'slug' => 'drink', 'sort_order' => 1]);
+    Product::factory()->create(['name' => 'Plain', 'kind' => 'plain', 'slug' => 'plain', 'sort_order' => 3]);
+    Product::factory()->featured()->inactive()->create(['kind' => 'hidden', 'slug' => 'hidden', 'sort_order' => 4]);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(
+            fn (Assert $page) => $page
+                ->has('products.items', 2)
+                ->where('products.items.0.name', 'Drinks')
+                ->where('products.items.1.name', 'Chips')
         );
 });
 

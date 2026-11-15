@@ -17,6 +17,10 @@ export function FeaturedMachinesSection({
 }: {
     data: FeaturedMachinesData;
 }) {
+    if (data.items.length === 0) {
+        return null;
+    }
+
     return (
         <Band>
             <SectionHead

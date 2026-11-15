@@ -28,6 +28,31 @@ class MachineService
     }
 
     /**
+     * Active machines flagged as featured in admin, for the home page.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function listFeaturedForFrontend(int $limit = 3): array
+    {
+        return Machine::query()
+            ->with('category:id,name,slug')
+            ->where('is_active', true)
+            ->where('is_featured', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->limit($limit)
+            ->get()
+            ->map(fn (Machine $machine): array => $this->toFrontendItem($machine))
+            ->values()
+            ->all();
+    }
+
+    public function countActive(): int
+    {
+        return Machine::query()->where('is_active', true)->count();
+    }
+
+    /**
      * Link cards for the given active machines, in the order of the slugs passed.
      *
      * @param  list<string>  $slugs
