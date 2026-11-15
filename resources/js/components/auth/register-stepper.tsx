@@ -61,18 +61,11 @@ const fieldClass =
 const STEPS = ['Machines', 'Area', 'Account', 'Verify'] as const;
 const ACCOUNT_STEP = 2;
 const VERIFY_STEP = 3;
-const MACHINE_TYPES = [
-    'Soda',
-    'Snack',
-    'Combo',
-    'Healthy',
-    'Micro market',
-    'Coffee',
-] as const;
 const QUANTITIES = ['1', '2', '3', '4', '5', '6+'] as const;
 
 type RegisterStepperProps = {
     passwordRules: string;
+    availableMachineTypes?: string[];
 };
 
 function OptLabel({
@@ -116,10 +109,17 @@ function validateStep(root: HTMLElement | null): boolean {
     return true;
 }
 
-export function RegisterStepper({ passwordRules }: RegisterStepperProps) {
+export function RegisterStepper({
+    passwordRules,
+    availableMachineTypes = [],
+}: RegisterStepperProps) {
     const [step, setStep] = useState(0);
     const [ownsMachines, setOwnsMachines] = useState<'Yes' | 'No'>('Yes');
-    const [machineTypes, setMachineTypes] = useState<string[]>(['Combo']);
+    const [machineTypes, setMachineTypes] = useState<string[]>(() =>
+        availableMachineTypes.includes('Combo')
+            ? ['Combo']
+            : availableMachineTypes.slice(0, 1),
+    );
     const [quantity, setQuantity] = useState('1');
     const [locationQuery, setLocationQuery] = useState('');
     const [selectedLocation, setSelectedLocation] =
@@ -426,7 +426,7 @@ export function RegisterStepper({ passwordRules }: RegisterStepperProps) {
                                 What type of machines? (select all)
                             </legend>
                             <div className="flex flex-wrap gap-2">
-                                {MACHINE_TYPES.map((type) => (
+                                {availableMachineTypes.map((type) => (
                                     <OptLabel
                                         key={type}
                                         checked={machineTypes.includes(type)}

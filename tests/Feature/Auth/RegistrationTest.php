@@ -2,20 +2,27 @@
 
 use App\Enums\RoleEnum;
 use App\Mail\RegisterOtpMail;
+use App\Models\MachineCategory;
 use App\Models\OperatorProfile;
 use App\Models\User;
 use App\Support\RegisterOtp;
+use Database\Seeders\MachineCategorySeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Inertia\Testing\AssertableInertia as Assert;
 use Laravel\Fortify\Features;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->skipUnlessFortifyHas(Features::registration());
-    $this->seed([PermissionSeeder::class, RoleSeeder::class]);
+    $this->seed([
+        PermissionSeeder::class,
+        RoleSeeder::class,
+        MachineCategorySeeder::class,
+    ]);
 });
 
 /**
@@ -48,7 +55,40 @@ function operatorAccountPayload(array $overrides = []): array
 }
 
 test('registration screen can be rendered', function () {
-    $this->get(route('register'))->assertOk();
+    $this->get(route('register'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('auth/register')
+            ->where('machineTypes', [
+                'Combo',
+                'Snack',
+                'Drink',
+                'Healthy',
+                'Vendera cooler',
+                'Micro market',
+            ])
+        );
+});
+
+test('account create rejects unknown machine types', function () {
+    Mail::fake();
+
+    $this->postJson(route('register.account'), operatorAccountPayload([
+        'machine_types' => ['Not A Real Type'],
+    ]))->assertUnprocessable()
+        ->assertJsonValidationErrors(['machine_types.0']);
+
+    expect(User::query()->where('email', 'test@example.com')->exists())->toBeFalse();
+});
+
+test('account create accepts seeded machine category names', function () {
+    Mail::fake();
+
+    $this->postJson(route('register.account'), operatorAccountPayload([
+        'machine_types' => ['Combo', 'Snack'],
+    ]))->assertOk();
+
+    expect(MachineCategory::query()->where('name', 'Combo')->exists())->toBeTrue();
 });
 
 test('account create validates mismatched passwords', function () {

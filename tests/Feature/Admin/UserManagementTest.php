@@ -3,6 +3,7 @@
 use App\Enums\RoleEnum;
 use App\Models\OperatorProfile;
 use App\Models\User;
+use Database\Seeders\MachineCategorySeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -12,7 +13,11 @@ use Inertia\Testing\AssertableInertia as Assert;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed([PermissionSeeder::class, RoleSeeder::class]);
+    $this->seed([
+        PermissionSeeder::class,
+        RoleSeeder::class,
+        MachineCategorySeeder::class,
+    ]);
 
     $this->superAdmin = User::factory()->create();
     $this->superAdmin->assignRole(RoleEnum::SUPER_ADMIN->value);
@@ -58,6 +63,24 @@ test('super admin can view the user management list', function () {
                 ->component('admin/users/index')
                 ->where('scope', 'user')
                 ->has('users.data', 1)
+        );
+});
+
+test('user management create form receives active machine types', function () {
+    $this->actingAs($this->superAdmin)
+        ->get(route('admin.user-management.create'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/users/create')
+            ->where('scope', 'user')
+            ->where('machineTypes', [
+                'Combo',
+                'Snack',
+                'Drink',
+                'Healthy',
+                'Vendera cooler',
+                'Micro market',
+            ])
         );
 });
 
@@ -157,7 +180,7 @@ test('user show includes operator profile registration fields', function () {
         'last_name' => 'Doe',
         'company_name' => 'Harbor Vending',
         'primary_city' => 'Houston, TX',
-        'machine_types' => ['Coffee', 'Snack'],
+        'machine_types' => ['Drink', 'Snack'],
     ]);
 
     $this->actingAs($this->superAdmin)
@@ -169,7 +192,7 @@ test('user show includes operator profile registration fields', function () {
                 ->where('scope', 'user')
                 ->where('operatorProfile.company_name', 'Harbor Vending')
                 ->where('operatorProfile.primary_city', 'Houston, TX')
-                ->where('operatorProfile.machine_types', ['Coffee', 'Snack'])
+                ->where('operatorProfile.machine_types', ['Drink', 'Snack'])
         );
 });
 

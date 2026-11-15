@@ -21,23 +21,23 @@ class MembershipService
 
     public function ensureFor(User $user): OperatorMembership
     {
-        $existing = $user->membership;
+        $membership = OperatorMembership::query()->firstOrCreate(
+            ['user_id' => $user->id],
+            [
+                'status' => $this->settings->isPaid()
+                    ? OperatorMembership::STATUS_REQUIRED
+                    : OperatorMembership::STATUS_ACTIVE_FREE,
+                'monthly_price' => $this->settings->monthlyPrice(),
+            ],
+        );
 
-        if ($existing !== null) {
-            if ($this->settings->isPaid()) {
-                $existing->markExpiredPaidPeriodIfNeeded();
-            }
-
-            return $existing->refresh();
+        if ($this->settings->isPaid()) {
+            $membership->markExpiredPaidPeriodIfNeeded();
         }
 
-        return OperatorMembership::query()->create([
-            'user_id' => $user->id,
-            'status' => $this->settings->isPaid()
-                ? OperatorMembership::STATUS_REQUIRED
-                : OperatorMembership::STATUS_ACTIVE_FREE,
-            'monthly_price' => $this->settings->monthlyPrice(),
-        ]);
+        $user->setRelation('membership', $membership);
+
+        return $membership->refresh();
     }
 
     public function userCanAccessMarketplace(User $user): bool

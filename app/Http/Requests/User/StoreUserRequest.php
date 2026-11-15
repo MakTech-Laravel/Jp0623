@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\User;
 
+use App\Services\MachineCategoryService;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -36,7 +37,7 @@ class StoreUserRequest extends FormRequest
                 'company_name' => ['required', 'string', 'max:255'],
                 'owns_machines' => ['required', 'boolean'],
                 'machine_types' => ['required', 'array', 'min:1'],
-                'machine_types.*' => ['string', 'max:100'],
+                'machine_types.*' => ['string', 'max:100', Rule::in(app(MachineCategoryService::class)->activeNames())],
                 'machines_needed' => ['required', 'string', Rule::in(['1', '2', '3', '4', '5', '6+'])],
                 'primary_city' => ['required', 'string', 'max:255'],
             ];

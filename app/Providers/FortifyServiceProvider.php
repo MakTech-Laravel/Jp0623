@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Http\Responses\LoginResponse as AppLoginResponse;
+use App\Services\MachineCategoryService;
 use App\Services\MembershipSettingsService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -82,6 +83,7 @@ class FortifyServiceProvider extends ServiceProvider
                     'monthly_price' => (int) $settings->monthly_price,
                     'is_paid' => $settings->isPaid(),
                 ],
+                'machineTypes' => app(MachineCategoryService::class)->activeNames(),
             ]);
         });
 

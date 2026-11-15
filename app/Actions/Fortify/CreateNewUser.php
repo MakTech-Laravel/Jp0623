@@ -6,6 +6,7 @@ use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Enums\RoleEnum;
 use App\Models\User;
+use App\Services\MachineCategoryService;
 use App\Support\RegisterOtp;
 use Closure;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +35,7 @@ class CreateNewUser implements CreatesNewUsers
             'phone' => $this->phoneRules(),
             'owns_machines' => ['required', 'boolean'],
             'machine_types' => ['required', 'array', 'min:1'],
-            'machine_types.*' => ['string', 'max:100'],
+            'machine_types.*' => ['string', 'max:100', Rule::in(app(MachineCategoryService::class)->activeNames())],
             'machines_needed' => ['required', 'string', Rule::in(['1', '2', '3', '4', '5', '6+'])],
             'primary_city' => ['required', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:500'],
