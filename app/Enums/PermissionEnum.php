@@ -124,6 +124,12 @@ enum PermissionEnum: string
     case OPERATOR_SMS_INDEX = 'operator-sms.index';
     case OPERATOR_SMS_SEND = 'operator-sms.send';
 
+    // CONTACT MESSAGES
+    case CONTACT_MESSAGES_INDEX = 'contact-messages.index';
+    case CONTACT_MESSAGES_VIEW = 'contact-messages.view';
+    case CONTACT_MESSAGES_EDIT = 'contact-messages.edit';
+    case CONTACT_MESSAGES_DELETE = 'contact-messages.delete';
+
     // PAYMENTS (lead + membership history; refunds deferred)
     case PAYMENTS_INDEX = 'payments.index';
 
@@ -237,6 +243,11 @@ enum PermissionEnum: string
 
             self::OPERATOR_SMS_INDEX,
             self::OPERATOR_SMS_SEND => 'Operator SMS',
+
+            self::CONTACT_MESSAGES_INDEX,
+            self::CONTACT_MESSAGES_VIEW,
+            self::CONTACT_MESSAGES_EDIT,
+            self::CONTACT_MESSAGES_DELETE => 'Contact Messages',
 
             self::PAYMENTS_INDEX => 'Payments',
 

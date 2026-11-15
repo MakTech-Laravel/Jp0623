@@ -132,6 +132,12 @@ export const PERMISSIONS = {
         INDEX: 'operator-sms.index',
         SEND: 'operator-sms.send',
     },
+    CONTACT_MESSAGES: {
+        INDEX: 'contact-messages.index',
+        VIEW: 'contact-messages.view',
+        EDIT: 'contact-messages.edit',
+        DELETE: 'contact-messages.delete',
+    },
     PAYMENTS: {
         INDEX: 'payments.index',
     },

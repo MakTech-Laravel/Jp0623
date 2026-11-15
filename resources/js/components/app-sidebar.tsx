@@ -20,6 +20,7 @@ import {
     Users,
     UserCog,
     Inbox,
+    Mail,
 } from 'lucide-react';
 import { useMemo } from 'react';
 import AppLogo from '@/components/app-logo';
@@ -54,6 +55,7 @@ import adminOfficeCoffeeFaqs from '@/routes/admin/office-coffee-faqs';
 import adminProducts from '@/routes/admin/products';
 import adminUserManagement from '@/routes/admin/user-management';
 import adminCoffeeServiceRequests from '@/routes/admin/coffee-service-requests';
+import adminContactMessages from '@/routes/admin/contact-messages';
 import adminOperatorSms from '@/routes/admin/operator-sms';
 import adminMembershipSettings from '@/routes/admin/membership-settings';
 import adminPayments from '@/routes/admin/payments';
@@ -272,6 +274,12 @@ export function AppSidebar() {
                 href: adminCoffeeServiceRequests.index(),
                 icon: Coffee,
                 permissions: [PERMISSIONS.COFFEE_SERVICE_REQUESTS.INDEX],
+            },
+            {
+                title: 'Contact Messages',
+                href: adminContactMessages.index(),
+                icon: Mail,
+                permissions: [PERMISSIONS.CONTACT_MESSAGES.INDEX],
             },
             {
                 title: 'Operator SMS',
