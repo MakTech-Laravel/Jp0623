@@ -38,7 +38,7 @@ export default function CreateUser({
                     </Button>
                 </AdminPageHeader>
 
-                <div className="rounded-xl border bg-card p-6 shadow-sm">
+                <div className="w-full rounded-xl border bg-card p-6 shadow-sm">
                     <UserForm
                         action={routes.store()}
                         hideRoles
