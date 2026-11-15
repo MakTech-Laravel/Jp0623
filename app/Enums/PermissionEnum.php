@@ -102,6 +102,18 @@ enum PermissionEnum: string
     case OFFICE_COFFEE_FAQS_EDIT = 'office-coffee-faqs.edit';
     case OFFICE_COFFEE_FAQS_DELETE = 'office-coffee-faqs.delete';
 
+    // COFFEE MACHINES
+    case COFFEE_MACHINES_INDEX = 'coffee-machines.index';
+    case COFFEE_MACHINES_CREATE = 'coffee-machines.create';
+    case COFFEE_MACHINES_EDIT = 'coffee-machines.edit';
+    case COFFEE_MACHINES_DELETE = 'coffee-machines.delete';
+
+    // COFFEE TYPES
+    case COFFEE_TYPES_INDEX = 'coffee-types.index';
+    case COFFEE_TYPES_CREATE = 'coffee-types.create';
+    case COFFEE_TYPES_EDIT = 'coffee-types.edit';
+    case COFFEE_TYPES_DELETE = 'coffee-types.delete';
+
     // LOCATION TYPES
     case LOCATION_TYPES_INDEX = 'location-types.index';
     case LOCATION_TYPES_CREATE = 'location-types.create';
@@ -207,6 +219,16 @@ enum PermissionEnum: string
             self::OFFICE_COFFEE_FAQS_CREATE,
             self::OFFICE_COFFEE_FAQS_EDIT,
             self::OFFICE_COFFEE_FAQS_DELETE => 'Office Coffee FAQs',
+
+            self::COFFEE_MACHINES_INDEX,
+            self::COFFEE_MACHINES_CREATE,
+            self::COFFEE_MACHINES_EDIT,
+            self::COFFEE_MACHINES_DELETE => 'Coffee Machines',
+
+            self::COFFEE_TYPES_INDEX,
+            self::COFFEE_TYPES_CREATE,
+            self::COFFEE_TYPES_EDIT,
+            self::COFFEE_TYPES_DELETE => 'Coffee Types',
 
             self::LOCATION_TYPES_INDEX,
             self::LOCATION_TYPES_CREATE,

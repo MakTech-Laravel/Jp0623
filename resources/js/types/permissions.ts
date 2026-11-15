@@ -110,6 +110,18 @@ export const PERMISSIONS = {
         EDIT: 'office-coffee-faqs.edit',
         DELETE: 'office-coffee-faqs.delete',
     },
+    COFFEE_MACHINES: {
+        INDEX: 'coffee-machines.index',
+        CREATE: 'coffee-machines.create',
+        EDIT: 'coffee-machines.edit',
+        DELETE: 'coffee-machines.delete',
+    },
+    COFFEE_TYPES: {
+        INDEX: 'coffee-types.index',
+        CREATE: 'coffee-types.create',
+        EDIT: 'coffee-types.edit',
+        DELETE: 'coffee-types.delete',
+    },
     LOCATION_TYPES: {
         INDEX: 'location-types.index',
         CREATE: 'location-types.create',

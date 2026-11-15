@@ -111,22 +111,11 @@ class MicroMarketsPageData
      */
     public static function offerings(): array
     {
-        $kinds = ['food', 'drink', 'healthy', 'pastry', 'coffee'];
-        $catalog = collect(HomePageData::productCatalog())->keyBy('kind');
-
         return [
             'eyebrow' => 'Food & beverages offered',
             'title' => 'From breakfast to late shift.',
-            'items' => collect($kinds)
-                ->map(fn (string $kind): ?array => $catalog->get($kind))
-                ->filter()
-                ->map(fn (array $item): array => [
-                    'kind' => $item['kind'],
-                    'name' => $item['name'],
-                    'image' => $item['image'],
-                ])
-                ->values()
-                ->all(),
+            // Populated from active Product records in MicroMarketsController.
+            'items' => [],
         ];
     }
 
@@ -137,20 +126,8 @@ class MicroMarketsPageData
     {
         return [
             'title' => 'Micro markets & Vendera coolers: we offer both.',
-            'items' => [
-                [
-                    'title' => 'Micro market',
-                    'text' => 'Best for 100+ people. The widest selection, including fresh meals.',
-                    'image' => '/images/machines/micro-market.jpg',
-                    'href' => '/micro-markets',
-                ],
-                [
-                    'title' => 'Vendera smart cooler',
-                    'text' => 'Best for 25–100 people. One cooler that charges for what you take.',
-                    'image' => '/images/machines/Vendera-Tap-Grab-Go-Cabinet.png',
-                    'href' => '/machines/ai-cooler',
-                ],
-            ],
+            // Populated from active Machine records in MicroMarketsController.
+            'items' => [],
         ];
     }
 

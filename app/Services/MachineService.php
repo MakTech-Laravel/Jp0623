@@ -27,6 +27,34 @@ class MachineService
             ->all();
     }
 
+    /**
+     * Link cards for the given active machines, in the order of the slugs passed.
+     *
+     * @param  list<string>  $slugs
+     * @return list<array{title: string, text: string, tag: string|null, image: string, href: string}>
+     */
+    public function compareCardsForFrontend(array $slugs): array
+    {
+        $machines = Machine::query()
+            ->where('is_active', true)
+            ->whereIn('slug', $slugs)
+            ->get()
+            ->keyBy('slug');
+
+        return collect($slugs)
+            ->map(fn (string $slug): ?Machine => $machines->get($slug))
+            ->filter()
+            ->map(fn (Machine $machine): array => [
+                'title' => $machine->name,
+                'text' => $machine->description ?? '',
+                'tag' => $machine->best_for,
+                'image' => $machine->image_url ?? '',
+                'href' => '/machines/'.$machine->slug,
+            ])
+            ->values()
+            ->all();
+    }
+
     public function nextSortOrder(): int
     {
         return (int) Machine::query()->max('sort_order') + 1;

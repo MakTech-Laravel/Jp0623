@@ -101,68 +101,8 @@ class MachinesPageData
         return [
             'eyebrow' => 'By industry',
             'title' => 'Vending for your industry.',
-            'items' => [
-                [
-                    'slug' => 'offices',
-                    'label' => 'Offices',
-                    'text' => 'Quiet machines, healthy options and coffee for daytime teams.',
-                    'href' => '/industries/offices',
-                ],
-                [
-                    'slug' => 'warehouses',
-                    'label' => 'Warehouses',
-                    'text' => 'Durable, high-capacity machines for large crews and long shifts.',
-                    'href' => '/industries/warehouses',
-                ],
-                [
-                    'slug' => 'manufacturing',
-                    'label' => 'Manufacturing',
-                    'text' => 'Around-the-clock vending that covers every shift on the floor.',
-                    'href' => '/industries/manufacturing',
-                ],
-                [
-                    'slug' => 'schools',
-                    'label' => 'Schools',
-                    'text' => 'Machines and products that follow school nutrition rules.',
-                    'href' => '/industries/schools',
-                ],
-                [
-                    'slug' => 'colleges',
-                    'label' => 'Colleges & universities',
-                    'text' => 'Dorms, libraries and student centers with card and phone pay.',
-                    'href' => '/industries/colleges',
-                ],
-                [
-                    'slug' => 'hospitals',
-                    'label' => 'Hospitals & medical',
-                    'text' => '24/7 food and drinks for staff, patients and visitors.',
-                    'href' => '/industries/hospitals',
-                ],
-                [
-                    'slug' => 'apartments',
-                    'label' => 'Apartments',
-                    'text' => 'Lobby and clubhouse vending residents can use any time.',
-                    'href' => '/industries/apartments',
-                ],
-                [
-                    'slug' => 'hotels',
-                    'label' => 'Hotels & motels',
-                    'text' => 'Guest-floor drink machines and lobby markets.',
-                    'href' => '/industries/hotels',
-                ],
-                [
-                    'slug' => 'gyms',
-                    'label' => 'Gyms & fitness',
-                    'text' => 'Protein, electrolytes and recovery drinks for members.',
-                    'href' => '/industries/gyms',
-                ],
-                [
-                    'slug' => 'retail',
-                    'label' => 'Retail & dealerships',
-                    'text' => 'Snacks and drinks for customers while they wait.',
-                    'href' => '/industries/retail',
-                ],
-            ],
+            // Populated from active, public LocationType records in MachinesController.
+            'items' => [],
         ];
     }
 

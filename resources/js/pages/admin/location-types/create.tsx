@@ -8,8 +8,10 @@ import locationTypes from '@/routes/admin/location-types';
 
 export default function CreateLocationType({
     defaultSortOrder,
+    kindOptions,
 }: {
     defaultSortOrder: number;
+    kindOptions: string[];
 }) {
     return (
         <>
@@ -18,7 +20,7 @@ export default function CreateLocationType({
             <div className="w-full space-y-6 px-4 py-6 sm:px-6 lg:px-8">
                 <AdminPageHeader
                     title="Create location type"
-                    description="Add an option for the Type of location field on the public request form."
+                    description="Add an option for the Type of location field. It can also appear as an industry on the website."
                     icon={MapPin}
                 >
                     <Button variant="outline" asChild>
@@ -32,10 +34,15 @@ export default function CreateLocationType({
                 <div className="rounded-xl border bg-card p-6 shadow-sm">
                     <LocationTypeForm
                         action={locationTypes.store()}
+                        kindOptions={kindOptions}
                         defaults={{
                             name: '',
+                            slug: '',
+                            description: '',
+                            kind: '',
                             sort_order: defaultSortOrder,
                             is_active: true,
+                            show_on_industries: true,
                         }}
                         onCancel={() => router.visit(locationTypes.index().url)}
                     />
