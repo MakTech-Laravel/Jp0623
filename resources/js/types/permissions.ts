@@ -116,6 +116,19 @@ export const PERMISSIONS = {
         EDIT: 'coffee-machines.edit',
         DELETE: 'coffee-machines.delete',
     },
+    ARTICLES: {
+        INDEX: 'articles.index',
+        CREATE: 'articles.create',
+        EDIT: 'articles.edit',
+        DELETE: 'articles.delete',
+    },
+    CITIES: {
+        INDEX: 'cities.index',
+        CREATE: 'cities.create',
+        EDIT: 'cities.edit',
+        DELETE: 'cities.delete',
+        IMPORT: 'cities.import',
+    },
     COFFEE_TYPES: {
         INDEX: 'coffee-types.index',
         CREATE: 'coffee-types.create',

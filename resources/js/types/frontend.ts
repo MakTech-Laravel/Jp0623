@@ -400,6 +400,16 @@ export type ArticleItem = {
     title: string;
     excerpt: string;
     href: string;
+    image?: string | null;
+};
+
+export type ArticleDetail = {
+    slug: string;
+    cat: string;
+    title: string;
+    excerpt: string;
+    paragraphs: string[];
+    image: string | null;
 };
 
 export type ArticlesData = {
