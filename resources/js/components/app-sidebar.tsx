@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import {
     BookOpen,
+    Building2,
     CircleHelp,
     Coffee,
     CreditCard,
@@ -9,6 +10,7 @@ import {
     LayoutGrid,
     MapPinned,
     MapPin,
+    Newspaper,
     Package,
     Receipt,
     Route,
@@ -44,6 +46,8 @@ import {
     location as accountLocation,
 } from '@/routes/account';
 import adminAdminManagement from '@/routes/admin/admin-management';
+import adminArticles from '@/routes/admin/articles';
+import adminCities from '@/routes/admin/cities';
 import adminCoffeeMachines from '@/routes/admin/coffee-machines';
 import adminCoffeeTypes from '@/routes/admin/coffee-types';
 import adminHomeFaqs from '@/routes/admin/home-faqs';
@@ -256,6 +260,18 @@ export function AppSidebar() {
                 href: adminLocationTypes.index(),
                 icon: MapPin,
                 permissions: [PERMISSIONS.LOCATION_TYPES.INDEX],
+            },
+            {
+                title: 'Cities',
+                href: adminCities.index(),
+                icon: Building2,
+                permissions: [PERMISSIONS.CITIES.INDEX],
+            },
+            {
+                title: 'Articles',
+                href: adminArticles.index(),
+                icon: Newspaper,
+                permissions: [PERMISSIONS.ARTICLES.INDEX],
             },
             {
                 title: 'Coffee Machines',

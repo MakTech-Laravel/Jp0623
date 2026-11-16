@@ -552,29 +552,8 @@ class HomePageData
                 'label' => 'View all resources →',
                 'href' => '/resources',
             ],
-            'items' => [
-                [
-                    'id' => 'multi-site',
-                    'cat' => 'Vending management',
-                    'title' => 'How to choose a vending company for multiple sites',
-                    'excerpt' => 'What to ask before you sign, and why one contact beats ten vendors.',
-                    'href' => '/resources',
-                ],
-                [
-                    'id' => 'ai-vs-market',
-                    'cat' => 'Smart & AI vending',
-                    'title' => 'Vendera coolers vs. micro markets: which one fits?',
-                    'excerpt' => 'A simple guide based on headcount, space and food needs.',
-                    'href' => '/resources',
-                ],
-                [
-                    'id' => 'healthy-mix',
-                    'cat' => 'Healthy vending',
-                    'title' => 'Building a healthier snack mix your team will buy',
-                    'excerpt' => 'Swap in better options without killing sales.',
-                    'href' => '/resources',
-                ],
-            ],
+            // Populated from the articles table (ArticleService::listForFrontend()).
+            'items' => [],
         ];
     }
 
@@ -583,48 +562,11 @@ class HomePageData
      */
     public static function cities(): array
     {
-        $raw = [
-            ['Houston', 'TX'],
-            ['New York', 'NY'],
-            ['Atlanta', 'GA'],
-            ['Dallas', 'TX'],
-            ['Chicago', 'IL'],
-            ['Miami', 'FL'],
-            ['Charlotte', 'NC'],
-            ['Philadelphia', 'PA'],
-            ['Los Angeles', 'CA'],
-            ['Fort Worth', 'TX'],
-            ['Orlando', 'FL'],
-            ['Phoenix', 'AZ'],
-            ['Tampa', 'FL'],
-            ['Las Vegas', 'NV'],
-            ['Indianapolis', 'IN'],
-            ['Cleveland', 'OH'],
-            ['Memphis', 'TN'],
-            ['Fort Lauderdale', 'FL'],
-            ['Sacramento', 'CA'],
-            ['Detroit', 'MI'],
-            ['Boston', 'MA'],
-            ['Jacksonville', 'FL'],
-            ['Columbus', 'OH'],
-            ['Raleigh', 'NC'],
-            ['Washington', 'DC'],
-            ['Baltimore', 'MD'],
-            ['Cincinnati', 'OH'],
-            ['Greensboro', 'NC'],
-            ['San Antonio', 'TX'],
-            ['Nashville', 'TN'],
-        ];
-
         return [
             'eyebrow' => 'Top cities',
             'title' => 'Cities where we manage vending.',
-            'items' => array_map(fn(array $city): array => [
-                'city' => $city[0],
-                'state' => $city[1],
-                'label' => $city[0] . ' vending',
-                'href' => '/cities',
-            ], $raw),
+            // Populated from the cities table (CityService::listForFrontend()).
+            'items' => [],
         ];
     }
 }

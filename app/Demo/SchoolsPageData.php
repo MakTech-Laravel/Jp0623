@@ -80,13 +80,11 @@ class SchoolsPageData
      */
     public static function guide(): array
     {
-        $articles = HomePageData::articles()['items'];
-        $guide = $articles[2] ?? $articles[0];
-
         return [
             'eyebrow' => 'Guide',
             'title' => 'Learn the rules.',
-            'item' => $guide,
+            // Populated from the articles table in SchoolsController.
+            'item' => null,
         ];
     }
 }

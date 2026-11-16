@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Demo\SchoolsPageData;
 use App\Http\Controllers\Controller;
+use App\Services\ArticleService;
 use App\Services\ProductService;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -17,7 +18,10 @@ class SchoolsController extends Controller
      */
     private const PRODUCT_KINDS = ['healthy', 'nuts', 'drink', 'food'];
 
-    public function __construct(private ProductService $products) {}
+    public function __construct(
+        private ProductService $products,
+        private ArticleService $articles,
+    ) {}
 
     public function index(): Response
     {
@@ -29,6 +33,9 @@ class SchoolsController extends Controller
             ],
             $this->products->listForKinds(self::PRODUCT_KINDS),
         );
+
+        $articles = $this->articles->listForFrontend(3);
+        $page['guide']['item'] = $articles[2] ?? $articles[0] ?? null;
 
         return Inertia::render('frontend/schools', $page);
     }
