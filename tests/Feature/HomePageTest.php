@@ -2,6 +2,7 @@
 
 use App\Models\HomeFaq;
 use App\Models\LocationType;
+use Database\Seeders\ArticleSeeder;
 use Database\Seeders\HomeFaqSeeder;
 use App\Models\Machine;
 use App\Models\MachineCategory;
@@ -22,6 +23,7 @@ test('home page renders the frontend homepage with demo props', function () {
         MachineCategorySeeder::class,
         MachineSeeder::class,
         ProductSeeder::class,
+        ArticleSeeder::class,
     ]);
 
     $this->get(route('home'))
@@ -51,6 +53,7 @@ test('home page renders the frontend homepage with demo props', function () {
                 ->has('faqs.items', 12)
                 ->where('faqs.items.0.q', 'What does a vending management company do?')
                 ->has('articles.items', 3)
+                ->where('articles.items.0.href', '/resources/multi-site')
                 ->has('cities.items', 30)
         );
 });

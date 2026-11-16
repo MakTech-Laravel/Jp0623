@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Demo\HomePageData;
 use App\Http\Controllers\Controller;
 use App\Models\LocationType;
+use App\Services\ArticleService;
 use App\Services\HomeFaqService;
 use App\Services\LocationTypeService;
 use App\Services\MachineService;
@@ -19,6 +20,7 @@ class HomeController extends Controller
         private LocationTypeService $locationTypes,
         private MachineService $machines,
         private ProductService $products,
+        private ArticleService $articles,
     ) {}
 
     public function index(): Response
@@ -28,7 +30,8 @@ class HomeController extends Controller
         $page['requestForm']['locationTypes'] = $this->locationTypes->listActiveNamesForFrontend();
         $page['featuredMachines']['items'] = $this->machines->listFeaturedForFrontend();
         $page['featuredMachines']['link']['label'] = 'See all '.$this->machines->countActive().' machines →';
-        $page['products']['items'] = $this->products->listFeaturedForFrontend();
+        $page['articles']['items'] = $this->articles->listForFrontend(3);
+        $page['products']['items'] =$this->products->listFeaturedForFrontend();
         $page['industries']['items'] = array_map(
             fn (LocationType $industry): array => [
                 'slug' => (string) $industry->slug,

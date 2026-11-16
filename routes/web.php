@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\PermissionEnum;
+use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\CoffeeMachineController;
 use App\Http\Controllers\Admin\CoffeeServiceRequestController as AdminCoffeeServiceRequestController;
 use App\Http\Controllers\Admin\CoffeeTypeController;
@@ -73,6 +74,7 @@ Route::post('/contact', [ContactMessageController::class, 'store'])
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/schools', [SchoolsController::class, 'index'])->name('schools');
 Route::get('/resources', [ResourcesController::class, 'index'])->name('resources');
+Route::get('/resources/{article}', [ResourcesController::class, 'show'])->name('resources.show');
 Route::get('/cities', [CitiesController::class, 'index'])->name('cities');
 Route::get('/operators', [OperatorsController::class, 'index'])->name('operators');
 Route::get('/legal/{page}', [LegalController::class, 'show'])
@@ -410,6 +412,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware(['permission:'.PermissionEnum::COFFEE_TYPES_EDIT->value, HandlePrecognitiveRequests::class]);
             Route::delete('coffee-types/{coffee_type}', 'destroy')->name('coffee-types.destroy')
                 ->middleware('permission:'.PermissionEnum::COFFEE_TYPES_DELETE->value);
+        });
+
+        // Articles — "Resource hub" cards and /resources/{slug} detail pages.
+        Route::controller(ArticleController::class)->group(function () {
+            Route::get('articles', 'index')->name('articles.index')
+                ->middleware('permission:'.PermissionEnum::ARTICLES_INDEX->value);
+            Route::get('articles/create', 'create')->name('articles.create')
+                ->middleware('permission:'.PermissionEnum::ARTICLES_CREATE->value);
+            Route::post('articles', 'store')->name('articles.store')
+                ->middleware(['permission:'.PermissionEnum::ARTICLES_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('articles/{article}/edit', 'edit')->name('articles.edit')
+                ->middleware('permission:'.PermissionEnum::ARTICLES_EDIT->value);
+            Route::put('articles/{article}', 'update')->name('articles.update')
+                ->middleware(['permission:'.PermissionEnum::ARTICLES_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('articles/{article}', 'destroy')->name('articles.destroy')
+                ->middleware('permission:'.PermissionEnum::ARTICLES_DELETE->value);
         });
 
         // Location types — chips on the public vending request form.

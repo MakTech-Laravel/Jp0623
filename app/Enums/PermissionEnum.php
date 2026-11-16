@@ -114,6 +114,12 @@ enum PermissionEnum: string
     case COFFEE_TYPES_EDIT = 'coffee-types.edit';
     case COFFEE_TYPES_DELETE = 'coffee-types.delete';
 
+    // ARTICLES
+    case ARTICLES_INDEX = 'articles.index';
+    case ARTICLES_CREATE = 'articles.create';
+    case ARTICLES_EDIT = 'articles.edit';
+    case ARTICLES_DELETE = 'articles.delete';
+
     // LOCATION TYPES
     case LOCATION_TYPES_INDEX = 'location-types.index';
     case LOCATION_TYPES_CREATE = 'location-types.create';
@@ -235,6 +241,11 @@ enum PermissionEnum: string
             self::COFFEE_TYPES_CREATE,
             self::COFFEE_TYPES_EDIT,
             self::COFFEE_TYPES_DELETE => 'Coffee Types',
+
+            self::ARTICLES_INDEX,
+            self::ARTICLES_CREATE,
+            self::ARTICLES_EDIT,
+            self::ARTICLES_DELETE => 'Articles',
 
             self::LOCATION_TYPES_INDEX,
             self::LOCATION_TYPES_CREATE,

@@ -200,6 +200,21 @@ export interface AdminCoffeeType {
     updated_at: string;
 }
 
+export interface AdminArticle {
+    id: number;
+    slug: string;
+    category: string;
+    title: string;
+    excerpt: string | null;
+    body: string | null;
+    image: string | null;
+    image_url: string | null;
+    sort_order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface AdminCoffeeMachine {
     id: number;
     title: string;

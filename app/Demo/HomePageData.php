@@ -552,29 +552,8 @@ class HomePageData
                 'label' => 'View all resources →',
                 'href' => '/resources',
             ],
-            'items' => [
-                [
-                    'id' => 'multi-site',
-                    'cat' => 'Vending management',
-                    'title' => 'How to choose a vending company for multiple sites',
-                    'excerpt' => 'What to ask before you sign, and why one contact beats ten vendors.',
-                    'href' => '/resources',
-                ],
-                [
-                    'id' => 'ai-vs-market',
-                    'cat' => 'Smart & AI vending',
-                    'title' => 'Vendera coolers vs. micro markets: which one fits?',
-                    'excerpt' => 'A simple guide based on headcount, space and food needs.',
-                    'href' => '/resources',
-                ],
-                [
-                    'id' => 'healthy-mix',
-                    'cat' => 'Healthy vending',
-                    'title' => 'Building a healthier snack mix your team will buy',
-                    'excerpt' => 'Swap in better options without killing sales.',
-                    'href' => '/resources',
-                ],
-            ],
+            // Populated from the articles table (ArticleService::listForFrontend()).
+            'items' => [],
         ];
     }
 

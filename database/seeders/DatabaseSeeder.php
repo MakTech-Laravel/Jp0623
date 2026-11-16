@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             CoffeeMachineSeeder::class,
             CoffeeTypeSeeder::class,
             LocationTypeSeeder::class,
+            ArticleSeeder::class,
             SmsTemplateSeeder::class,
             MembershipSettingSeeder::class,
         ]);

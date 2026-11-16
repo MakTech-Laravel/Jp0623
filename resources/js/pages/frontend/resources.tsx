@@ -27,34 +27,40 @@ export default function ResourcesPage({ hero, articles }: ResourcesPageProps) {
 
             <PageHero title={hero.title} lead={hero.lead} />
 
-            <Band>
-                <SectionHead
-                    eyebrow={articles.eyebrow}
-                    title={articles.title}
-                />
-                <div className="grid gap-4 md:grid-cols-3">
-                    {articles.items.map((article, index) => (
-                        <Reveal key={article.id} delay={index * 0.05}>
-                            <article
-                                className={cn(
-                                    'flex h-full flex-col gap-2 rounded-brand border border-brand-line bg-brand-surface p-6',
-                                    brandCardHoverClass,
-                                )}
-                            >
-                                <span className="font-mono text-xs tracking-wide text-brand-muted uppercase">
-                                    {article.cat}
-                                </span>
-                                <h3 className="font-display text-xl font-bold text-brand-ink">
-                                    {article.title}
-                                </h3>
-                                <p className="text-sm text-brand-muted">
-                                    {article.excerpt}
-                                </p>
-                            </article>
-                        </Reveal>
-                    ))}
-                </div>
-            </Band>
+            {articles.items.length > 0 && (
+                <Band>
+                    <SectionHead
+                        eyebrow={articles.eyebrow}
+                        title={articles.title}
+                    />
+                    <div className="grid gap-4 md:grid-cols-3">
+                        {articles.items.map((article, index) => (
+                            <Reveal key={article.id} delay={index * 0.05}>
+                                <a
+                                    href={article.href}
+                                    className={cn(
+                                        'flex h-full flex-col gap-2 rounded-brand border border-brand-line bg-brand-surface p-6 no-underline',
+                                        brandCardHoverClass,
+                                    )}
+                                >
+                                    <span className="font-mono text-xs tracking-wide text-brand-muted uppercase">
+                                        {article.cat}
+                                    </span>
+                                    <h3 className="font-display text-xl font-bold text-brand-ink">
+                                        {article.title}
+                                    </h3>
+                                    <p className="text-sm text-brand-muted">
+                                        {article.excerpt}
+                                    </p>
+                                    <span className="mt-auto inline-flex self-start rounded-full border border-current px-3 py-1.5 text-sm font-semibold">
+                                        Read guide
+                                    </span>
+                                </a>
+                            </Reveal>
+                        ))}
+                    </div>
+                </Band>
+            )}
         </>
     );
 }
