@@ -40,6 +40,12 @@ class StoreUserRequest extends FormRequest
                 'machine_types.*' => ['string', 'max:100', Rule::in(app(MachineCategoryService::class)->activeNames())],
                 'machines_needed' => ['required', 'string', Rule::in(['1', '2', '3', '4', '5', '6+'])],
                 'primary_city' => ['required', 'string', 'max:255'],
+                'address' => ['nullable', 'string', 'max:500'],
+                'city' => ['required', 'string', 'max:255'],
+                'state' => ['required', 'string', 'max:100'],
+                'postal_code' => ['nullable', 'string', 'max:20'],
+                'latitude' => ['required', 'numeric', 'between:-90,90'],
+                'longitude' => ['required', 'numeric', 'between:-180,180'],
             ];
         }
 
@@ -85,6 +91,12 @@ class StoreUserRequest extends FormRequest
             'machine_types' => 'Machine types',
             'machines_needed' => 'Machines needed',
             'primary_city' => 'Primary city',
+            'address' => 'Address',
+            'city' => 'City',
+            'state' => 'State',
+            'postal_code' => 'Postal code',
+            'latitude' => 'Latitude',
+            'longitude' => 'Longitude',
         ];
     }
 

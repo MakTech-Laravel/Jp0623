@@ -129,6 +129,9 @@ export default function CitiesIndex({
                                 <TableRow className="bg-muted/50 hover:bg-muted/50">
                                     <TableHead>City</TableHead>
                                     <TableHead>State</TableHead>
+                                    <TableHead className="hidden sm:table-cell">
+                                        Postal code
+                                    </TableHead>
                                     <TableHead className="hidden md:table-cell">
                                         Order
                                     </TableHead>
@@ -160,6 +163,9 @@ export default function CitiesIndex({
                                                 {item.city}
                                             </TableCell>
                                             <TableCell>{item.state}</TableCell>
+                                            <TableCell className="hidden sm:table-cell">
+                                                {item.postal_code ?? '—'}
+                                            </TableCell>
                                             <TableCell className="hidden md:table-cell">
                                                 {item.sort_order}
                                             </TableCell>
