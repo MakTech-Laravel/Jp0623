@@ -3,6 +3,10 @@ import { Band } from '@/components/frontend/wrap';
 import type { CitiesData } from '@/types/frontend';
 
 export function CitiesSection({ data }: { data: CitiesData }) {
+    if (data.items.length === 0) {
+        return null;
+    }
+
     return (
         <Band alt id="cities">
             <SectionHead eyebrow={data.eyebrow} title={data.title} />

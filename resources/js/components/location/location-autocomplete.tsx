@@ -25,6 +25,8 @@ type LocationAutocompleteProps = {
     inputClassName?: string;
     error?: string | null;
     suggestUrl?: string;
+    /** `city` limits suggestions to cities/towns and shows city-specific copy. */
+    suggestType?: 'city';
 };
 
 const DEFAULT_SUGGEST_URL = '/register/location-suggest';
@@ -44,7 +46,9 @@ export function LocationAutocomplete({
     inputClassName,
     error,
     suggestUrl = DEFAULT_SUGGEST_URL,
+    suggestType,
 }: LocationAutocompleteProps) {
+    const isCity = suggestType === 'city';
     const generatedId = useId();
     const inputId = id ?? generatedId;
     const listId = `${inputId}-list`;
@@ -92,7 +96,7 @@ export function LocationAutocomplete({
 
             try {
                 const response = await fetch(
-                    `${suggestUrl}?q=${encodeURIComponent(query)}`,
+                    `${suggestUrl}?q=${encodeURIComponent(query)}${isCity ? '&type=city' : ''}`,
                     {
                         credentials: 'same-origin',
                         headers: {
@@ -142,7 +146,7 @@ export function LocationAutocomplete({
         }, DEBOUNCE_MS);
 
         return () => window.clearTimeout(timer);
-    }, [value, selected, suggestUrl]);
+    }, [value, selected, suggestUrl, isCity]);
 
     function choose(suggestion: LocationSuggestion) {
         onSelect(suggestion);
@@ -254,7 +258,9 @@ export function LocationAutocomplete({
                     ) : null}
                     {!loading && !fetchError && showEmpty ? (
                         <li className="px-3 py-2 text-sm text-brand-muted">
-                            No US locations found. Try a different city or address.
+                            {isCity
+                                ? 'No US cities found. Try a different spelling.'
+                                : 'No US locations found. Try a different city or address.'}
                         </li>
                     ) : null}
                     {!loading &&
@@ -283,11 +289,15 @@ export function LocationAutocomplete({
             {selected ? (
                 <p className="text-xs font-medium text-brand-muted">
                     Selected: {selected.city}, {selected.state}
-                    {selected.postal_code ? ` ${selected.postal_code}` : ''}
+                    {!isCity && selected.postal_code
+                        ? ` ${selected.postal_code}`
+                        : ''}
                 </p>
             ) : value.trim().length >= MIN_CHARS ? (
                 <p className="text-xs font-medium text-amber-700">
-                    Select a location from the suggestions to continue.
+                    {isCity
+                        ? 'Select a city from the suggestions.'
+                        : 'Select a location from the suggestions to continue.'}
                 </p>
             ) : (
                 <p className="text-xs font-medium text-brand-muted">
