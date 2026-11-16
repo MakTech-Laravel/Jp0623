@@ -2,14 +2,16 @@
 
 use App\Models\HomeFaq;
 use App\Models\LocationType;
-use Database\Seeders\HomeFaqSeeder;
 use App\Models\Machine;
 use App\Models\MachineCategory;
+use App\Models\Product;
+use Database\Seeders\ArticleSeeder;
+use Database\Seeders\CitySeeder;
+use Database\Seeders\HomeFaqSeeder;
 use Database\Seeders\LocationTypeSeeder;
 use Database\Seeders\MachineCategorySeeder;
 use Database\Seeders\MachineSeeder;
 use Database\Seeders\ProductSeeder;
-use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -22,12 +24,14 @@ test('home page renders the frontend homepage with demo props', function () {
         MachineCategorySeeder::class,
         MachineSeeder::class,
         ProductSeeder::class,
+        ArticleSeeder::class,
+        CitySeeder::class,
     ]);
 
     $this->get(route('home'))
         ->assertOk()
         ->assertInertia(
-            fn(Assert $page) => $page
+            fn (Assert $page) => $page
                 ->component('frontend/home')
                 ->has('site')
                 ->has('site.mainNav')
@@ -51,6 +55,7 @@ test('home page renders the frontend homepage with demo props', function () {
                 ->has('faqs.items', 12)
                 ->where('faqs.items.0.q', 'What does a vending management company do?')
                 ->has('articles.items', 3)
+                ->where('articles.items.0.href', '/resources/multi-site')
                 ->has('cities.items', 30)
         );
 });
@@ -70,7 +75,7 @@ test('home page location types come from the database and hide inactive items', 
     $this->get(route('home'))
         ->assertOk()
         ->assertInertia(
-            fn(Assert $page) => $page
+            fn (Assert $page) => $page
                 ->has('requestForm.locationTypes', 1)
                 ->where('requestForm.locationTypes.0', 'Active location')
         );
@@ -146,7 +151,7 @@ test('home page faqs come from the database and hide inactive items', function (
     $this->get(route('home'))
         ->assertOk()
         ->assertInertia(
-            fn(Assert $page) => $page
+            fn (Assert $page) => $page
                 ->has('faqs.items', 1)
                 ->where('faqs.items.0.q', 'Active FAQ?')
                 ->where('faqs.items.0.a', 'Yes.')

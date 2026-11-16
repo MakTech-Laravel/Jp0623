@@ -37,7 +37,7 @@ type SchoolsPageProps = {
             title: string;
             excerpt: string;
             href: string;
-        };
+        } | null;
     };
 };
 
@@ -117,26 +117,28 @@ export default function SchoolsPage({
             </Band>
             )}
 
-            <Band>
-                <SectionHead eyebrow={guide.eyebrow} title={guide.title} />
-                <a
-                    href={guide.item.href === '#' ? '/resources' : guide.item.href}
-                    className={cn(
-                        'block max-w-xl rounded-brand border border-brand-line bg-brand-surface p-6 no-underline',
-                        brandCardHoverClass,
-                    )}
-                >
-                    <span className="font-mono text-xs tracking-wide text-brand-muted uppercase">
-                        {guide.item.cat}
-                    </span>
-                    <h3 className="mt-2 font-display text-xl font-bold text-brand-ink">
-                        {guide.item.title}
-                    </h3>
-                    <p className="mt-2 text-sm text-brand-muted">
-                        {guide.item.excerpt}
-                    </p>
-                </a>
-            </Band>
+            {guide.item && (
+                <Band>
+                    <SectionHead eyebrow={guide.eyebrow} title={guide.title} />
+                    <a
+                        href={guide.item.href}
+                        className={cn(
+                            'block max-w-xl rounded-brand border border-brand-line bg-brand-surface p-6 no-underline',
+                            brandCardHoverClass,
+                        )}
+                    >
+                        <span className="font-mono text-xs tracking-wide text-brand-muted uppercase">
+                            {guide.item.cat}
+                        </span>
+                        <h3 className="mt-2 font-display text-xl font-bold text-brand-ink">
+                            {guide.item.title}
+                        </h3>
+                        <p className="mt-2 text-sm text-brand-muted">
+                            {guide.item.excerpt}
+                        </p>
+                    </a>
+                </Band>
+            )}
         </>
     );
 }

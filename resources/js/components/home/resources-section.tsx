@@ -8,6 +8,10 @@ import type { ArticlesData } from '@/types/frontend';
 import { cn } from '@/lib/utils';
 
 export function ResourcesSection({ data }: { data: ArticlesData }) {
+    if (data.items.length === 0) {
+        return null;
+    }
+
     return (
         <Band id="resources">
             <SectionHead
