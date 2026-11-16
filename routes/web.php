@@ -1,10 +1,11 @@
 <?php
 
 use App\Enums\PermissionEnum;
-use App\Http\Controllers\Admin\CoffeeServiceRequestController as AdminCoffeeServiceRequestController;
-use App\Http\Controllers\Admin\HomeFaqController;
 use App\Http\Controllers\Admin\CoffeeMachineController;
+use App\Http\Controllers\Admin\CoffeeServiceRequestController as AdminCoffeeServiceRequestController;
 use App\Http\Controllers\Admin\CoffeeTypeController;
+use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
+use App\Http\Controllers\Admin\HomeFaqController;
 use App\Http\Controllers\Admin\LocationTypeController;
 use App\Http\Controllers\Admin\MachineCategoryController;
 use App\Http\Controllers\Admin\MachineController;
@@ -29,6 +30,7 @@ use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\CitiesController;
 use App\Http\Controllers\Frontend\CoffeeServiceRequestController;
 use App\Http\Controllers\Frontend\ContactController;
+use App\Http\Controllers\Frontend\ContactMessageController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\IndustriesController;
 use App\Http\Controllers\Frontend\LegalController;
@@ -65,6 +67,9 @@ Route::get('/products', [ProductsController::class, 'index'])->name('products');
 Route::get('/micro-markets', [MicroMarketsController::class, 'index'])->name('micro-markets');
 Route::get('/office-coffee', [OfficeCoffeeController::class, 'index'])->name('office-coffee');
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+Route::post('/contact', [ContactMessageController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('contact.store');
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 Route::get('/schools', [SchoolsController::class, 'index'])->name('schools');
 Route::get('/resources', [ResourcesController::class, 'index'])->name('resources');
@@ -281,6 +286,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_EDIT->value);
             Route::delete('coffee-service-requests/{coffee_service_request}', 'destroy')->name('coffee-service-requests.destroy')
                 ->middleware('permission:'.PermissionEnum::COFFEE_SERVICE_REQUESTS_DELETE->value);
+        });
+
+        // Contact form inbox from the public contact page.
+        Route::controller(AdminContactMessageController::class)->group(function () {
+            Route::get('contact-messages', 'index')->name('contact-messages.index')
+                ->middleware('permission:'.PermissionEnum::CONTACT_MESSAGES_INDEX->value);
+            Route::get('contact-messages/{contact_message}', 'show')->name('contact-messages.show')
+                ->middleware('permission:'.PermissionEnum::CONTACT_MESSAGES_VIEW->value);
+            Route::put('contact-messages/{contact_message}', 'update')->name('contact-messages.update')
+                ->middleware('permission:'.PermissionEnum::CONTACT_MESSAGES_EDIT->value);
+            Route::delete('contact-messages/{contact_message}', 'destroy')->name('contact-messages.destroy')
+                ->middleware('permission:'.PermissionEnum::CONTACT_MESSAGES_DELETE->value);
         });
 
         // Manual SMS to operators by distance / search + SMS templates.

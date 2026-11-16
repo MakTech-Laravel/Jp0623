@@ -2,6 +2,8 @@
 
 namespace App\Demo;
 
+use App\Models\ContactMessage;
+
 class ContactPageData
 {
     /**
@@ -75,12 +77,7 @@ class ContactPageData
         return [
             'successMessage' => 'Message sent. We\'ll reply within one business day.',
             'submitLabel' => 'Send message',
-            'topics' => [
-                'Getting vending for my business',
-                'Service on an existing machine',
-                'Becoming an operator',
-                'Something else',
-            ],
+            'topics' => ContactMessage::TOPICS,
         ];
     }
 }

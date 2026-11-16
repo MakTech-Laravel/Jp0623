@@ -1,25 +1,61 @@
-import { useState } from 'react';
+import { useForm } from '@inertiajs/react';
+import { useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { BrandButton } from '@/components/frontend/brand-button';
 import { Reveal } from '@/components/frontend/reveal';
 import { Band } from '@/components/frontend/wrap';
+import { store as storeContactMessage } from '@/routes/contact';
 import type { ContactFormData, ContactPanelData } from '@/types/frontend';
 
 export function ContactSection({
     panel,
-    form,
+    form: formCopy,
 }: {
     panel: ContactPanelData;
     form: ContactFormData;
 }) {
-    const [done, setDone] = useState(false);
+    const defaultTopic = formCopy.topics[0] ?? '';
+    const [done, setDone] = useState(() => {
+        if (typeof window === 'undefined') {
+            return false;
+        }
+
+        return new URLSearchParams(window.location.search).get('sent') === '1';
+    });
+
+    const form = useForm(storeContactMessage(), {
+        name: '',
+        company: '',
+        email: '',
+        phone: '',
+        topic: defaultTopic,
+        message: '',
+        terms_accepted: false,
+    });
+
+    const fieldClass =
+        'rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink';
+
+    const [operatorPage, operatorLogin] = panel.operatorLinks;
+
+    const errorMessage = useMemo(() => {
+        const first = Object.values(form.errors)[0];
+
+        return typeof first === 'string' ? first : null;
+    }, [form.errors]);
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        setDone(true);
-    }
 
-    const [operatorPage, operatorLogin] = panel.operatorLinks;
+        form.submit({
+            preserveScroll: true,
+            onSuccess: () => {
+                setDone(true);
+                form.reset();
+                form.setData('topic', defaultTopic);
+            },
+        });
+    }
 
     return (
         <Band>
@@ -69,47 +105,100 @@ export function ContactSection({
                     <div className="min-w-0 rounded-2xl border border-brand-line bg-brand-surface p-6 md:p-7">
                         {done ? (
                             <div className="rounded-lg bg-good-bg p-3.5 font-semibold text-good">
-                                {form.successMessage}
+                                {formCopy.successMessage}
                             </div>
                         ) : (
                             <form
                                 onSubmit={handleSubmit}
                                 className="grid gap-3 sm:grid-cols-2"
+                                noValidate
                             >
+                                {errorMessage ? (
+                                    <p className="col-span-full rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                                        {errorMessage}
+                                    </p>
+                                ) : null}
+
                                 <label className="flex flex-col gap-1 text-sm font-semibold">
                                     Name
                                     <input
                                         required
-                                        className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink"
+                                        value={form.data.name}
+                                        onChange={(e) =>
+                                            form.setData('name', e.target.value)
+                                        }
+                                        className={fieldClass}
+                                        aria-invalid={Boolean(form.errors.name)}
                                     />
                                 </label>
                                 <label className="flex flex-col gap-1 text-sm font-semibold">
                                     Company
-                                    <input className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink" />
+                                    <input
+                                        value={form.data.company}
+                                        onChange={(e) =>
+                                            form.setData(
+                                                'company',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className={fieldClass}
+                                        aria-invalid={Boolean(
+                                            form.errors.company,
+                                        )}
+                                    />
                                 </label>
                                 <label className="flex flex-col gap-1 text-sm font-semibold">
                                     Email
                                     <input
                                         type="email"
                                         required
-                                        className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink"
+                                        value={form.data.email}
+                                        onChange={(e) =>
+                                            form.setData(
+                                                'email',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className={fieldClass}
+                                        aria-invalid={Boolean(
+                                            form.errors.email,
+                                        )}
                                     />
                                 </label>
                                 <label className="flex flex-col gap-1 text-sm font-semibold">
                                     Phone
                                     <input
                                         inputMode="tel"
-                                        className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink"
+                                        value={form.data.phone}
+                                        onChange={(e) =>
+                                            form.setData(
+                                                'phone',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className={fieldClass}
+                                        aria-invalid={Boolean(
+                                            form.errors.phone,
+                                        )}
                                     />
                                 </label>
                                 <label className="col-span-full flex flex-col gap-1 text-sm font-semibold">
                                     I&apos;m contacting about
                                     <select
                                         required
-                                        className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink"
-                                        defaultValue={form.topics[0]}
+                                        value={form.data.topic}
+                                        onChange={(e) =>
+                                            form.setData(
+                                                'topic',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className={fieldClass}
+                                        aria-invalid={Boolean(
+                                            form.errors.topic,
+                                        )}
                                     >
-                                        {form.topics.map((topic) => (
+                                        {formCopy.topics.map((topic) => (
                                             <option key={topic} value={topic}>
                                                 {topic}
                                             </option>
@@ -121,34 +210,48 @@ export function ContactSection({
                                     <textarea
                                         required
                                         rows={4}
-                                        className="rounded-lg border border-brand-line bg-brand-surface px-3 py-2.5 text-sm font-medium text-brand-ink"
+                                        value={form.data.message}
+                                        onChange={(e) =>
+                                            form.setData(
+                                                'message',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className={fieldClass}
+                                        aria-invalid={Boolean(
+                                            form.errors.message,
+                                        )}
                                     />
                                 </label>
                                 <label className="col-span-full inline-flex cursor-pointer items-start gap-2 rounded-lg border-2 border-brand-line px-3.5 py-2 text-sm font-medium">
                                     <input
                                         type="checkbox"
                                         required
+                                        checked={form.data.terms_accepted}
+                                        onChange={(e) =>
+                                            form.setData(
+                                                'terms_accepted',
+                                                e.target.checked,
+                                            )
+                                        }
                                         className="mt-0.5 accent-brass"
+                                        aria-invalid={Boolean(
+                                            form.errors.terms_accepted,
+                                        )}
                                     />
                                     I agree to the Location Terms and Privacy
                                     Policy and to be contacted about my request.
                                 </label>
-                                {/* <div className="col-span-full flex max-w-xs items-center gap-2.5 rounded-lg border border-brand-line bg-brand-sunk p-3 text-sm">
-                                    <input
-                                        type="checkbox"
-                                        required
-                                        aria-label="reCAPTCHA check"
-                                        className="accent-brass"
-                                    />
-                                    reCAPTCHA check goes here
-                                </div> */}
                                 <div className="col-span-full">
                                     <BrandButton
                                         as="button"
                                         type="submit"
                                         className="w-full"
+                                        disabled={form.processing}
                                     >
-                                        {form.submitLabel}
+                                        {form.processing
+                                            ? 'Sending…'
+                                            : formCopy.submitLabel}
                                     </BrandButton>
                                 </div>
                             </form>
