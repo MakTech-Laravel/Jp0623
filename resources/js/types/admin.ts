@@ -51,6 +51,12 @@ export interface AdminOperatorProfile {
     machine_types: string[];
     machines_needed: string;
     primary_city: string;
+    address: string | null;
+    city: string | null;
+    state: string | null;
+    postal_code: string | null;
+    latitude: string | null;
+    longitude: string | null;
     terms_accepted_at: string | null;
     email_code_confirmed_at: string | null;
     trial_started_at: string | null;

@@ -38,6 +38,12 @@ function validUserManagementPayload(array $overrides = []): array
         'machine_types' => ['Snack', 'Combo'],
         'machines_needed' => '2',
         'primary_city' => 'Houston, TX',
+        'address' => '100 Main St',
+        'city' => 'Houston',
+        'state' => 'TX',
+        'postal_code' => '77002',
+        'latitude' => 29.7601,
+        'longitude' => -95.3698,
         ...$overrides,
     ];
 }
@@ -99,7 +105,14 @@ test('user management create always assigns the user role and profile', function
         ->and(Hash::check('password123', $user->password))->toBeTrue()
         ->and($user->operatorProfile)->not->toBeNull()
         ->and($user->operatorProfile->company_name)->toBe('Harbor Vending')
-        ->and($user->operatorProfile->machine_types)->toBe(['Snack', 'Combo']);
+        ->and($user->operatorProfile->machine_types)->toBe(['Snack', 'Combo'])
+        ->and($user->operatorProfile->primary_city)->toBe('Houston, TX')
+        ->and($user->operatorProfile->address)->toBe('100 Main St')
+        ->and($user->operatorProfile->city)->toBe('Houston')
+        ->and($user->operatorProfile->state)->toBe('TX')
+        ->and($user->operatorProfile->postal_code)->toBe('77002')
+        ->and((float) $user->operatorProfile->latitude)->toBe(29.7601)
+        ->and((float) $user->operatorProfile->longitude)->toBe(-95.3698);
 });
 
 test('creating a user validates required fields', function () {
@@ -110,9 +123,36 @@ test('creating a user validates required fields', function () {
             'email' => 'not-an-email',
             'password' => 'short',
         ])
-        ->assertSessionHasErrors(['first_name', 'last_name', 'email', 'password', 'company_name', 'owns_machines', 'machine_types', 'machines_needed', 'primary_city']);
+        ->assertSessionHasErrors([
+            'first_name',
+            'last_name',
+            'email',
+            'password',
+            'company_name',
+            'owns_machines',
+            'machine_types',
+            'machines_needed',
+            'primary_city',
+            'city',
+            'state',
+            'latitude',
+            'longitude',
+        ]);
 
     expect(User::where('email', 'not-an-email')->exists())->toBeFalse();
+});
+
+test('creating a user requires a selected location', function () {
+    $this->actingAs($this->superAdmin)
+        ->post(route('admin.user-management.store'), validUserManagementPayload([
+            'city' => '',
+            'state' => '',
+            'latitude' => null,
+            'longitude' => null,
+        ]))
+        ->assertSessionHasErrors(['city', 'state', 'latitude', 'longitude']);
+
+    expect(User::where('email', 'jane@example.com')->exists())->toBeFalse();
 });
 
 test('the email must be unique', function () {
@@ -142,6 +182,13 @@ test('a user can be updated while keeping the user role and syncing profile', fu
             'password' => '',
             'company_name' => 'New Co',
             'roles' => [RoleEnum::ADMIN->value],
+            'primary_city' => 'Austin, TX',
+            'address' => '200 Congress Ave',
+            'city' => 'Austin',
+            'state' => 'TX',
+            'postal_code' => '78701',
+            'latitude' => 30.2672,
+            'longitude' => -97.7431,
         ]))
         ->assertRedirect(route('admin.user-management.index'));
 
@@ -151,7 +198,14 @@ test('a user can be updated while keeping the user role and syncing profile', fu
         ->and($user->hasRole(RoleEnum::USER->value))->toBeTrue()
         ->and($user->hasRole(RoleEnum::ADMIN->value))->toBeFalse()
         ->and($user->operatorProfile->company_name)->toBe('New Co')
-        ->and($user->operatorProfile->first_name)->toBe('Renamed');
+        ->and($user->operatorProfile->first_name)->toBe('Renamed')
+        ->and($user->operatorProfile->primary_city)->toBe('Austin, TX')
+        ->and($user->operatorProfile->address)->toBe('200 Congress Ave')
+        ->and($user->operatorProfile->city)->toBe('Austin')
+        ->and($user->operatorProfile->state)->toBe('TX')
+        ->and($user->operatorProfile->postal_code)->toBe('78701')
+        ->and((float) $user->operatorProfile->latitude)->toBe(30.2672)
+        ->and((float) $user->operatorProfile->longitude)->toBe(-97.7431);
 });
 
 test('updating without a password keeps the current one', function () {
