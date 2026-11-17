@@ -424,44 +424,8 @@ class HomePageData
         return [
             'eyebrow' => 'Reviews',
             'title' => 'What our customers are saying.',
-            'items' => [
-                [
-                    'stars' => '★★★★★',
-                    'quote' => 'We have four warehouses and now one person to contact for all of them. Machines were in within two weeks.',
-                    'role' => 'Facilities Manager',
-                    'org' => 'Logistics company, TX',
-                ],
-                [
-                    'stars' => '★★★★★',
-                    'quote' => 'The Vendera cooler was a hit with our night shift. Restocking has been on time every week.',
-                    'role' => 'Plant Supervisor',
-                    'org' => 'Manufacturer, OH',
-                ],
-                [
-                    'stars' => '★★★★★',
-                    'quote' => 'Residents love the market in our lobby, and it didn\'t cost the property anything.',
-                    'role' => 'Property Manager',
-                    'org' => 'Apartment community, FL',
-                ],
-                [
-                    'stars' => '★★★★★',
-                    'quote' => 'Setup was simple and our staff actually uses the snack machine every day. Service has been reliable.',
-                    'role' => 'Office Manager',
-                    'org' => 'Accounting firm, GA',
-                ],
-                [
-                    'stars' => '★★★★★',
-                    'quote' => 'We needed healthy options for a hospital break room. They matched the mix and keep it stocked.',
-                    'role' => 'Dietary Services Lead',
-                    'org' => 'Regional hospital, NC',
-                ],
-                [
-                    'stars' => '★★★★★',
-                    'quote' => 'One request covered three campuses. Install dates were clear and the operators showed up as promised.',
-                    'role' => 'Operations Director',
-                    'org' => 'Private school network, CA',
-                ],
-            ],
+            // Populated from active Review records in HomeController.
+            'items' => [],
         ];
     }
 

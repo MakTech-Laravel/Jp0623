@@ -308,6 +308,7 @@ export type AboutPageProps = {
     site: SiteData;
     hero: PageHeroData;
     story: AboutStoryData;
+    faqs: FaqsData;
     cta: AboutCtaData;
 };
 
@@ -358,6 +359,7 @@ export type RequestFormData = {
 };
 
 export type ReviewItem = {
+    id: number;
     stars: string;
     quote: string;
     role: string;

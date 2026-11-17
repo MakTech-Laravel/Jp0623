@@ -112,7 +112,7 @@ export function CityForm({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25 }}
             onSubmit={handleSubmit}
-            className="max-w-2xl space-y-8"
+            className="w-full space-y-8"
         >
             <section className="space-y-5">
                 <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
