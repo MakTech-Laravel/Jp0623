@@ -308,6 +308,7 @@ export type AboutPageProps = {
     site: SiteData;
     hero: PageHeroData;
     story: AboutStoryData;
+    faqs: FaqsData;
     cta: AboutCtaData;
 };
 

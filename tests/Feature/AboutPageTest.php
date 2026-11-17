@@ -1,6 +1,11 @@
 <?php
 
+use App\Models\AboutFaq;
+use Database\Seeders\AboutFaqSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
+
+uses(RefreshDatabase::class);
 
 test('about page renders with demo props', function () {
     $this->get(route('about'))
@@ -23,4 +28,24 @@ test('about page renders with demo props', function () {
             ->has('cta.primary')
             ->where('cta.primary.href', '/#request-sec')
         );
+});
+
+test('about page lists the seeded active faqs in order', function () {
+    $this->seed(AboutFaqSeeder::class);
+    AboutFaq::factory()->inactive()->create(['question' => 'Hidden question?']);
+
+    $this->get(route('about'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('faqs.eyebrow', 'FAQ')
+            ->has('faqs.items', 5)
+            ->where('faqs.items.0.q', 'What does Vending Machine Location Services do?')
+            ->has('faqs.items.0.a')
+        );
+});
+
+test('about page has no faq items when none exist', function () {
+    $this->get(route('about'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page->has('faqs.items', 0));
 });

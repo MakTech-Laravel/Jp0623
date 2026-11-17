@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\PermissionEnum;
+use App\Http\Controllers\Admin\AboutFaqController;
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\CoffeeMachineController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\Admin\CoffeeServiceRequestController as AdminCoffeeServ
 use App\Http\Controllers\Admin\CoffeeTypeController;
 use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
 use App\Http\Controllers\Admin\HomeFaqController;
+use App\Http\Controllers\Admin\LegalPageController;
 use App\Http\Controllers\Admin\LocationTypeController;
 use App\Http\Controllers\Admin\MachineCategoryController;
 use App\Http\Controllers\Admin\MachineController;
@@ -79,7 +81,7 @@ Route::get('/resources/{article}', [ResourcesController::class, 'show'])->name('
 Route::get('/cities', [CitiesController::class, 'index'])->name('cities');
 Route::get('/operators', [OperatorsController::class, 'index'])->name('operators');
 Route::get('/legal/{page}', [LegalController::class, 'show'])
-    ->whereIn('page', ['privacy', 'terms', 'operator-terms', 'cookies'])
+    ->whereIn('page', ['privacy', 'terms', 'operator-terms'])
     ->name('legal.show');
 Route::get('/industries', [IndustriesController::class, 'index'])->name('industries');
 Route::get('/industries/{industry}', [IndustriesController::class, 'show'])->name('industries.show');
@@ -349,6 +351,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware(['permission:'.PermissionEnum::HOME_FAQS_EDIT->value, HandlePrecognitiveRequests::class]);
             Route::delete('home-faqs/{home_faq}', 'destroy')->name('home-faqs.destroy')
                 ->middleware('permission:'.PermissionEnum::HOME_FAQS_DELETE->value);
+        });
+
+        // Legal pages — privacy, terms and operator terms content.
+        Route::controller(LegalPageController::class)->group(function () {
+            Route::get('legal-pages', 'index')->name('legal-pages.index')
+                ->middleware('permission:'.PermissionEnum::LEGAL_PAGES_INDEX->value);
+            Route::get('legal-pages/{legal_page}/edit', 'edit')->name('legal-pages.edit')
+                ->middleware('permission:'.PermissionEnum::LEGAL_PAGES_EDIT->value);
+            Route::put('legal-pages/{legal_page}', 'update')->name('legal-pages.update')
+                ->middleware(['permission:'.PermissionEnum::LEGAL_PAGES_EDIT->value, HandlePrecognitiveRequests::class]);
+        });
+
+        // About FAQs — public about-page FAQ items.
+        Route::controller(AboutFaqController::class)->group(function () {
+            Route::get('about-faqs', 'index')->name('about-faqs.index')
+                ->middleware('permission:'.PermissionEnum::ABOUT_FAQS_INDEX->value);
+            Route::get('about-faqs/create', 'create')->name('about-faqs.create')
+                ->middleware('permission:'.PermissionEnum::ABOUT_FAQS_CREATE->value);
+            Route::post('about-faqs', 'store')->name('about-faqs.store')
+                ->middleware(['permission:'.PermissionEnum::ABOUT_FAQS_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('about-faqs/{about_faq}/edit', 'edit')->name('about-faqs.edit')
+                ->middleware('permission:'.PermissionEnum::ABOUT_FAQS_EDIT->value);
+            Route::put('about-faqs/{about_faq}', 'update')->name('about-faqs.update')
+                ->middleware(['permission:'.PermissionEnum::ABOUT_FAQS_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('about-faqs/{about_faq}', 'destroy')->name('about-faqs.destroy')
+                ->middleware('permission:'.PermissionEnum::ABOUT_FAQS_DELETE->value);
         });
 
         // Machine FAQs — public machines-page FAQ items.

@@ -90,6 +90,16 @@ enum PermissionEnum: string
     case HOME_FAQS_EDIT = 'home-faqs.edit';
     case HOME_FAQS_DELETE = 'home-faqs.delete';
 
+    // ABOUT FAQS
+    case ABOUT_FAQS_INDEX = 'about-faqs.index';
+    case ABOUT_FAQS_CREATE = 'about-faqs.create';
+    case ABOUT_FAQS_EDIT = 'about-faqs.edit';
+    case ABOUT_FAQS_DELETE = 'about-faqs.delete';
+
+    // LEGAL PAGES
+    case LEGAL_PAGES_INDEX = 'legal-pages.index';
+    case LEGAL_PAGES_EDIT = 'legal-pages.edit';
+
     // MACHINE FAQS
     case MACHINE_FAQS_INDEX = 'machine-faqs.index';
     case MACHINE_FAQS_CREATE = 'machine-faqs.create';
@@ -228,6 +238,14 @@ enum PermissionEnum: string
             self::HOME_FAQS_CREATE,
             self::HOME_FAQS_EDIT,
             self::HOME_FAQS_DELETE => 'Home FAQs',
+
+            self::ABOUT_FAQS_INDEX,
+            self::ABOUT_FAQS_CREATE,
+            self::ABOUT_FAQS_EDIT,
+            self::ABOUT_FAQS_DELETE => 'About FAQs',
+
+            self::LEGAL_PAGES_INDEX,
+            self::LEGAL_PAGES_EDIT => 'Legal Pages',
 
             self::MACHINE_FAQS_INDEX,
             self::MACHINE_FAQS_CREATE,
