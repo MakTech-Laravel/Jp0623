@@ -5,6 +5,7 @@ use App\Models\LocationType;
 use App\Models\Machine;
 use App\Models\MachineCategory;
 use App\Models\Product;
+use App\Models\Review;
 use Database\Seeders\ArticleSeeder;
 use Database\Seeders\CitySeeder;
 use Database\Seeders\HomeFaqSeeder;
@@ -12,6 +13,7 @@ use Database\Seeders\LocationTypeSeeder;
 use Database\Seeders\MachineCategorySeeder;
 use Database\Seeders\MachineSeeder;
 use Database\Seeders\ProductSeeder;
+use Database\Seeders\ReviewSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -20,6 +22,7 @@ uses(RefreshDatabase::class);
 test('home page renders the frontend homepage with demo props', function () {
     $this->seed([
         HomeFaqSeeder::class,
+        ReviewSeeder::class,
         LocationTypeSeeder::class,
         MachineCategorySeeder::class,
         MachineSeeder::class,
@@ -57,6 +60,20 @@ test('home page renders the frontend homepage with demo props', function () {
                 ->has('articles.items', 3)
                 ->where('articles.items.0.href', '/resources/multi-site')
                 ->has('cities.items', 30)
+        );
+});
+
+test('home page reviews come from the database, hide inactive ones and map rating to stars', function () {
+    Review::factory()->create(['role' => 'Shown reviewer', 'rating' => 4, 'sort_order' => 1]);
+    Review::factory()->inactive()->create(['role' => 'Hidden reviewer']);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(
+            fn (Assert $page) => $page
+                ->has('reviews.items', 1)
+                ->where('reviews.items.0.role', 'Shown reviewer')
+                ->where('reviews.items.0.stars', '★★★★')
         );
 });
 

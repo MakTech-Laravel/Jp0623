@@ -13,7 +13,22 @@ class AboutPageData
             'site' => self::site(),
             'hero' => self::hero(),
             'story' => self::story(),
+            'faqs' => self::faqs(),
             'cta' => self::cta(),
+        ];
+    }
+
+    /**
+     * FAQ heading copy; the items come from the database (see AboutFaqService).
+     *
+     * @return array<string, mixed>
+     */
+    public static function faqs(): array
+    {
+        return [
+            'eyebrow' => 'FAQ',
+            'title' => 'About us questions.',
+            'items' => [],
         ];
     }
 
