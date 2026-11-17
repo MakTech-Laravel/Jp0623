@@ -104,6 +104,12 @@ export const PERMISSIONS = {
         EDIT: 'about-faqs.edit',
         DELETE: 'about-faqs.delete',
     },
+    REVIEWS: {
+        INDEX: 'reviews.index',
+        CREATE: 'reviews.create',
+        EDIT: 'reviews.edit',
+        DELETE: 'reviews.delete',
+    },
     LEGAL_PAGES: {
         INDEX: 'legal-pages.index',
         EDIT: 'legal-pages.edit',

@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\OperatorSmsController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SmsTemplateController;
 use App\Http\Controllers\Admin\UserController;
@@ -351,6 +352,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware(['permission:'.PermissionEnum::HOME_FAQS_EDIT->value, HandlePrecognitiveRequests::class]);
             Route::delete('home-faqs/{home_faq}', 'destroy')->name('home-faqs.destroy')
                 ->middleware('permission:'.PermissionEnum::HOME_FAQS_DELETE->value);
+        });
+
+        // Reviews — home-page customer reviews.
+        Route::controller(ReviewController::class)->group(function () {
+            Route::get('reviews', 'index')->name('reviews.index')
+                ->middleware('permission:'.PermissionEnum::REVIEWS_INDEX->value);
+            Route::get('reviews/create', 'create')->name('reviews.create')
+                ->middleware('permission:'.PermissionEnum::REVIEWS_CREATE->value);
+            Route::post('reviews', 'store')->name('reviews.store')
+                ->middleware(['permission:'.PermissionEnum::REVIEWS_CREATE->value, HandlePrecognitiveRequests::class]);
+            Route::get('reviews/{review}/edit', 'edit')->name('reviews.edit')
+                ->middleware('permission:'.PermissionEnum::REVIEWS_EDIT->value);
+            Route::put('reviews/{review}', 'update')->name('reviews.update')
+                ->middleware(['permission:'.PermissionEnum::REVIEWS_EDIT->value, HandlePrecognitiveRequests::class]);
+            Route::delete('reviews/{review}', 'destroy')->name('reviews.destroy')
+                ->middleware('permission:'.PermissionEnum::REVIEWS_DELETE->value);
         });
 
         // Legal pages — privacy, terms and operator terms content.

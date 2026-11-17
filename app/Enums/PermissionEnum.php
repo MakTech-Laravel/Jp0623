@@ -96,6 +96,12 @@ enum PermissionEnum: string
     case ABOUT_FAQS_EDIT = 'about-faqs.edit';
     case ABOUT_FAQS_DELETE = 'about-faqs.delete';
 
+    // REVIEWS
+    case REVIEWS_INDEX = 'reviews.index';
+    case REVIEWS_CREATE = 'reviews.create';
+    case REVIEWS_EDIT = 'reviews.edit';
+    case REVIEWS_DELETE = 'reviews.delete';
+
     // LEGAL PAGES
     case LEGAL_PAGES_INDEX = 'legal-pages.index';
     case LEGAL_PAGES_EDIT = 'legal-pages.edit';
@@ -243,6 +249,11 @@ enum PermissionEnum: string
             self::ABOUT_FAQS_CREATE,
             self::ABOUT_FAQS_EDIT,
             self::ABOUT_FAQS_DELETE => 'About FAQs',
+
+            self::REVIEWS_INDEX,
+            self::REVIEWS_CREATE,
+            self::REVIEWS_EDIT,
+            self::REVIEWS_DELETE => 'Reviews',
 
             self::LEGAL_PAGES_INDEX,
             self::LEGAL_PAGES_EDIT => 'Legal Pages',

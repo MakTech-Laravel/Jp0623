@@ -17,6 +17,7 @@ import {
     Scale,
     Send,
     ShoppingBasket,
+    Star,
     Ticket,
     // Upload, // File Upload Demo — uncomment with nav item below
     User,
@@ -52,6 +53,7 @@ import adminCities from '@/routes/admin/cities';
 import adminCoffeeMachines from '@/routes/admin/coffee-machines';
 import adminCoffeeTypes from '@/routes/admin/coffee-types';
 import adminAboutFaqs from '@/routes/admin/about-faqs';
+import adminReviews from '@/routes/admin/reviews';
 import adminHomeFaqs from '@/routes/admin/home-faqs';
 import adminLocationTypes from '@/routes/admin/location-types';
 import adminMachineCategories from '@/routes/admin/machine-categories';
@@ -317,6 +319,12 @@ export function AppSidebar() {
                 href: adminMembershipSettings.edit(),
                 icon: CreditCard,
                 permissions: [PERMISSIONS.MEMBERSHIP_SETTINGS.EDIT],
+            },
+            {
+                title: 'Reviews',
+                href: adminReviews.index(),
+                icon: Star,
+                permissions: [PERMISSIONS.REVIEWS.INDEX],
             },
             {
                 title: 'Legal pages',

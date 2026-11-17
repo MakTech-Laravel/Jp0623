@@ -176,6 +176,18 @@ export interface AdminLocationType {
     updated_at: string;
 }
 
+export interface AdminReview {
+    id: number;
+    quote: string;
+    role: string;
+    org: string;
+    rating: number;
+    sort_order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface AdminAboutFaq {
     id: number;
     question: string;

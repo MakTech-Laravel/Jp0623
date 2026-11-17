@@ -42,7 +42,7 @@ export function ReviewsSection({ data }: { data: ReviewsData }) {
                         <CarouselContent className="-ml-4">
                             {data.items.map((review, index) => (
                                 <CarouselItem
-                                    key={review.role + review.org}
+                                    key={review.id}
                                     className="basis-full py-3 pl-4 md:basis-1/2 lg:basis-1/3"
                                 >
                                     <Reveal delay={index * 0.05}>

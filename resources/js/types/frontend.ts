@@ -359,6 +359,7 @@ export type RequestFormData = {
 };
 
 export type ReviewItem = {
+    id: number;
     stars: string;
     quote: string;
     role: string;
