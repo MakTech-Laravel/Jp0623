@@ -14,8 +14,10 @@ import {
     Package,
     Receipt,
     Route,
+    Scale,
     Send,
     ShoppingBasket,
+    Star,
     Ticket,
     // Upload, // File Upload Demo — uncomment with nav item below
     User,
@@ -50,6 +52,8 @@ import adminArticles from '@/routes/admin/articles';
 import adminCities from '@/routes/admin/cities';
 import adminCoffeeMachines from '@/routes/admin/coffee-machines';
 import adminCoffeeTypes from '@/routes/admin/coffee-types';
+import adminAboutFaqs from '@/routes/admin/about-faqs';
+import adminReviews from '@/routes/admin/reviews';
 import adminHomeFaqs from '@/routes/admin/home-faqs';
 import adminLocationTypes from '@/routes/admin/location-types';
 import adminMachineCategories from '@/routes/admin/machine-categories';
@@ -62,6 +66,7 @@ import adminCoffeeServiceRequests from '@/routes/admin/coffee-service-requests';
 import adminContactMessages from '@/routes/admin/contact-messages';
 import adminOperatorSms from '@/routes/admin/operator-sms';
 import adminMembershipSettings from '@/routes/admin/membership-settings';
+import adminLegalPages from '@/routes/admin/legal-pages';
 import adminPayments from '@/routes/admin/payments';
 import adminVendingRequests from '@/routes/admin/vending-requests';
 import { index as billingIndex } from '@/routes/billing';
@@ -316,12 +321,25 @@ export function AppSidebar() {
                 permissions: [PERMISSIONS.MEMBERSHIP_SETTINGS.EDIT],
             },
             {
+                title: 'Reviews',
+                href: adminReviews.index(),
+                icon: Star,
+                permissions: [PERMISSIONS.REVIEWS.INDEX],
+            },
+            {
+                title: 'Legal pages',
+                href: adminLegalPages.index(),
+                icon: Scale,
+                permissions: [PERMISSIONS.LEGAL_PAGES.INDEX],
+            },
+            {
                 title: 'FAQ Management',
                 icon: CircleHelp,
                 permissions: [
                     PERMISSIONS.HOME_FAQS.INDEX,
                     PERMISSIONS.MACHINE_FAQS.INDEX,
                     PERMISSIONS.OFFICE_COFFEE_FAQS.INDEX,
+                    PERMISSIONS.ABOUT_FAQS.INDEX,
                 ],
                 items: [
                     {
@@ -341,6 +359,12 @@ export function AppSidebar() {
                         href: adminOfficeCoffeeFaqs.index(),
                         icon: Coffee,
                         permissions: [PERMISSIONS.OFFICE_COFFEE_FAQS.INDEX],
+                    },
+                    {
+                        title: 'About FAQs',
+                        href: adminAboutFaqs.index(),
+                        icon: CircleHelp,
+                        permissions: [PERMISSIONS.ABOUT_FAQS.INDEX],
                     },
                 ],
             },

@@ -51,6 +51,12 @@ export interface AdminOperatorProfile {
     machine_types: string[];
     machines_needed: string;
     primary_city: string;
+    address: string | null;
+    city: string | null;
+    state: string | null;
+    postal_code: string | null;
+    latitude: string | null;
+    longitude: string | null;
     terms_accepted_at: string | null;
     email_code_confirmed_at: string | null;
     trial_started_at: string | null;
@@ -120,6 +126,27 @@ export interface AdminHomeFaq {
     updated_at: string;
 }
 
+export interface AdminLegalPageSection {
+    heading: string | null;
+    body: string;
+}
+
+export interface AdminLegalPageSummary {
+    id: number;
+    slug: string;
+    title: string;
+    last_updated_on: string | null;
+    sections_count: number;
+}
+
+export interface AdminLegalPage {
+    id: number;
+    slug: string;
+    title: string;
+    last_updated_on: string | null;
+    sections: AdminLegalPageSection[];
+}
+
 export interface AdminContactMessage {
     id: number;
     name: string;
@@ -145,6 +172,28 @@ export interface AdminLocationType {
     sort_order: number;
     is_active: boolean;
     show_on_industries: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AdminReview {
+    id: number;
+    quote: string;
+    role: string;
+    org: string;
+    rating: number;
+    sort_order: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface AdminAboutFaq {
+    id: number;
+    question: string;
+    answer: string;
+    sort_order: number;
+    is_active: boolean;
     created_at: string;
     updated_at: string;
 }

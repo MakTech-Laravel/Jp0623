@@ -2,9 +2,14 @@ import type { UrlMethodPair } from '@inertiajs/core';
 import { useForm, usePage } from '@inertiajs/react';
 import { Loader2, Lock, UserPlus } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 import FileUpload from '@/components/file-upload';
 import InputError from '@/components/input-error';
+import {
+    LocationAutocomplete,
+    type LocationSuggestion,
+} from '@/components/location/location-autocomplete';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -34,6 +39,42 @@ interface UserFormDefaults {
     machine_types?: string[];
     machines_needed?: string;
     primary_city?: string;
+}
+
+function initialLocationFromProfile(
+    profile: AdminOperatorProfile | null | undefined,
+    primaryCityFallback?: string,
+): LocationSuggestion | null {
+    if (
+        profile?.city == null ||
+        profile.state == null ||
+        profile.latitude == null ||
+        profile.longitude == null
+    ) {
+        return null;
+    }
+
+    const latitude = Number(profile.latitude);
+    const longitude = Number(profile.longitude);
+
+    if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+        return null;
+    }
+
+    const label =
+        primaryCityFallback ||
+        profile.primary_city ||
+        `${profile.city}, ${profile.state}`;
+
+    return {
+        label,
+        address: profile.address,
+        city: profile.city,
+        state: profile.state,
+        postal_code: profile.postal_code,
+        latitude,
+        longitude,
+    };
 }
 
 interface UserFormProps {
@@ -67,6 +108,11 @@ export function UserForm({
     const actorIsSuperAdmin =
         usePage().props.auth.user?.is_super_admin ?? false;
 
+    const hydratedLocation = initialLocationFromProfile(
+        operatorProfile,
+        defaults?.primary_city ?? operatorProfile?.primary_city,
+    );
+
     const form = useForm(action, {
         name: defaults?.name ?? '',
         email: defaults?.email ?? '',
@@ -89,7 +135,54 @@ export function UserForm({
             '1',
         primary_city:
             defaults?.primary_city ?? operatorProfile?.primary_city ?? '',
+        address: (operatorProfile?.address ?? null) as string | null,
+        city: operatorProfile?.city ?? '',
+        state: operatorProfile?.state ?? '',
+        postal_code: (operatorProfile?.postal_code ?? null) as string | null,
+        latitude: (hydratedLocation?.latitude ?? null) as number | null,
+        longitude: (hydratedLocation?.longitude ?? null) as number | null,
     });
+
+    const [locationQuery, setLocationQuery] = useState(
+        hydratedLocation?.label ??
+            defaults?.primary_city ??
+            operatorProfile?.primary_city ??
+            '',
+    );
+    const [selectedLocation, setSelectedLocation] =
+        useState<LocationSuggestion | null>(hydratedLocation);
+
+    const applyLocation = (suggestion: LocationSuggestion | null) => {
+        setSelectedLocation(suggestion);
+        setLocationQuery(suggestion?.label ?? '');
+        form.setData((data) => ({
+            ...data,
+            primary_city: suggestion
+                ? `${suggestion.city}, ${suggestion.state}`
+                : '',
+            address: suggestion?.address ?? null,
+            city: suggestion?.city ?? '',
+            state: suggestion?.state ?? '',
+            postal_code: suggestion?.postal_code ?? null,
+            latitude: suggestion?.latitude ?? null,
+            longitude: suggestion?.longitude ?? null,
+        }));
+    };
+
+    const changeLocationQuery = (value: string) => {
+        setLocationQuery(value);
+        setSelectedLocation(null);
+        form.setData((data) => ({
+            ...data,
+            primary_city: '',
+            address: null,
+            city: '',
+            state: '',
+            postal_code: null,
+            latitude: null,
+            longitude: null,
+        }));
+    };
 
     const selectableRoles = actorIsSuperAdmin
         ? roles
@@ -143,6 +236,8 @@ export function UserForm({
             onSuccess: () => {
                 if (!isEdit) {
                     form.reset();
+                    setLocationQuery('');
+                    setSelectedLocation(null);
                 }
             },
         });
@@ -254,56 +349,62 @@ export function UserForm({
                         </div>
                     </div>
 
-                    <div className="grid gap-5 sm:grid-cols-2">
-                        <div className="grid gap-2">
-                            <Label htmlFor="primary_city">Primary city</Label>
-                            <Input
-                                id="primary_city"
-                                value={form.data.primary_city}
-                                onChange={(e) =>
-                                    form.setData('primary_city', e.target.value)
-                                }
-                                onBlur={() => form.validate('primary_city')}
-                                aria-invalid={form.invalid('primary_city')}
-                                placeholder="Houston, TX"
-                            />
-                            <InputError message={form.errors.primary_city} />
-                        </div>
-                        <div className="grid gap-2">
-                            <Label>Owns machines</Label>
-                            <div className="flex flex-wrap gap-2">
-                                {(['Yes', 'No'] as const).map((label) => {
-                                    const value = label === 'Yes';
-                                    const checked =
-                                        form.data.owns_machines === value;
+                    <div className="grid gap-2">
+                        <LocationAutocomplete
+                            id="primary_city"
+                            label="Primary city"
+                            value={locationQuery}
+                            selected={selectedLocation}
+                            placeholder="Type city or address, e.g. Houston, TX"
+                            onQueryChange={changeLocationQuery}
+                            onSelect={applyLocation}
+                            onClearSelection={() => applyLocation(null)}
+                            inputClassName="border-input bg-background text-foreground shadow-xs focus-visible:border-ring focus-visible:ring-ring/50"
+                            error={
+                                form.errors.primary_city ??
+                                form.errors.city ??
+                                form.errors.state ??
+                                form.errors.latitude ??
+                                form.errors.longitude ??
+                                null
+                            }
+                        />
+                    </div>
 
-                                    return (
-                                        <Label
-                                            key={label}
-                                            className={cn(
-                                                'flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
-                                                checked
-                                                    ? 'border-primary bg-primary/10 text-primary'
-                                                    : 'hover:bg-muted',
-                                            )}
-                                        >
-                                            <Checkbox
-                                                checked={checked}
-                                                onCheckedChange={() =>
-                                                    form.setData(
-                                                        'owns_machines',
-                                                        value,
-                                                    )
-                                                }
-                                                className="size-3.5"
-                                            />
-                                            {label}
-                                        </Label>
-                                    );
-                                })}
-                            </div>
-                            <InputError message={form.errors.owns_machines} />
+                    <div className="grid gap-2">
+                        <Label>Owns machines</Label>
+                        <div className="flex flex-wrap gap-2">
+                            {(['Yes', 'No'] as const).map((label) => {
+                                const value = label === 'Yes';
+                                const checked =
+                                    form.data.owns_machines === value;
+
+                                return (
+                                    <Label
+                                        key={label}
+                                        className={cn(
+                                            'flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors',
+                                            checked
+                                                ? 'border-primary bg-primary/10 text-primary'
+                                                : 'hover:bg-muted',
+                                        )}
+                                    >
+                                        <Checkbox
+                                            checked={checked}
+                                            onCheckedChange={() =>
+                                                form.setData(
+                                                    'owns_machines',
+                                                    value,
+                                                )
+                                            }
+                                            className="size-3.5"
+                                        />
+                                        {label}
+                                    </Label>
+                                );
+                            })}
                         </div>
+                        <InputError message={form.errors.owns_machines} />
                     </div>
 
                     <div className="grid gap-2">

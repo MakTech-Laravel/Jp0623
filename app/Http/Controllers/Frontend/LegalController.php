@@ -2,20 +2,26 @@
 
 namespace App\Http\Controllers\Frontend;
 
-use App\Demo\LegalPageData;
+use App\Demo\HomePageData;
 use App\Http\Controllers\Controller;
+use App\Services\LegalPageService;
 use Inertia\Inertia;
 use Inertia\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LegalController extends Controller
 {
+    public function __construct(private LegalPageService $legalPages) {}
+
     public function show(string $page): Response
     {
-        if (! array_key_exists($page, LegalPageData::pages())) {
-            throw new NotFoundHttpException;
-        }
+        $legalPage = $this->legalPages->findBySlug($page);
 
-        return Inertia::render('frontend/legal', LegalPageData::for($page));
+        abort_if($legalPage === null, 404);
+
+        return Inertia::render('frontend/legal', [
+            'site' => HomePageData::site(),
+            'page' => $legalPage->slug,
+            ...$this->legalPages->toFrontendPayload($legalPage),
+        ]);
     }
 }
