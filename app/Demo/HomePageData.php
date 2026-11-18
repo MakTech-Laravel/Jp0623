@@ -424,44 +424,8 @@ class HomePageData
         return [
             'eyebrow' => 'Reviews',
             'title' => 'What our customers are saying.',
-            'items' => [
-                [
-                    'stars' => '★★★★★',
-                    'quote' => 'We have four warehouses and now one person to contact for all of them. Machines were in within two weeks.',
-                    'role' => 'Facilities Manager',
-                    'org' => 'Logistics company, TX',
-                ],
-                [
-                    'stars' => '★★★★★',
-                    'quote' => 'The Vendera cooler was a hit with our night shift. Restocking has been on time every week.',
-                    'role' => 'Plant Supervisor',
-                    'org' => 'Manufacturer, OH',
-                ],
-                [
-                    'stars' => '★★★★★',
-                    'quote' => 'Residents love the market in our lobby, and it didn\'t cost the property anything.',
-                    'role' => 'Property Manager',
-                    'org' => 'Apartment community, FL',
-                ],
-                [
-                    'stars' => '★★★★★',
-                    'quote' => 'Setup was simple and our staff actually uses the snack machine every day. Service has been reliable.',
-                    'role' => 'Office Manager',
-                    'org' => 'Accounting firm, GA',
-                ],
-                [
-                    'stars' => '★★★★★',
-                    'quote' => 'We needed healthy options for a hospital break room. They matched the mix and keep it stocked.',
-                    'role' => 'Dietary Services Lead',
-                    'org' => 'Regional hospital, NC',
-                ],
-                [
-                    'stars' => '★★★★★',
-                    'quote' => 'One request covered three campuses. Install dates were clear and the operators showed up as promised.',
-                    'role' => 'Operations Director',
-                    'org' => 'Private school network, CA',
-                ],
-            ],
+            // Populated from active Review records in HomeController.
+            'items' => [],
         ];
     }
 
@@ -552,29 +516,8 @@ class HomePageData
                 'label' => 'View all resources →',
                 'href' => '/resources',
             ],
-            'items' => [
-                [
-                    'id' => 'multi-site',
-                    'cat' => 'Vending management',
-                    'title' => 'How to choose a vending company for multiple sites',
-                    'excerpt' => 'What to ask before you sign, and why one contact beats ten vendors.',
-                    'href' => '/resources',
-                ],
-                [
-                    'id' => 'ai-vs-market',
-                    'cat' => 'Smart & AI vending',
-                    'title' => 'Vendera coolers vs. micro markets: which one fits?',
-                    'excerpt' => 'A simple guide based on headcount, space and food needs.',
-                    'href' => '/resources',
-                ],
-                [
-                    'id' => 'healthy-mix',
-                    'cat' => 'Healthy vending',
-                    'title' => 'Building a healthier snack mix your team will buy',
-                    'excerpt' => 'Swap in better options without killing sales.',
-                    'href' => '/resources',
-                ],
-            ],
+            // Populated from the articles table (ArticleService::listForFrontend()).
+            'items' => [],
         ];
     }
 
@@ -583,48 +526,11 @@ class HomePageData
      */
     public static function cities(): array
     {
-        $raw = [
-            ['Houston', 'TX'],
-            ['New York', 'NY'],
-            ['Atlanta', 'GA'],
-            ['Dallas', 'TX'],
-            ['Chicago', 'IL'],
-            ['Miami', 'FL'],
-            ['Charlotte', 'NC'],
-            ['Philadelphia', 'PA'],
-            ['Los Angeles', 'CA'],
-            ['Fort Worth', 'TX'],
-            ['Orlando', 'FL'],
-            ['Phoenix', 'AZ'],
-            ['Tampa', 'FL'],
-            ['Las Vegas', 'NV'],
-            ['Indianapolis', 'IN'],
-            ['Cleveland', 'OH'],
-            ['Memphis', 'TN'],
-            ['Fort Lauderdale', 'FL'],
-            ['Sacramento', 'CA'],
-            ['Detroit', 'MI'],
-            ['Boston', 'MA'],
-            ['Jacksonville', 'FL'],
-            ['Columbus', 'OH'],
-            ['Raleigh', 'NC'],
-            ['Washington', 'DC'],
-            ['Baltimore', 'MD'],
-            ['Cincinnati', 'OH'],
-            ['Greensboro', 'NC'],
-            ['San Antonio', 'TX'],
-            ['Nashville', 'TN'],
-        ];
-
         return [
             'eyebrow' => 'Top cities',
             'title' => 'Cities where we manage vending.',
-            'items' => array_map(fn(array $city): array => [
-                'city' => $city[0],
-                'state' => $city[1],
-                'label' => $city[0] . ' vending',
-                'href' => '/cities',
-            ], $raw),
+            // Populated from the cities table (CityService::listForFrontend()).
+            'items' => [],
         ];
     }
 }

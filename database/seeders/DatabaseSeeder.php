@@ -22,13 +22,18 @@ class DatabaseSeeder extends Seeder
             MachineSeeder::class,
             ProductSeeder::class,
             HomeFaqSeeder::class,
+            ReviewSeeder::class,
             MachineFaqSeeder::class,
             OfficeCoffeeFaqSeeder::class,
+            AboutFaqSeeder::class,
             CoffeeMachineSeeder::class,
             CoffeeTypeSeeder::class,
             LocationTypeSeeder::class,
+            ArticleSeeder::class,
+            CitySeeder::class,
             SmsTemplateSeeder::class,
             MembershipSettingSeeder::class,
+            LegalPageSeeder::class,
         ]);
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
     }

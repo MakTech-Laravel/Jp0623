@@ -2,14 +2,18 @@
 
 use App\Models\HomeFaq;
 use App\Models\LocationType;
-use Database\Seeders\HomeFaqSeeder;
 use App\Models\Machine;
 use App\Models\MachineCategory;
+use App\Models\Product;
+use App\Models\Review;
+use Database\Seeders\ArticleSeeder;
+use Database\Seeders\CitySeeder;
+use Database\Seeders\HomeFaqSeeder;
 use Database\Seeders\LocationTypeSeeder;
 use Database\Seeders\MachineCategorySeeder;
 use Database\Seeders\MachineSeeder;
 use Database\Seeders\ProductSeeder;
-use App\Models\Product;
+use Database\Seeders\ReviewSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -18,16 +22,19 @@ uses(RefreshDatabase::class);
 test('home page renders the frontend homepage with demo props', function () {
     $this->seed([
         HomeFaqSeeder::class,
+        ReviewSeeder::class,
         LocationTypeSeeder::class,
         MachineCategorySeeder::class,
         MachineSeeder::class,
         ProductSeeder::class,
+        ArticleSeeder::class,
+        CitySeeder::class,
     ]);
 
     $this->get(route('home'))
         ->assertOk()
         ->assertInertia(
-            fn(Assert $page) => $page
+            fn (Assert $page) => $page
                 ->component('frontend/home')
                 ->has('site')
                 ->has('site.mainNav')
@@ -51,7 +58,22 @@ test('home page renders the frontend homepage with demo props', function () {
                 ->has('faqs.items', 12)
                 ->where('faqs.items.0.q', 'What does a vending management company do?')
                 ->has('articles.items', 3)
+                ->where('articles.items.0.href', '/resources/multi-site')
                 ->has('cities.items', 30)
+        );
+});
+
+test('home page reviews come from the database, hide inactive ones and map rating to stars', function () {
+    Review::factory()->create(['role' => 'Shown reviewer', 'rating' => 4, 'sort_order' => 1]);
+    Review::factory()->inactive()->create(['role' => 'Hidden reviewer']);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(
+            fn (Assert $page) => $page
+                ->has('reviews.items', 1)
+                ->where('reviews.items.0.role', 'Shown reviewer')
+                ->where('reviews.items.0.stars', '★★★★')
         );
 });
 
@@ -70,7 +92,7 @@ test('home page location types come from the database and hide inactive items', 
     $this->get(route('home'))
         ->assertOk()
         ->assertInertia(
-            fn(Assert $page) => $page
+            fn (Assert $page) => $page
                 ->has('requestForm.locationTypes', 1)
                 ->where('requestForm.locationTypes.0', 'Active location')
         );
@@ -146,7 +168,7 @@ test('home page faqs come from the database and hide inactive items', function (
     $this->get(route('home'))
         ->assertOk()
         ->assertInertia(
-            fn(Assert $page) => $page
+            fn (Assert $page) => $page
                 ->has('faqs.items', 1)
                 ->where('faqs.items.0.q', 'Active FAQ?')
                 ->where('faqs.items.0.a', 'Yes.')
