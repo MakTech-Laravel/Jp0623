@@ -41,7 +41,7 @@ export default function Home({
             <FeaturedMachinesSection data={featuredMachines} />
             <ProductsTeaserSection data={products} />
             <RequestSection data={requestForm} />
-            <ReviewsSection data={reviews} />
+            {reviews.items.length > 0 && <ReviewsSection data={reviews} />}
             <IndustriesSection data={industries} />
             <FaqSection data={faqs} />
             <ResourcesSection data={articles} />

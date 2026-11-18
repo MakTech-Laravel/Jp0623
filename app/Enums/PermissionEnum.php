@@ -90,6 +90,22 @@ enum PermissionEnum: string
     case HOME_FAQS_EDIT = 'home-faqs.edit';
     case HOME_FAQS_DELETE = 'home-faqs.delete';
 
+    // ABOUT FAQS
+    case ABOUT_FAQS_INDEX = 'about-faqs.index';
+    case ABOUT_FAQS_CREATE = 'about-faqs.create';
+    case ABOUT_FAQS_EDIT = 'about-faqs.edit';
+    case ABOUT_FAQS_DELETE = 'about-faqs.delete';
+
+    // REVIEWS
+    case REVIEWS_INDEX = 'reviews.index';
+    case REVIEWS_CREATE = 'reviews.create';
+    case REVIEWS_EDIT = 'reviews.edit';
+    case REVIEWS_DELETE = 'reviews.delete';
+
+    // LEGAL PAGES
+    case LEGAL_PAGES_INDEX = 'legal-pages.index';
+    case LEGAL_PAGES_EDIT = 'legal-pages.edit';
+
     // MACHINE FAQS
     case MACHINE_FAQS_INDEX = 'machine-faqs.index';
     case MACHINE_FAQS_CREATE = 'machine-faqs.create';
@@ -113,6 +129,19 @@ enum PermissionEnum: string
     case COFFEE_TYPES_CREATE = 'coffee-types.create';
     case COFFEE_TYPES_EDIT = 'coffee-types.edit';
     case COFFEE_TYPES_DELETE = 'coffee-types.delete';
+
+    // ARTICLES
+    case ARTICLES_INDEX = 'articles.index';
+    case ARTICLES_CREATE = 'articles.create';
+    case ARTICLES_EDIT = 'articles.edit';
+    case ARTICLES_DELETE = 'articles.delete';
+
+    // CITIES
+    case CITIES_INDEX = 'cities.index';
+    case CITIES_CREATE = 'cities.create';
+    case CITIES_EDIT = 'cities.edit';
+    case CITIES_DELETE = 'cities.delete';
+    case CITIES_IMPORT = 'cities.import';
 
     // LOCATION TYPES
     case LOCATION_TYPES_INDEX = 'location-types.index';
@@ -216,6 +245,19 @@ enum PermissionEnum: string
             self::HOME_FAQS_EDIT,
             self::HOME_FAQS_DELETE => 'Home FAQs',
 
+            self::ABOUT_FAQS_INDEX,
+            self::ABOUT_FAQS_CREATE,
+            self::ABOUT_FAQS_EDIT,
+            self::ABOUT_FAQS_DELETE => 'About FAQs',
+
+            self::REVIEWS_INDEX,
+            self::REVIEWS_CREATE,
+            self::REVIEWS_EDIT,
+            self::REVIEWS_DELETE => 'Reviews',
+
+            self::LEGAL_PAGES_INDEX,
+            self::LEGAL_PAGES_EDIT => 'Legal Pages',
+
             self::MACHINE_FAQS_INDEX,
             self::MACHINE_FAQS_CREATE,
             self::MACHINE_FAQS_EDIT,
@@ -235,6 +277,17 @@ enum PermissionEnum: string
             self::COFFEE_TYPES_CREATE,
             self::COFFEE_TYPES_EDIT,
             self::COFFEE_TYPES_DELETE => 'Coffee Types',
+
+            self::ARTICLES_INDEX,
+            self::ARTICLES_CREATE,
+            self::ARTICLES_EDIT,
+            self::ARTICLES_DELETE => 'Articles',
+
+            self::CITIES_INDEX,
+            self::CITIES_CREATE,
+            self::CITIES_EDIT,
+            self::CITIES_DELETE,
+            self::CITIES_IMPORT => 'Cities',
 
             self::LOCATION_TYPES_INDEX,
             self::LOCATION_TYPES_CREATE,

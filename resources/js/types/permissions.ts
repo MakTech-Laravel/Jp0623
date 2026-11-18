@@ -98,6 +98,22 @@ export const PERMISSIONS = {
         EDIT: 'home-faqs.edit',
         DELETE: 'home-faqs.delete',
     },
+    ABOUT_FAQS: {
+        INDEX: 'about-faqs.index',
+        CREATE: 'about-faqs.create',
+        EDIT: 'about-faqs.edit',
+        DELETE: 'about-faqs.delete',
+    },
+    REVIEWS: {
+        INDEX: 'reviews.index',
+        CREATE: 'reviews.create',
+        EDIT: 'reviews.edit',
+        DELETE: 'reviews.delete',
+    },
+    LEGAL_PAGES: {
+        INDEX: 'legal-pages.index',
+        EDIT: 'legal-pages.edit',
+    },
     MACHINE_FAQS: {
         INDEX: 'machine-faqs.index',
         CREATE: 'machine-faqs.create',
@@ -115,6 +131,19 @@ export const PERMISSIONS = {
         CREATE: 'coffee-machines.create',
         EDIT: 'coffee-machines.edit',
         DELETE: 'coffee-machines.delete',
+    },
+    ARTICLES: {
+        INDEX: 'articles.index',
+        CREATE: 'articles.create',
+        EDIT: 'articles.edit',
+        DELETE: 'articles.delete',
+    },
+    CITIES: {
+        INDEX: 'cities.index',
+        CREATE: 'cities.create',
+        EDIT: 'cities.edit',
+        DELETE: 'cities.delete',
+        IMPORT: 'cities.import',
     },
     COFFEE_TYPES: {
         INDEX: 'coffee-types.index',

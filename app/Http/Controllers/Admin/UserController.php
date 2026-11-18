@@ -31,6 +31,12 @@ class UserController extends Controller
         'machine_types',
         'machines_needed',
         'primary_city',
+        'address',
+        'city',
+        'state',
+        'postal_code',
+        'latitude',
+        'longitude',
     ];
 
     public function index(Request $request): Response
@@ -240,6 +246,14 @@ class UserController extends Controller
      */
     private function syncOperatorProfile(User $user, array $data): void
     {
+        $city = trim((string) $data['city']);
+        $state = trim((string) $data['state']);
+        $primaryCity = trim((string) ($data['primary_city'] ?? ''));
+
+        if ($primaryCity === '') {
+            $primaryCity = $state !== '' ? "{$city}, {$state}" : $city;
+        }
+
         $payload = [
             'first_name' => (string) $data['first_name'],
             'last_name' => (string) $data['last_name'],
@@ -253,7 +267,13 @@ class UserController extends Controller
                 static fn (string $type): bool => $type !== '',
             )),
             'machines_needed' => (string) $data['machines_needed'],
-            'primary_city' => (string) $data['primary_city'],
+            'primary_city' => $primaryCity,
+            'address' => filled($data['address'] ?? null) ? trim((string) $data['address']) : null,
+            'city' => $city,
+            'state' => $state,
+            'postal_code' => filled($data['postal_code'] ?? null) ? trim((string) $data['postal_code']) : null,
+            'latitude' => $data['latitude'],
+            'longitude' => $data['longitude'],
         ];
 
         $profile = $user->operatorProfile;

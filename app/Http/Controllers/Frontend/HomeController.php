@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Frontend;
 use App\Demo\HomePageData;
 use App\Http\Controllers\Controller;
 use App\Models\LocationType;
+use App\Services\ArticleService;
+use App\Services\CityService;
 use App\Services\HomeFaqService;
 use App\Services\LocationTypeService;
 use App\Services\MachineService;
 use App\Services\ProductService;
+use App\Services\ReviewService;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -19,15 +22,21 @@ class HomeController extends Controller
         private LocationTypeService $locationTypes,
         private MachineService $machines,
         private ProductService $products,
+        private ArticleService $articles,
+        private CityService $cities,
+        private ReviewService $reviews,
     ) {}
 
     public function index(): Response
     {
         $page = HomePageData::all();
         $page['faqs']['items'] = $this->faqs->listForFrontend();
+        $page['reviews']['items'] = $this->reviews->listForFrontend();
         $page['requestForm']['locationTypes'] = $this->locationTypes->listActiveNamesForFrontend();
         $page['featuredMachines']['items'] = $this->machines->listFeaturedForFrontend();
         $page['featuredMachines']['link']['label'] = 'See all '.$this->machines->countActive().' machines →';
+        $page['cities']['items'] = $this->cities->listForFrontend(30);
+        $page['articles']['items'] = $this->articles->listForFrontend(3);
         $page['products']['items'] = $this->products->listFeaturedForFrontend();
         $page['industries']['items'] = array_map(
             fn (LocationType $industry): array => [

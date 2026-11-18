@@ -17,6 +17,7 @@ class LocationSuggestController extends Controller
     {
         $validator = Validator::make($request->query(), [
             'q' => ['required', 'string', 'min:3', 'max:255'],
+            'type' => ['nullable', 'in:city'],
         ]);
 
         if ($validator->fails()) {
@@ -30,7 +31,9 @@ class LocationSuggestController extends Controller
         $query = trim((string) $validator->validated()['q']);
 
         try {
-            $suggestions = $this->photon->suggest($query);
+            $suggestions = ($validator->validated()['type'] ?? null) === 'city'
+                ? $this->photon->suggestCities($query)
+                : $this->photon->suggest($query);
         } catch (RuntimeException $exception) {
             return response()->json([
                 'message' => $exception->getMessage(),
